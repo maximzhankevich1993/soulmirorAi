@@ -1,0 +1,60 @@
+:root {
+  --background: #09090b;
+  --surface: #121216;
+  --card: #18181d;
+
+  --gold: #d6b25e;
+  --ivory: #f4f1ea;
+  --purple: #8b5cf6;
+
+  --border: rgba(255, 255, 255, 0.08);
+  --shadow-gold: rgba(214, 178, 94, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  min-height: 100%;
+  background: var(--background);
+  color: var(--ivory);
+}
+
+body {
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--background);
+}
