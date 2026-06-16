@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 import { Container } from "@/components/ui/container";
@@ -7,37 +8,40 @@ import { Logo } from "@/components/ui/logo";
 import { MobileNav } from "@/components/layout/mobile-nav";
 
 const navigation = [
-  {
-    label: "Features",
-    href: "#features",
-  },
-  {
-    label: "Dreams",
-    href: "#dreams",
-  },
-  {
-    label: "Journal",
-    href: "#journal",
-  },
-  {
-    label: "Pricing",
-    href: "#pricing",
-  },
+  { label: "Features", href: "#features" },
+  { label: "Dreams", href: "#dreams" },
+  { label: "Journal", href: "#journal" },
+  { label: "Pricing", href: "#pricing" },
 ];
 
 export function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <header
-      className="
-        sticky
+      className={`
+        fixed
         top-0
         z-50
+        w-full
+        transition-all
+        duration-300
         border-b
-        border-white/5
-        bg-[#09090B]/70
-        backdrop-blur-2xl
-        supports-[backdrop-filter]:bg-[#09090B]/60
-      "
+        ${
+          scrolled
+            ? "bg-[#09090B]/70 backdrop-blur-2xl border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.3)]"
+            : "bg-transparent border-transparent"
+        }
+      `}
     >
       <Container>
         <div className="flex h-20 items-center justify-between">
@@ -51,6 +55,7 @@ export function Navbar() {
                 key={item.label}
                 href={item.href}
                 className="
+                  group
                   relative
                   text-sm
                   text-[#F4F1EA]/70
@@ -87,7 +92,6 @@ export function Navbar() {
             <Link
               href="#pricing"
               className="
-                group
                 relative
                 inline-flex
                 items-center
@@ -107,32 +111,20 @@ export function Navbar() {
                 hover:shadow-[0_0_30px_rgba(214,178,94,0.15)]
               "
             >
-              <span
-                className="
-                  absolute
-                  inset-0
-                  bg-gradient-to-r
-                  from-[#D6B25E]/10
-                  via-[#D6B25E]/5
-                  to-[#8B5CF6]/10
-                  opacity-100
-                "
-              />
-
-              <span className="relative z-10">
-                Start Your Journey
-              </span>
+              <span className="absolute inset-0 bg-gradient-to-r from-[#D6B25E]/10 via-transparent to-[#8B5CF6]/10" />
+              <span className="relative z-10">Start Journey</span>
             </Link>
           </div>
 
-          {/* Mobile Navigation */}
+          {/* Mobile */}
           <MobileNav />
         </div>
       </Container>
 
-      {/* Luxury Divider */}
+      {/* Luxury bottom glow line */}
       <div
         className="
+          pointer-events-none
           absolute
           bottom-0
           left-0
@@ -142,6 +134,7 @@ export function Navbar() {
           from-transparent
           via-[#D6B25E]/30
           to-transparent
+          opacity-60
         "
       />
     </header>
