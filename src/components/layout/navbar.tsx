@@ -1,3 +1,4 @@
+import { Logo } from "@/components/ui/logo";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 
@@ -6,39 +7,37 @@ export function Navbar() {
     <header
       style={{
         position: "fixed",
-        top: 0,
+        top: 16,
         left: 0,
         right: 0,
         zIndex: 100,
-        backdropFilter: "blur(20px)",
-        background: "rgba(9,9,11,0.6)",
-        borderBottom: "1px solid rgba(255,255,255,0.05)",
       }}
     >
       <Container>
         <div
           style={{
-            height: "80px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
+            minHeight: "72px",
+            padding: "0 20px",
+            borderRadius: "20px",
+            backdropFilter: "blur(24px)",
+            background: "rgba(18,18,22,0.7)",
+            border: "1px solid rgba(255,255,255,0.06)",
+            boxShadow:
+              "0 10px 40px rgba(0,0,0,0.25), 0 0 0 1px rgba(214,178,94,0.04)",
           }}
         >
-          <div
-            style={{
-              fontSize: "24px",
-              fontWeight: 700,
-              letterSpacing: "0.08em",
-            }}
-          >
-            SOULMIRROR
-          </div>
+          <Logo />
 
           <nav
             style={{
               display: "flex",
-              gap: "24px",
               alignItems: "center",
+              gap: "28px",
+              color: "rgba(244,241,234,0.8)",
+              fontSize: "15px",
             }}
           >
             <a href="#features">Features</a>
