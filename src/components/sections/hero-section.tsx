@@ -1,6 +1,12 @@
+"use client";
+
+import { motion } from "framer-motion";
+
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { SoulOrb } from "@/components/ui/soul-orb";
+
+import { fadeInUp, glowPulse } from "@/lib/motion";
 
 export function HeroSection() {
   return (
@@ -14,36 +20,64 @@ export function HeroSection() {
       <Container className="relative z-10 py-24 md:py-32">
         <div className="flex flex-col items-center text-center">
           {/* Eyebrow */}
-          <p className="mb-6 text-xs uppercase tracking-[0.35em] text-[#D6B25E]/70">
+          <motion.p
+            variants={fadeInUp}
+            initial="hidden"
+            animate="show"
+            className="mb-6 text-xs uppercase tracking-[0.35em] text-[#D6B25E]/70"
+          >
             AI • Psychology • Archetypes • Dreams
-          </p>
+          </motion.p>
 
           {/* Title */}
-          <h1 className="font-[family:var(--font-cormorant)] text-4xl font-semibold leading-tight tracking-tight text-[#F4F1EA] md:text-6xl lg:text-7xl">
+          <motion.h1
+            variants={fadeInUp}
+            initial="hidden"
+            animate="show"
+            transition={{ delay: 0.1 }}
+            className="font-[family:var(--font-cormorant)] text-4xl font-semibold leading-tight tracking-tight text-[#F4F1EA] md:text-6xl lg:text-7xl"
+          >
             Discover your{" "}
             <span className="bg-gradient-to-r from-[#D6B25E] via-[#F4F1EA] to-[#8B5CF6] bg-clip-text text-transparent">
               inner self
             </span>{" "}
             through AI
-          </h1>
+          </motion.h1>
 
           {/* Description */}
-          <p className="mt-6 max-w-2xl text-sm leading-relaxed text-[#F4F1EA]/60 md:text-base">
+          <motion.p
+            variants={fadeInUp}
+            initial="hidden"
+            animate="show"
+            transition={{ delay: 0.2 }}
+            className="mt-6 max-w-2xl text-sm leading-relaxed text-[#F4F1EA]/60 md:text-base"
+          >
             SoulMirror AI helps you decode dreams, explore archetypes,
             and uncover hidden patterns of your subconscious through
             symbolic intelligence and advanced AI analysis.
-          </p>
+          </motion.p>
 
           {/* CTA */}
-          <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
+          <motion.div
+            variants={fadeInUp}
+            initial="hidden"
+            animate="show"
+            transition={{ delay: 0.3 }}
+            className="mt-10 flex flex-col items-center gap-4 sm:flex-row"
+          >
             <Button variant="primary">Start Soul Scan</Button>
             <Button variant="ghost">Explore Features</Button>
-          </div>
+          </motion.div>
 
           {/* Soul Orb */}
-          <div className="mt-20">
+          <motion.div
+            variants={glowPulse}
+            initial="rest"
+            animate="animate"
+            className="mt-20"
+          >
             <SoulOrb size={260} />
-          </div>
+          </motion.div>
         </div>
       </Container>
     </section>
