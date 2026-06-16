@@ -1,4 +1,9 @@
+"use client";
+
 import * as React from "react";
+import { motion } from "framer-motion";
+
+import { hoverLift } from "@/lib/motion";
 
 interface FeatureCardProps {
   title: string;
@@ -14,7 +19,11 @@ export function FeatureCard({
   className = "",
 }: FeatureCardProps) {
   return (
-    <div
+    <motion.div
+      variants={hoverLift}
+      initial="rest"
+      whileHover="hover"
+      animate="rest"
       className={`
         group
         relative
@@ -27,7 +36,6 @@ export function FeatureCard({
         backdrop-blur-2xl
         transition-all
         duration-300
-        hover:-translate-y-1
         hover:border-[#D6B25E]/30
         hover:bg-white/[0.05]
         ${className}
@@ -45,7 +53,7 @@ export function FeatureCard({
       <div className="relative z-10">
         {/* Icon */}
         {icon && (
-          <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-[#D6B25E]">
+          <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-[#D6B25E] transition-transform duration-300 group-hover:scale-110">
             {icon}
           </div>
         )}
@@ -60,6 +68,6 @@ export function FeatureCard({
           {description}
         </p>
       </div>
-    </div>
+    </motion.div>
   );
 }
