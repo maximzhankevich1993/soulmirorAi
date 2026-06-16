@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { FeatureCard } from "@/components/ui/feature-card";
 import { SoulOrb } from "@/components/ui/soul-orb";
 import { AuroraBackground } from "@/components/ui/aurora-background";
+import { SectionTitle } from "@/components/ui/section-title";
+import { ArchetypeCard } from "@/components/ui/archetype-card";
 
 export default function HomePage() {
   return (
@@ -80,8 +82,7 @@ export default function HomePage() {
                   }}
                 >
                   Explore archetypes, dreams, tarot insights and guided
-                  self-reflection through a beautifully crafted AI
-                  experience.
+                  self-reflection through a beautifully crafted AI experience.
                 </p>
 
                 <div
@@ -121,33 +122,11 @@ export default function HomePage() {
           }}
         >
           <Container>
-            <div
-              style={{
-                textAlign: "center",
-                marginBottom: "64px",
-              }}
-            >
-              <h2
-                style={{
-                  fontSize: "48px",
-                  marginBottom: "16px",
-                }}
-              >
-                Your Personal Insight Toolkit
-              </h2>
-
-              <p
-                style={{
-                  maxWidth: "700px",
-                  margin: "0 auto",
-                  opacity: 0.75,
-                  lineHeight: 1.7,
-                }}
-              >
-                Powerful AI tools designed to help you understand
-                yourself, uncover patterns and explore deeper meaning.
-              </p>
-            </div>
+            <SectionTitle
+              eyebrow="Features"
+              title="Your Personal Insight Toolkit"
+              description="Powerful AI tools designed to help you understand yourself, uncover patterns and explore deeper meaning."
+            />
 
             <div
               style={{
@@ -155,6 +134,7 @@ export default function HomePage() {
                 gridTemplateColumns:
                   "repeat(auto-fit, minmax(280px, 1fr))",
                 gap: "24px",
+                marginTop: "64px",
               }}
             >
               <FeatureCard
@@ -175,6 +155,47 @@ export default function HomePage() {
               <FeatureCard
                 title="Archetypes"
                 description="Discover your dominant archetypes and understand your inner motivations."
+              />
+            </div>
+          </Container>
+        </section>
+
+        <section
+          style={{
+            paddingTop: "120px",
+            paddingBottom: "120px",
+            background: "#09090B",
+          }}
+        >
+          <Container>
+            <SectionTitle
+              eyebrow="Soul Scan"
+              title="Discover Your Dominant Archetype"
+              description="Answer a few questions and uncover the hidden patterns that drive your decisions, emotions and growth."
+            />
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns:
+                  "repeat(auto-fit, minmax(280px, 1fr))",
+                gap: "24px",
+                marginTop: "64px",
+              }}
+            >
+              <ArchetypeCard
+                title="The Seeker"
+                subtitle="Driven by curiosity, exploration and the desire to understand life's deeper meaning."
+              />
+
+              <ArchetypeCard
+                title="The Sage"
+                subtitle="Guided by wisdom, reflection and a constant pursuit of truth and knowledge."
+              />
+
+              <ArchetypeCard
+                title="The Creator"
+                subtitle="Motivated by imagination, innovation and the urge to bring ideas into reality."
               />
             </div>
           </Container>
