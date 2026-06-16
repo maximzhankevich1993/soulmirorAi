@@ -1,55 +1,62 @@
-type SectionTitleProps = {
+import * as React from "react";
+
+interface SectionTitleProps {
   eyebrow?: string;
   title: string;
-  description: string;
-};
+  description?: string;
+  align?: "left" | "center";
+}
 
 export function SectionTitle({
   eyebrow,
   title,
   description,
+  align = "center",
 }: SectionTitleProps) {
   return (
     <div
-      style={{
-        textAlign: "center",
-        maxWidth: "760px",
-        margin: "0 auto",
-      }}
+      className={`
+        w-full
+        ${align === "center" ? "text-center" : "text-left"}
+      `}
     >
       {eyebrow && (
-        <div
-          style={{
-            color: "var(--gold)",
-            letterSpacing: "0.2em",
-            textTransform: "uppercase",
-            fontSize: "12px",
-            marginBottom: "12px",
-          }}
-        >
+        <p className="mb-3 text-xs uppercase tracking-[0.35em] text-[#D6B25E]/70">
           {eyebrow}
-        </div>
+        </p>
       )}
 
       <h2
-        style={{
-          fontSize: "clamp(36px, 5vw, 56px)",
-          lineHeight: 1.1,
-          marginBottom: "20px",
-        }}
+        className="
+          font-[family:var(--font-cormorant)]
+          text-3xl
+          font-semibold
+          leading-tight
+          tracking-tight
+          text-[#F4F1EA]
+          md:text-4xl
+          lg:text-5xl
+        "
       >
-        {title}
+        <span
+          className="
+            bg-gradient-to-r
+            from-[#F4F1EA]
+            via-[#D6B25E]
+            to-[#8B5CF6]
+            bg-clip-text
+            text-transparent
+          "
+        >
+          {title}
+        </span>
       </h2>
 
-      <p
-        style={{
-          opacity: 0.75,
-          lineHeight: 1.8,
-          fontSize: "18px",
-        }}
-      >
-        {description}
-      </p>
+      {description && (
+        <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-[#F4F1EA]/60 md:text-base">
+          {description}
+        </p>
+      )}
     </div>
   );
 }
