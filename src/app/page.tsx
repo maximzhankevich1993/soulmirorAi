@@ -3,6 +3,7 @@ import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { FeatureCard } from "@/components/ui/feature-card";
 import { SoulOrb } from "@/components/ui/soul-orb";
+import { AuroraBackground } from "@/components/ui/aurora-background";
 
 export default function HomePage() {
   return (
@@ -17,19 +18,23 @@ export default function HomePage() {
             alignItems: "center",
             position: "relative",
             overflow: "hidden",
-            background:
-              "radial-gradient(circle at top, rgba(139,92,246,.15), transparent 40%), #09090B",
+            background: "#09090B",
           }}
         >
+          <AuroraBackground />
+
           <Container>
             <div
               style={{
                 display: "grid",
                 gridTemplateColumns:
                   "repeat(auto-fit, minmax(320px, 1fr))",
-                gap: "64px",
+                gap: "80px",
                 alignItems: "center",
-                paddingTop: "80px",
+                paddingTop: "120px",
+                paddingBottom: "80px",
+                position: "relative",
+                zIndex: 2,
               }}
             >
               <div
@@ -46,6 +51,7 @@ export default function HomePage() {
                     border: "1px solid rgba(214,178,94,.2)",
                     borderRadius: "999px",
                     background: "rgba(255,255,255,.03)",
+                    backdropFilter: "blur(12px)",
                     fontSize: "14px",
                   }}
                 >
@@ -55,8 +61,9 @@ export default function HomePage() {
                 <h1
                   style={{
                     fontSize: "clamp(56px, 10vw, 110px)",
-                    lineHeight: 1,
+                    lineHeight: 0.95,
                     fontWeight: 700,
+                    maxWidth: "800px",
                   }}
                 >
                   Discover What
@@ -66,9 +73,9 @@ export default function HomePage() {
 
                 <p
                   style={{
-                    maxWidth: "640px",
+                    maxWidth: "620px",
                     fontSize: "20px",
-                    lineHeight: 1.7,
+                    lineHeight: 1.8,
                     opacity: 0.75,
                   }}
                 >
