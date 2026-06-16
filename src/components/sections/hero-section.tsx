@@ -1,105 +1,48 @@
-import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
+import { Container } from "@/components/ui/container";
 import { SoulOrb } from "@/components/ui/soul-orb";
-import { AuroraBackground } from "@/components/ui/aurora-background";
 
 export function HeroSection() {
   return (
-    <section
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        position: "relative",
-        overflow: "hidden",
-        background: "#09090B",
-      }}
-    >
-      <AuroraBackground />
+    <section className="relative overflow-hidden">
+      {/* Background Glow */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-40 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-[#8B5CF6]/10 blur-3xl" />
+        <div className="absolute top-40 right-0 h-[400px] w-[400px] rounded-full bg-[#D6B25E]/10 blur-3xl" />
+      </div>
 
-      <Container>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit, minmax(320px, 1fr))",
-            gap: "80px",
-            alignItems: "center",
-            paddingTop: "120px",
-            paddingBottom: "80px",
-            position: "relative",
-            zIndex: 2,
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "24px",
-            }}
-          >
-            <div
-              style={{
-                width: "fit-content",
-                padding: "8px 16px",
-                border: "1px solid rgba(214,178,94,.2)",
-                borderRadius: "999px",
-                background: "rgba(255,255,255,.03)",
-                backdropFilter: "blur(12px)",
-                fontSize: "14px",
-              }}
-            >
-              AI-Powered Self Discovery
-            </div>
+      <Container className="relative z-10 py-24 md:py-32">
+        <div className="flex flex-col items-center text-center">
+          {/* Eyebrow */}
+          <p className="mb-6 text-xs uppercase tracking-[0.35em] text-[#D6B25E]/70">
+            AI • Psychology • Archetypes • Dreams
+          </p>
 
-            <h1
-              style={{
-                fontSize: "clamp(56px, 10vw, 110px)",
-                lineHeight: 0.95,
-                fontWeight: 700,
-                maxWidth: "800px",
-              }}
-            >
-              Discover What
-              <br />
-              Lies Beneath
-            </h1>
+          {/* Title */}
+          <h1 className="font-[family:var(--font-cormorant)] text-4xl font-semibold leading-tight tracking-tight text-[#F4F1EA] md:text-6xl lg:text-7xl">
+            Discover your{" "}
+            <span className="bg-gradient-to-r from-[#D6B25E] via-[#F4F1EA] to-[#8B5CF6] bg-clip-text text-transparent">
+              inner self
+            </span>{" "}
+            through AI
+          </h1>
 
-            <p
-              style={{
-                maxWidth: "620px",
-                fontSize: "20px",
-                lineHeight: 1.8,
-                opacity: 0.75,
-              }}
-            >
-              Explore archetypes, dreams, tarot insights and guided
-              self-reflection through a beautifully crafted AI experience.
-            </p>
+          {/* Description */}
+          <p className="mt-6 max-w-2xl text-sm leading-relaxed text-[#F4F1EA]/60 md:text-base">
+            SoulMirror AI helps you decode dreams, explore archetypes,
+            and uncover hidden patterns of your subconscious through
+            symbolic intelligence and advanced AI analysis.
+          </p>
 
-            <div
-              style={{
-                display: "flex",
-                gap: "16px",
-                flexWrap: "wrap",
-              }}
-            >
-              <Button>Begin Your Journey</Button>
-
-              <Button variant="secondary">
-                Explore Features
-              </Button>
-            </div>
+          {/* CTA */}
+          <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
+            <Button variant="primary">Start Soul Scan</Button>
+            <Button variant="ghost">Explore Features</Button>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <SoulOrb />
+          {/* Soul Orb */}
+          <div className="mt-20">
+            <SoulOrb size={260} />
           </div>
         </div>
       </Container>
