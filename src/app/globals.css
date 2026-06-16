@@ -1,307 +1,95 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  /* SoulMirror Colors */
-
-  --background: #09090b;
-  --foreground: #f4f1ea;
-
-  --gold: #d6b25e;
-  --gold-light: #e5c97f;
-  --gold-dark: #b8923e;
-
-  --purple: #8b5cf6;
-  --purple-light: #a78bfa;
-  --purple-dark: #6d28d9;
-
-  --border: rgba(255, 255, 255, 0.08);
-  --card: rgba(255, 255, 255, 0.03);
-  --card-hover: rgba(255, 255, 255, 0.05);
-
-  --glass: rgba(255, 255, 255, 0.04);
-  --glass-border: rgba(255, 255, 255, 0.08);
-
-  --shadow-gold: 0 0 40px rgba(214, 178, 94, 0.15);
-  --shadow-purple: 0 0 40px rgba(139, 92, 246, 0.15);
-
-  /* Typography */
-
-  --font-heading: var(--font-cormorant);
-  --font-body: var(--font-inter);
-
-  /* Radius */
-
-  --radius-sm: 12px;
-  --radius-md: 18px;
-  --radius-lg: 24px;
-  --radius-xl: 32px;
-
-  /* Layout */
-
-  --container-width: 1280px;
-
-  /* Effects */
-
-  --transition-fast: 180ms;
-  --transition-normal: 300ms;
-  --transition-slow: 500ms;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* =========================
+   Base System Reset
+========================= */
 
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-body), sans-serif;
-  overflow-x: hidden;
-  text-rendering: optimizeLegibility;
+  background-color: #09090b;
+  color: #f4f1ea;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
+
+/* =========================
+   Selection Styling
+========================= */
 
 ::selection {
-  background: rgba(214, 178, 94, 0.3);
-  color: var(--foreground);
+  background: rgba(214, 178, 94, 0.25);
+  color: #f4f1ea;
 }
 
-::-moz-selection {
-  background: rgba(214, 178, 94, 0.3);
-  color: var(--foreground);
-}
-
-/* Premium Scrollbar */
+/* =========================
+   Scrollbar (Luxury Thin)
+========================= */
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #09090b;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
+  background: rgba(214, 178, 94, 0.25);
   border-radius: 999px;
-  background: linear-gradient(
-    to bottom,
-    rgba(214, 178, 94, 0.7),
-    rgba(139, 92, 246, 0.7)
-  );
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(
-    to bottom,
-    rgba(214, 178, 94, 1),
-    rgba(139, 92, 246, 1)
-  );
+  background: rgba(214, 178, 94, 0.4);
 }
 
-/* Typography */
+/* =========================
+   Blur Rendering Fix
+========================= */
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-heading), serif;
-  font-weight: 600;
-  letter-spacing: -0.02em;
+* {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
-p {
-  line-height: 1.7;
+/* =========================
+   Focus States (Luxury Minimal)
+========================= */
+
+:focus-visible {
+  outline: 1px solid rgba(214, 178, 94, 0.4);
+  outline-offset: 2px;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button {
-  font: inherit;
-}
-
-/* Luxury Gradients */
-
-.gold-text {
-  background: linear-gradient(
-    135deg,
-    #fff6d5 0%,
-    #d6b25e 35%,
-    #b8923e 100%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.purple-text {
-  background: linear-gradient(
-    135deg,
-    #d8c9ff 0%,
-    #8b5cf6 45%,
-    #6d28d9 100%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Glass Effects */
+/* =========================
+   Glass Enhancement
+========================= */
 
 .glass {
-  background: var(--glass);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-}
-
-.glass-card {
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.glass-card-hover {
-  transition:
-    transform var(--transition-normal),
-    border-color var(--transition-normal),
-    background var(--transition-normal);
-}
+/* =========================
+   Subtle Noise Layer (optional visual depth)
+========================= */
 
-.glass-card-hover:hover {
-  transform: translateY(-4px);
-  border-color: rgba(214, 178, 94, 0.25);
-  background: rgba(255, 255, 255, 0.05);
-}
-
-/* Luxury Borders */
-
-.gold-border {
-  border: 1px solid rgba(214, 178, 94, 0.3);
-}
-
-.purple-border {
-  border: 1px solid rgba(139, 92, 246, 0.3);
-}
-
-/* Shadows */
-
-.shadow-gold {
-  box-shadow: var(--shadow-gold);
-}
-
-.shadow-purple {
-  box-shadow: var(--shadow-purple);
-}
-
-/* Aurora Utilities */
-
-.aurora-gold {
-  background: radial-gradient(
-    circle,
-    rgba(214, 178, 94, 0.18) 0%,
-    transparent 70%
-  );
-}
-
-.aurora-purple {
-  background: radial-gradient(
-    circle,
-    rgba(139, 92, 246, 0.18) 0%,
-    transparent 70%
-  );
-}
-
-/* Hero Glow */
-
-.hero-glow {
+.noise {
   position: relative;
 }
 
-.hero-glow::before {
-  content: "";
-  position: absolute;
-  inset: -100px;
-  z-index: -1;
-  background:
-    radial-gradient(
-      circle at center,
-      rgba(214, 178, 94, 0.12),
-      transparent 40%
-    ),
-    radial-gradient(
-      circle at center,
-      rgba(139, 92, 246, 0.12),
-      transparent 55%
-    );
-  filter: blur(80px);
-}
-
-/* Premium Card */
-
-.premium-card {
-  position: relative;
-  overflow: hidden;
-}
-
-.premium-card::before {
+.noise::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(214, 178, 94, 0.05),
-    transparent,
-    rgba(139, 92, 246, 0.05)
-  );
   pointer-events: none;
-}
-
-/* Motion Ready */
-
-.motion-safe {
-  will-change: transform, opacity;
-}
-
-/* Focus States */
-
-:focus-visible {
-  outline: 2px solid rgba(214, 178, 94, 0.8);
-  outline-offset: 3px;
-}
-
-/* Images */
-
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
-/* Utilities */
-
-.text-balance {
-  text-wrap: balance;
-}
-
-.container-max {
-  width: 100%;
-  max-width: var(--container-width);
-  margin-inline: auto;
-}
-
-/* Future R3F Canvas */
-
-.canvas-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.4'/%3E%3C/svg%3E");
 }
