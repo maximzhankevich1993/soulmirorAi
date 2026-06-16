@@ -2,55 +2,72 @@ import { Container } from "@/components/ui/container";
 import { SectionTitle } from "@/components/ui/section-title";
 import { Button } from "@/components/ui/button";
 
-export function TarotPreviewSection() {
+export function PricingSection() {
   return (
-    <section id="tarot" className="relative py-24 md:py-32">
-      {/* Background Glow */}
+    <section id="pricing" className="relative py-24 md:py-32">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#D6B25E]/10 blur-3xl" />
-        <div className="absolute right-0 top-0 h-[300px] w-[300px] rounded-full bg-[#8B5CF6]/10 blur-3xl" />
+        <div className="absolute right-0 top-0 h-[350px] w-[350px] rounded-full bg-[#8B5CF6]/10 blur-3xl" />
       </div>
 
       <Container className="relative z-10">
         <SectionTitle
-          eyebrow="Tarot Intelligence"
-          title="The cards reveal what you already know"
-          description="AI-enhanced tarot readings interpret symbolic patterns through psychology, archetypes, and subconscious alignment."
+          eyebrow="Pricing"
+          title="Unlock your inner world"
+          description="One subscription to explore your dreams, archetypes, and subconscious intelligence with AI-powered depth."
         />
 
-        <div className="mt-16 flex flex-col items-center gap-10">
-          {/* Tarot Card Visual */}
-          <div className="relative">
-            {/* Glow */}
-            <div className="absolute inset-0 -z-10 rounded-3xl bg-[#D6B25E]/10 blur-2xl" />
+        <div className="mt-16 flex justify-center">
+          <div
+            className="
+              relative
+              w-full
+              max-w-md
+              overflow-hidden
+              rounded-3xl
+              border
+              border-[#D6B25E]/30
+              bg-white/[0.03]
+              p-8
+              backdrop-blur-2xl
+              shadow-[0_0_80px_rgba(214,178,94,0.10)]
+            "
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-[#D6B25E]/10 via-transparent to-[#8B5CF6]/10" />
 
-            {/* Card */}
-            <div className="relative h-[340px] w-[220px] rounded-2xl border border-white/10 bg-gradient-to-br from-[#09090B] via-white/[0.03] to-[#09090B] backdrop-blur-2xl shadow-[0_0_60px_rgba(214,178,94,0.12)]">
-              {/* Decorative Frame */}
-              <div className="absolute inset-3 rounded-xl border border-[#D6B25E]/20" />
+            <div className="relative z-10">
+              <h3 className="text-center text-xl font-semibold text-[#F4F1EA]">
+                SoulMirror Pro
+              </h3>
 
-              {/* Center Symbol */}
-              <div className="flex h-full items-center justify-center">
-                <div className="text-4xl text-[#D6B25E]">☾</div>
+              <div className="mt-6 text-center">
+                <span className="text-5xl font-semibold text-[#F4F1EA]">
+                  $19
+                </span>
+                <span className="text-sm text-[#F4F1EA]/60">
+                  /month
+                </span>
               </div>
 
-              {/* Corner accents */}
-              <div className="absolute left-3 top-3 h-2 w-2 rounded-full bg-[#D6B25E]/60" />
-              <div className="absolute right-3 top-3 h-2 w-2 rounded-full bg-[#8B5CF6]/60" />
-              <div className="absolute bottom-3 left-3 h-2 w-2 rounded-full bg-[#8B5CF6]/60" />
-              <div className="absolute bottom-3 right-3 h-2 w-2 rounded-full bg-[#D6B25E]/60" />
+              <ul className="mt-8 space-y-3 text-sm text-[#F4F1EA]/70">
+                <li>Unlimited Tarot Readings</li>
+                <li>Unlimited Dream Analysis</li>
+                <li>AI Journal Insights</li>
+                <li>Archetype Discovery</li>
+                <li>Priority AI Responses</li>
+              </ul>
+
+              <div className="mt-10">
+                <Button variant="primary" className="w-full">
+                  Start Your Journey
+                </Button>
+              </div>
+
+              <p className="mt-6 text-center text-xs text-[#F4F1EA]/40">
+                Cancel anytime. No hidden fees.
+              </p>
             </div>
           </div>
-
-          {/* Text */}
-          <p className="max-w-2xl text-center text-sm leading-relaxed text-[#F4F1EA]/60 md:text-base">
-            Every card reflects a fragment of your inner state. Through
-            AI interpretation, Tarot becomes not prediction — but
-            recognition of your subconscious patterns.
-          </p>
-
-          {/* CTA */}
-          <Button variant="primary">Draw Your First Card</Button>
         </div>
       </Container>
     </section>
