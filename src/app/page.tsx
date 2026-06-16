@@ -1,5 +1,6 @@
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
+import { FeatureCard } from "@/components/ui/feature-card";
 
 export default function HomePage() {
   return (
@@ -76,6 +77,73 @@ export default function HomePage() {
                 Explore Features
               </Button>
             </div>
+          </div>
+        </Container>
+      </section>
+
+      <section
+        style={{
+          paddingTop: "120px",
+          paddingBottom: "120px",
+          background: "#09090B",
+        }}
+      >
+        <Container>
+          <div
+            style={{
+              textAlign: "center",
+              marginBottom: "64px",
+            }}
+          >
+            <h2
+              style={{
+                fontSize: "48px",
+                marginBottom: "16px",
+              }}
+            >
+              Your Personal Insight Toolkit
+            </h2>
+
+            <p
+              style={{
+                maxWidth: "700px",
+                margin: "0 auto",
+                opacity: 0.75,
+                lineHeight: 1.7,
+              }}
+            >
+              Powerful AI tools designed to help you understand yourself,
+              uncover patterns and explore deeper meaning.
+            </p>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns:
+                "repeat(auto-fit, minmax(280px, 1fr))",
+              gap: "24px",
+            }}
+          >
+            <FeatureCard
+              title="Tarot Readings"
+              description="Receive meaningful card interpretations and guidance powered by AI."
+            />
+
+            <FeatureCard
+              title="Dream Analysis"
+              description="Uncover hidden symbols, recurring themes and psychological insights."
+            />
+
+            <FeatureCard
+              title="AI Journal"
+              description="Track emotions, patterns and growth through intelligent reflection."
+            />
+
+            <FeatureCard
+              title="Archetypes"
+              description="Discover your dominant archetypes and understand your inner motivations."
+            />
           </div>
         </Container>
       </section>
