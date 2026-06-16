@@ -2,6 +2,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { FeatureCard } from "@/components/ui/feature-card";
+import { SoulOrb } from "@/components/ui/soul-orb";
 
 export default function HomePage() {
   return (
@@ -23,64 +24,82 @@ export default function HomePage() {
           <Container>
             <div
               style={{
-                display: "flex",
-                flexDirection: "column",
+                display: "grid",
+                gridTemplateColumns:
+                  "repeat(auto-fit, minmax(320px, 1fr))",
+                gap: "64px",
                 alignItems: "center",
-                textAlign: "center",
-                gap: "24px",
                 paddingTop: "80px",
               }}
             >
               <div
                 style={{
-                  padding: "8px 16px",
-                  border: "1px solid rgba(214,178,94,.2)",
-                  borderRadius: "999px",
-                  background: "rgba(255,255,255,.03)",
-                  fontSize: "14px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "24px",
                 }}
               >
-                AI-Powered Self Discovery
+                <div
+                  style={{
+                    width: "fit-content",
+                    padding: "8px 16px",
+                    border: "1px solid rgba(214,178,94,.2)",
+                    borderRadius: "999px",
+                    background: "rgba(255,255,255,.03)",
+                    fontSize: "14px",
+                  }}
+                >
+                  AI-Powered Self Discovery
+                </div>
+
+                <h1
+                  style={{
+                    fontSize: "clamp(56px, 10vw, 110px)",
+                    lineHeight: 1,
+                    fontWeight: 700,
+                  }}
+                >
+                  Discover What
+                  <br />
+                  Lies Beneath
+                </h1>
+
+                <p
+                  style={{
+                    maxWidth: "640px",
+                    fontSize: "20px",
+                    lineHeight: 1.7,
+                    opacity: 0.75,
+                  }}
+                >
+                  Explore archetypes, dreams, tarot insights and guided
+                  self-reflection through a beautifully crafted AI
+                  experience.
+                </p>
+
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "16px",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <Button>Begin Your Journey</Button>
+
+                  <Button variant="secondary">
+                    Explore Features
+                  </Button>
+                </div>
               </div>
-
-              <h1
-                style={{
-                  fontSize: "clamp(56px, 10vw, 110px)",
-                  lineHeight: 1,
-                  fontWeight: 700,
-                  maxWidth: "1000px",
-                }}
-              >
-                Discover What
-                <br />
-                Lies Beneath
-              </h1>
-
-              <p
-                style={{
-                  maxWidth: "700px",
-                  fontSize: "20px",
-                  lineHeight: 1.7,
-                  opacity: 0.75,
-                }}
-              >
-                Explore archetypes, dreams, tarot insights and guided
-                self-reflection through a beautifully crafted AI experience.
-              </p>
 
               <div
                 style={{
                   display: "flex",
-                  gap: "16px",
-                  flexWrap: "wrap",
                   justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
-                <Button>Begin Your Journey</Button>
-
-                <Button variant="secondary">
-                  Explore Features
-                </Button>
+                <SoulOrb />
               </div>
             </div>
           </Container>
@@ -118,8 +137,8 @@ export default function HomePage() {
                   lineHeight: 1.7,
                 }}
               >
-                Powerful AI tools designed to help you understand yourself,
-                uncover patterns and explore deeper meaning.
+                Powerful AI tools designed to help you understand
+                yourself, uncover patterns and explore deeper meaning.
               </p>
             </div>
 
