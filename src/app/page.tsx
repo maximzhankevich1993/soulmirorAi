@@ -1,21 +1,47 @@
+"use client";
+
+import { motion } from "framer-motion";
+
 import { HeroSection } from "@/components/sections/hero-section";
 import { FeaturesSection } from "@/components/sections/features-section";
 import { SoulScanSection } from "@/components/sections/soul-scan-section";
 import { TarotPreviewSection } from "@/components/sections/tarot-preview-section";
 import { PricingSection } from "@/components/sections/pricing-section";
 
-export default function HomePage() {
+import { fadeInUp, staggerContainer } from "@/lib/motion";
+
+export default function Page() {
   return (
-    <main className="relative overflow-hidden">
-      <HeroSection />
+    <motion.main
+      initial="hidden"
+      animate="show"
+      variants={staggerContainer}
+      className="relative"
+    >
+      {/* Hero */}
+      <motion.div variants={fadeInUp}>
+        <HeroSection />
+      </motion.div>
 
-      <FeaturesSection />
+      {/* Features */}
+      <motion.div variants={fadeInUp}>
+        <FeaturesSection />
+      </motion.div>
 
-      <SoulScanSection />
+      {/* Soul Scan */}
+      <motion.div variants={fadeInUp}>
+        <SoulScanSection />
+      </motion.div>
 
-      <TarotPreviewSection />
+      {/* Tarot */}
+      <motion.div variants={fadeInUp}>
+        <TarotPreviewSection />
+      </motion.div>
 
-      <PricingSection />
-    </main>
+      {/* Pricing */}
+      <motion.div variants={fadeInUp}>
+        <PricingSection />
+      </motion.div>
+    </motion.main>
   );
 }
