@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
 
+import {
+  YANDEX_API_KEY,
+  YANDEX_API_URL,
+  YANDEX_FOLDER_ID,
+} from "@/lib/yandex";
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -17,40 +23,85 @@ export async function POST(req: Request) {
       );
     }
 
-    // Временная логика
-    // Пока OpenAI не подключен
-
-    const archetypes = [
+    const response = await fetch(
+      YANDEX_API_URL,
       {
+        method: "POST",
+        headers: {
+          Authorization: `Api-Key ${YANDEX_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          modelUri: `gpt://${YANDEX_FOLDER_ID}/yandexgpt-lite/latest`,
+          completionOptions: {
+            stream: false,
+            temperature: 0.6,
+            maxTokens: 600,
+          },
+          messages: [
+            {
+              role: "system",
+              text: `
+You are SoulMirror AI.
+
+Analyze the user's text and return ONLY valid JSON.
+
+Response format:
+
+{
+  "archetype": "The Seeker",
+  "emotion": "Curiosity",
+  "insight": "Short psychological insight"
+}
+
+Available archetypes:
+- The Seeker
+- The Sage
+- The Creator
+- The Explorer
+- The Visionary
+- The Guardian
+
+Return JSON only.
+              `,
+            },
+            {
+              role: "user",
+              text,
+            },
+          ],
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    const content =
+      data?.result?.alternatives?.[0]?.message?.text;
+
+    if (!content) {
+      throw new Error(
+        "No response from YandexGPT"
+      );
+    }
+
+    try {
+      const parsed = JSON.parse(content);
+
+      return NextResponse.json(parsed);
+    } catch {
+      return NextResponse.json({
         archetype: "The Seeker",
-        emotion: "Curiosity",
-        insight:
-          "You are currently navigating uncertainty and searching for deeper meaning.",
-      },
-      {
-        archetype: "The Sage",
         emotion: "Reflection",
-        insight:
-          "A period of contemplation is helping you uncover hidden truths.",
-      },
-      {
-        archetype: "The Creator",
-        emotion: "Inspiration",
-        insight:
-          "Your subconscious is encouraging expression and creation.",
-      },
-    ];
-
-    const result =
-      archetypes[
-        Math.floor(Math.random() * archetypes.length)
-      ];
-
-    return NextResponse.json(result);
+        insight: content,
+      });
+    }
   } catch (error) {
+    console.error(error);
+
     return NextResponse.json(
       {
-        error: "Something went wrong",
+        error: "Soul Scan failed",
       },
       {
         status: 500,
