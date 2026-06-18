@@ -1,4 +1,6 @@
-import * as React from "react";
+"use client";
+
+import { motion } from "framer-motion";
 
 interface SectionTitleProps {
   eyebrow?: string;
@@ -14,14 +16,36 @@ export function SectionTitle({
   align = "center",
 }: SectionTitleProps) {
   return (
-    <div
+    <motion.div
+      initial={{
+        opacity: 0,
+        y: 20,
+      }}
+      whileInView={{
+        opacity: 1,
+        y: 0,
+      }}
+      viewport={{
+        once: true,
+      }}
+      transition={{
+        duration: 0.6,
+      }}
       className={`
         w-full
         ${align === "center" ? "text-center" : "text-left"}
       `}
     >
       {eyebrow && (
-        <p className="mb-3 text-xs uppercase tracking-[0.35em] text-[#D6B25E]/70">
+        <p
+          className="
+            mb-4
+            text-xs
+            uppercase
+            tracking-[0.4em]
+            text-[#D6B25E]/75
+          "
+        >
           {eyebrow}
         </p>
       )}
@@ -29,13 +53,12 @@ export function SectionTitle({
       <h2
         className="
           font-[family:var(--font-cormorant)]
-          text-3xl
+          text-4xl
           font-semibold
           leading-tight
           tracking-tight
-          text-[#F4F1EA]
-          md:text-4xl
-          lg:text-5xl
+          md:text-5xl
+          lg:text-6xl
         "
       >
         <span
@@ -53,10 +76,20 @@ export function SectionTitle({
       </h2>
 
       {description && (
-        <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-[#F4F1EA]/60 md:text-base">
+        <p
+          className="
+            mx-auto
+            mt-6
+            max-w-2xl
+            text-sm
+            leading-relaxed
+            text-[#F4F1EA]/65
+            md:text-base
+          "
+        >
           {description}
         </p>
       )}
-    </div>
+    </motion.div>
   );
 }
