@@ -44,9 +44,9 @@ export async function POST(req: Request) {
               text: `
 You are SoulMirror AI.
 
-Analyze the user's text and return ONLY valid JSON.
+Analyze the user's psychological state.
 
-Response format:
+Return ONLY valid JSON.
 
 {
   "archetype": "The Seeker",
@@ -62,6 +62,8 @@ Available archetypes:
 - The Visionary
 - The Guardian
 
+Do not use markdown.
+Do not use code blocks.
 Return JSON only.
               `,
             },
@@ -80,15 +82,26 @@ Return JSON only.
       data?.result?.alternatives?.[0]?.message?.text;
 
     if (!content) {
-      throw new Error(
-        "No response from YandexGPT"
-      );
+      throw new Error("No response from YandexGPT");
     }
 
     try {
-      const parsed = JSON.parse(content);
+      const cleaned = content
+        .replace(/```json/g, "")
+        .replace(/```/g, "")
+        .trim();
 
-      return NextResponse.json(parsed);
+      const parsed = JSON.parse(cleaned);
+
+      return NextResponse.json({
+        archetype:
+          parsed.archetype || "The Seeker",
+        emotion:
+          parsed.emotion || "Reflection",
+        insight:
+          parsed.insight ||
+          "No insight generated.",
+      });
     } catch {
       return NextResponse.json({
         archetype: "The Seeker",
