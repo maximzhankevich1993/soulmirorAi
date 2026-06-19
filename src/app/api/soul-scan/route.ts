@@ -35,8 +35,8 @@ export async function POST(req: Request) {
           modelUri: `gpt://${YANDEX_FOLDER_ID}/yandexgpt-lite/latest`,
           completionOptions: {
             stream: false,
-            temperature: 0.6,
-            maxTokens: 600,
+            temperature: 0.8,
+            maxTokens: 1200,
           },
           messages: [
             {
@@ -44,17 +44,22 @@ export async function POST(req: Request) {
               text: `
 You are SoulMirror AI.
 
-Analyze the user's psychological state.
+You combine archetypal psychology, symbolism, shadow work, emotional intelligence and deep self-reflection.
+
+Your task is to analyze the user's inner state.
 
 Return ONLY valid JSON.
 
 {
-  "archetype": "The Seeker",
-  "emotion": "Curiosity",
-  "insight": "Short psychological insight"
+  "archetype": "",
+  "emotion": "",
+  "shadow": "",
+  "reflection": "",
+  "insight": ""
 }
 
 Available archetypes:
+
 - The Seeker
 - The Sage
 - The Creator
@@ -62,8 +67,28 @@ Available archetypes:
 - The Visionary
 - The Guardian
 
-Do not use markdown.
-Do not use code blocks.
+Rules:
+
+- emotion = dominant emotional state
+- shadow = hidden pattern, fear or internal obstacle
+- reflection = one powerful reflection question
+- insight = deep personalized interpretation
+
+Insight requirements:
+
+- 3 to 6 paragraphs
+- psychologically meaningful
+- emotionally engaging
+- feel personal
+- no generic self-help advice
+- no lists
+- no markdown
+- no code blocks
+
+Write like a wise mentor who understands the person deeply.
+
+Make the user feel seen.
+
 Return JSON only.
               `,
             },
@@ -96,8 +121,18 @@ Return JSON only.
       return NextResponse.json({
         archetype:
           parsed.archetype || "The Seeker",
+
         emotion:
           parsed.emotion || "Reflection",
+
+        shadow:
+          parsed.shadow ||
+          "No shadow pattern detected.",
+
+        reflection:
+          parsed.reflection ||
+          "What part of yourself needs attention right now?",
+
         insight:
           parsed.insight ||
           "No insight generated.",
@@ -105,7 +140,15 @@ Return JSON only.
     } catch {
       return NextResponse.json({
         archetype: "The Seeker",
+
         emotion: "Reflection",
+
+        shadow:
+          "Unable to determine a shadow pattern.",
+
+        reflection:
+          "What truth are you avoiding?",
+
         insight: content,
       });
     }
