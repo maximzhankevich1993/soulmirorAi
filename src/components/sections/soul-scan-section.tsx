@@ -10,13 +10,17 @@ import { Button } from "@/components/ui/button";
 interface ScanResult {
   archetype: string;
   emotion: string;
+  shadow: string;
+  reflection: string;
   insight: string;
 }
 
 export function SoulScanSection() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<ScanResult | null>(null);
+
+  const [result, setResult] =
+    useState<ScanResult | null>(null);
 
   async function handleAnalyze() {
     if (!input.trim()) return;
@@ -37,7 +41,9 @@ export function SoulScanSection() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Analysis failed");
+        throw new Error(
+          data.error || "Analysis failed"
+        );
       }
 
       setResult(data);
@@ -47,6 +53,8 @@ export function SoulScanSection() {
       setResult({
         archetype: "System",
         emotion: "Error",
+        shadow: "",
+        reflection: "",
         insight:
           "SoulMirror could not complete the analysis.",
       });
@@ -63,6 +71,7 @@ export function SoulScanSection() {
       {/* Background Glow */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 top-0 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-[#8B5CF6]/10 blur-3xl" />
+
         <div className="absolute bottom-0 right-0 h-[400px] w-[400px] rounded-full bg-[#D6B25E]/10 blur-3xl" />
       </div>
 
@@ -70,10 +79,11 @@ export function SoulScanSection() {
         <SectionTitle
           eyebrow="Soul Scan"
           title="Analyze your inner state"
-          description="Describe a dream, emotion, thought, or life situation and receive an archetypal interpretation."
+          description="Describe a dream, emotion, thought, or life situation and receive a deep archetypal interpretation."
         />
 
         <div className="mx-auto mt-14 max-w-3xl">
+          {/* Input Card */}
           <div
             className="
               rounded-3xl
@@ -86,8 +96,10 @@ export function SoulScanSection() {
           >
             <textarea
               value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="I feel lost and uncertain about my future..."
+              onChange={(e) =>
+                setInput(e.target.value)
+              }
+              placeholder="Describe what is happening inside you..."
               className="
                 min-h-[180px]
                 w-full
@@ -110,12 +122,13 @@ export function SoulScanSection() {
                 disabled={loading}
               >
                 {loading
-                  ? "Analyzing..."
+                  ? "Analyzing Soul..."
                   : "Analyze Soul"}
               </Button>
             </div>
           </div>
 
+          {/* Result */}
           <AnimatePresence>
             {result && (
               <motion.div
@@ -144,34 +157,63 @@ export function SoulScanSection() {
                   backdrop-blur-2xl
                 "
               >
-                <div className="mb-6">
+                {/* Archetype */}
+                <div className="mb-8">
                   <p className="text-xs uppercase tracking-[0.35em] text-[#D6B25E]/70">
                     Archetype
                   </p>
 
-                  <h3 className="mt-2 font-[family:var(--font-cormorant)] text-4xl text-[#F4F1EA]">
+                  <h3 className="mt-3 font-[family:var(--font-cormorant)] text-5xl text-[#F4F1EA]">
                     {result.archetype}
                   </h3>
                 </div>
 
-                <div className="mb-6">
+                {/* Emotion */}
+                <div className="mb-8">
                   <p className="text-xs uppercase tracking-[0.35em] text-[#D6B25E]/70">
                     Dominant Emotion
                   </p>
 
-                  <p className="mt-2 text-lg text-[#F4F1EA]">
+                  <p className="mt-3 text-xl text-[#F4F1EA]">
                     {result.emotion}
                   </p>
                 </div>
 
+                {/* Shadow */}
+                {result.shadow && (
+                  <div className="mb-8">
+                    <p className="text-xs uppercase tracking-[0.35em] text-[#D6B25E]/70">
+                      Shadow Pattern
+                    </p>
+
+                    <p className="mt-3 leading-relaxed text-[#F4F1EA]/75">
+                      {result.shadow}
+                    </p>
+                  </div>
+                )}
+
+                {/* Reflection */}
+                {result.reflection && (
+                  <div className="mb-8">
+                    <p className="text-xs uppercase tracking-[0.35em] text-[#D6B25E]/70">
+                      Reflection Question
+                    </p>
+
+                    <p className="mt-3 text-lg italic text-[#F4F1EA]">
+                      {result.reflection}
+                    </p>
+                  </div>
+                )}
+
+                {/* Insight */}
                 <div>
                   <p className="text-xs uppercase tracking-[0.35em] text-[#D6B25E]/70">
-                    Insight
+                    SoulMirror Insight
                   </p>
 
-                  <p className="mt-3 leading-relaxed text-[#F4F1EA]/75">
+                  <div className="mt-4 whitespace-pre-line leading-8 text-[#F4F1EA]/80">
                     {result.insight}
-                  </p>
+                  </div>
                 </div>
               </motion.div>
             )}
