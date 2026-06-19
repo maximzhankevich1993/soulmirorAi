@@ -5,9 +5,10 @@ import { motion } from "framer-motion";
 import { HeroSection } from "@/components/sections/hero-section";
 import { FeaturesSection } from "@/components/sections/features-section";
 import { SoulScanSection } from "@/components/sections/soul-scan-section";
+import { DreamAnalysisSection } from "@/components/sections/dream-analysis-section";
 import { TarotPreviewSection } from "@/components/sections/tarot-preview-section";
 import { PricingSection } from "@/components/sections/pricing-section";
-import { DreamAnalysisSection } from "@/components/sections/dream-analysis-section";
+
 import { fadeInUp, staggerContainer } from "@/lib/motion";
 
 export default function Page() {
