@@ -35,6 +35,16 @@ export default function Page() {
         <SoulScanSection />
       </motion.div>
 
+      {/* History */}
+      <motion.div variants={fadeInUp}>
+        <HistorySection />
+      </motion.div>
+
+      {/* Dream Analysis */}
+      <motion.div variants={fadeInUp}>
+        <DreamAnalysisSection />
+      </motion.div>
+
       {/* Tarot */}
       <motion.div variants={fadeInUp}>
         <TarotPreviewSection />
