@@ -1,3 +1,4 @@
+```tsx
 "use client";
 
 import { useState } from "react";
@@ -6,6 +7,15 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { SectionTitle } from "@/components/ui/section-title";
 import { Button } from "@/components/ui/button";
+
+import {
+  hasReachedLimit,
+  incrementUsage,
+} from "@/lib/storage";
+
+import {
+  FREE_SOUL_SCANS,
+} from "@/lib/limits";
 
 interface ScanResult {
   archetype: string;
@@ -25,28 +35,54 @@ export function SoulScanSection() {
   async function handleAnalyze() {
     if (!input.trim()) return;
 
+    if (
+      hasReachedLimit(
+        "soul_scan",
+        FREE_SOUL_SCANS
+      )
+    ) {
+      setResult({
+        archetype: "Premium Required",
+        emotion: "Limit Reached",
+        shadow: "Free limit exhausted.",
+        reflection:
+          "What deeper truths remain undiscovered?",
+        insight:
+          "You have used all free Soul Scan analyses. Upgrade to Premium to unlock unlimited archetype readings, deeper psychological insights, dream interpretation and tarot guidance.",
+      });
+
+      return;
+    }
+
     try {
       setLoading(true);
 
-      const response = await fetch("/api/soul-scan", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          text: input,
-        }),
-      });
+      const response = await fetch(
+        "/api/soul-scan",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify({
+            text: input,
+          }),
+        }
+      );
 
       const data = await response.json();
 
       if (!response.ok) {
         throw new Error(
-          data.error || "Analysis failed"
+          data.error ||
+            "Analysis failed"
         );
       }
 
       setResult(data);
+
+      incrementUsage("soul_scan");
     } catch (error) {
       console.error(error);
 
@@ -68,7 +104,6 @@ export function SoulScanSection() {
       id="soul-scan"
       className="relative py-24 md:py-32"
     >
-      {/* Background Glow */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 top-0 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-[#8B5CF6]/10 blur-3xl" />
 
@@ -83,7 +118,6 @@ export function SoulScanSection() {
         />
 
         <div className="mx-auto mt-14 max-w-3xl">
-          {/* Input Card */}
           <div
             className="
               rounded-3xl
@@ -128,7 +162,6 @@ export function SoulScanSection() {
             </div>
           </div>
 
-          {/* Result */}
           <AnimatePresence>
             {result && (
               <motion.div
@@ -157,7 +190,6 @@ export function SoulScanSection() {
                   backdrop-blur-2xl
                 "
               >
-                {/* Archetype */}
                 <div className="mb-8">
                   <p className="text-xs uppercase tracking-[0.35em] text-[#D6B25E]/70">
                     Archetype
@@ -168,7 +200,6 @@ export function SoulScanSection() {
                   </h3>
                 </div>
 
-                {/* Emotion */}
                 <div className="mb-8">
                   <p className="text-xs uppercase tracking-[0.35em] text-[#D6B25E]/70">
                     Dominant Emotion
@@ -179,7 +210,6 @@ export function SoulScanSection() {
                   </p>
                 </div>
 
-                {/* Shadow */}
                 {result.shadow && (
                   <div className="mb-8">
                     <p className="text-xs uppercase tracking-[0.35em] text-[#D6B25E]/70">
@@ -192,7 +222,6 @@ export function SoulScanSection() {
                   </div>
                 )}
 
-                {/* Reflection */}
                 {result.reflection && (
                   <div className="mb-8">
                     <p className="text-xs uppercase tracking-[0.35em] text-[#D6B25E]/70">
@@ -205,7 +234,6 @@ export function SoulScanSection() {
                   </div>
                 )}
 
-                {/* Insight */}
                 <div>
                   <p className="text-xs uppercase tracking-[0.35em] text-[#D6B25E]/70">
                     SoulMirror Insight
@@ -223,3 +251,4 @@ export function SoulScanSection() {
     </section>
   );
 }
+```
