@@ -19,4 +19,16 @@ export async function GET() {
     });
 
     return NextResponse.json(dreams);
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json(
+      {
+        error: "Failed to load dream history",
+      },
+      {
+        status: 500,
+      }
+    );
   }
+}
