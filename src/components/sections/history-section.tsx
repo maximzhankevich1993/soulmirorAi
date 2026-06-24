@@ -10,17 +10,25 @@ import type { SoulScanHistoryItem } from "@/types/history";
 export function HistorySection() {
   const [history, setHistory] = useState<SoulScanHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadHistory() {
       try {
-        const response = await fetch("/api/soul-scan");
+        setError(null);
+
+        const response = await fetch("/api/history/soul-scan");
+
+        if (!response.ok) {
+          throw new Error("Failed to load history");
+        }
 
         const data = await response.json();
 
         setHistory(data);
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        console.error(err);
+        setError("Unable to load your Soul Journey right now");
       } finally {
         setLoading(false);
       }
@@ -29,11 +37,21 @@ export function HistorySection() {
     loadHistory();
   }, []);
 
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
+  const truncate = (text: string, max: number = 220) => {
+    if (!text) return "";
+    return text.length > max ? text.slice(0, max) + "..." : text;
+  };
+
   return (
-    <section
-      id="history"
-      className="relative py-24 md:py-32"
-    >
+    <section id="history" className="relative py-24 md:py-32">
       <Container>
         <SectionTitle
           eyebrow="Soul Journey"
@@ -41,15 +59,29 @@ export function HistorySection() {
           description="A timeline of your personal reflections and archetypal discoveries."
         />
 
-        {loading ? (
+        {/* LOADING */}
+        {loading && (
           <p className="mt-10 text-center text-[#F4F1EA]/60">
-            Loading...
+            Listening to your inner world...
           </p>
-        ) : history.length === 0 ? (
+        )}
+
+        {/* ERROR */}
+        {error && (
+          <p className="mt-10 text-center text-red-400/70">
+            {error}
+          </p>
+        )}
+
+        {/* EMPTY STATE */}
+        {!loading && !error && history.length === 0 && (
           <p className="mt-10 text-center text-[#F4F1EA]/60">
-            No insights yet. Complete your first Soul Scan to begin your journey.
+            No reflections yet. Your Soul Journey begins with your first insight.
           </p>
-        ) : (
+        )}
+
+        {/* LIST */}
+        {!loading && !error && history.length > 0 && (
           <div className="mt-14 space-y-6">
             {history.map((item) => (
               <div
@@ -61,6 +93,8 @@ export function HistorySection() {
                   bg-white/[0.03]
                   p-6
                   backdrop-blur-xl
+                  transition
+                  hover:bg-white/[0.05]
                 "
               >
                 <div className="mb-3 flex items-center justify-between">
@@ -69,9 +103,7 @@ export function HistorySection() {
                   </h3>
 
                   <span className="text-xs text-[#D6B25E]/70">
-                    {new Date(
-                      item.createdAt
-                    ).toLocaleDateString()}
+                    {formatDate(item.createdAt)}
                   </span>
                 </div>
 
@@ -80,7 +112,7 @@ export function HistorySection() {
                 </p>
 
                 <p className="leading-relaxed text-[#F4F1EA]/70">
-                  {item.insight}
+                  {truncate(item.insight)}
                 </p>
               </div>
             ))}
