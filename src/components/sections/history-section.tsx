@@ -5,16 +5,10 @@ import { useEffect, useState } from "react";
 import { Container } from "@/components/ui/container";
 import { SectionTitle } from "@/components/ui/section-title";
 
-interface SoulScanHistory {
-  id: string;
-  archetype: string;
-  emotion: string;
-  insight: string;
-  createdAt: string;
-}
+import type { SoulScanHistoryItem } from "@/types/history";
 
 export function HistorySection() {
-  const [history, setHistory] = useState<SoulScanHistory[]>([]);
+  const [history, setHistory] = useState<SoulScanHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
