@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
@@ -8,20 +7,16 @@ export async function GET() {
       orderBy: {
         createdAt: "desc",
       },
+      select: {
+        id: true,
+        dream: true,
+        summary: true,
+        emotion: true,
+        interpretation: true,
+        createdAt: true,
+      },
       take: 20,
     });
 
     return NextResponse.json(dreams);
-  } catch (error) {
-    console.error(error);
-
-    return NextResponse.json(
-      {
-        error: "Failed to load dream history",
-      },
-      {
-        status: 500,
-      }
-    );
   }
-}
