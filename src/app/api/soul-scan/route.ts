@@ -157,15 +157,11 @@ try {
 } catch {
   const result = {
     archetype: "The Seeker",
-
     emotion: "Reflection",
-
     shadow:
       "Unable to determine a shadow pattern.",
-
     reflection:
       "What truth are you avoiding?",
-
     insight: content,
   };
 
