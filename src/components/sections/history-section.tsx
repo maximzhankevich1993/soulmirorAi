@@ -20,10 +20,7 @@ export function HistorySection() {
   useEffect(() => {
     async function loadHistory() {
       try {
-        const response = await fetch(
-  "/api/soul-scan"
-);
-        );
+        const response = await fetch("/api/soul-scan");
 
         const data = await response.json();
 
@@ -53,6 +50,10 @@ export function HistorySection() {
         {loading ? (
           <p className="mt-10 text-center text-[#F4F1EA]/60">
             Loading...
+          </p>
+        ) : history.length === 0 ? (
+          <p className="mt-10 text-center text-[#F4F1EA]/60">
+            No insights yet. Complete your first Soul Scan to begin your journey.
           </p>
         ) : (
           <div className="mt-14 space-y-6">
