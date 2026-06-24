@@ -21,7 +21,8 @@ export function HistorySection() {
     async function loadHistory() {
       try {
         const response = await fetch(
-          "/api/soul-scan/history"
+  "/api/soul-scan"
+);
         );
 
         const data = await response.json();
