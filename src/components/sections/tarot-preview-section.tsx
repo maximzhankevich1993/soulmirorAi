@@ -23,7 +23,7 @@ async function handleDrawCard() {
 try {
 setLoading(true);
 
-```
+
   const response = await fetch(
     "/api/tarot",
     {
@@ -46,7 +46,7 @@ setLoading(true);
 } finally {
   setLoading(false);
 }
-```
+
 
 }
 
@@ -55,7 +55,7 @@ return ( <section
    className="relative overflow-hidden py-24 md:py-32"
  > <div className="pointer-events-none absolute inset-0"> <div className="absolute left-1/2 top-1/2 h-[700px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#D6B25E]/10 blur-3xl" />
 
-```
+
     <div className="absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-[#8B5CF6]/10 blur-3xl" />
   </div>
 
@@ -185,7 +185,7 @@ return ( <section
     </div>
   </Container>
 </section>
-```
+
 
 );
 }
