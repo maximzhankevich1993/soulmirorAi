@@ -1,5 +1,27 @@
-export const FREE_SOUL_SCANS = 3;
+export type PlanType = "free" | "day" | "pro";
 
-export const FREE_DREAM_ANALYSIS = 3;
+export const LIMITS = {
+  free: {
+    soulScan: 1,
+    dream: 1,
+    tarot: 1,
+  },
+  day: {
+    unlimited: true,
+  },
+  pro: {
+    unlimited: true,
+  },
+} as const;
 
-export const FREE_TAROT_READINGS = 1;
+export function isUnlimited(plan: PlanType) {
+  return plan === "day" || plan === "pro";
+}
+
+export function getLimit(plan: PlanType, type: "soulScan" | "dream" | "tarot") {
+  if (plan === "free") {
+    return LIMITS.free[type];
+  }
+
+  return Infinity;
+}

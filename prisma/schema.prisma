@@ -32,3 +32,18 @@ meaning    String
 guidance   String
 createdAt  DateTime @default(now())
 }
+
+model UserUsage {
+  id        String   @id @default(cuid())
+  userId    String
+  date      DateTime @default(now())
+
+  soulScan  Int      @default(0)
+  dream     Int      @default(0)
+  tarot     Int      @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, date])
+}

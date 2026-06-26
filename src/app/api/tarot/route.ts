@@ -6,8 +6,38 @@ import {
   YANDEX_FOLDER_ID,
 } from "@/lib/yandex";
 
+const tarotCards = [
+  "The Fool",
+  "The Magician",
+  "The High Priestess",
+  "The Empress",
+  "The Emperor",
+  "The Lovers",
+  "The Chariot",
+  "Strength",
+  "The Hermit",
+  "Wheel of Fortune",
+  "Justice",
+  "The Hanged Man",
+  "Death",
+  "Temperance",
+  "The Devil",
+  "The Tower",
+  "The Star",
+  "The Moon",
+  "The Sun",
+  "Judgement",
+  "The World",
+];
+
+function getRandomCard() {
+  return tarotCards[Math.floor(Math.random() * tarotCards.length)];
+}
+
 export async function POST() {
   try {
+    const card = getRandomCard();
+
     const response = await fetch(YANDEX_API_URL, {
       method: "POST",
       headers: {
@@ -30,52 +60,69 @@ You are Tarot AI.
 Return ONLY valid JSON:
 
 {
-  "card": "",
   "meaning": "",
   "guidance": ""
 }
 
-Rules:
-- No markdown
-- No explanation
-- JSON only
+No markdown. No explanation.
             `,
+          },
+          {
+            role: "user",
+            text: `Card: ${card}`,
           },
         ],
       }),
     });
 
-    const data = await response.json();
-
-    const content = data?.result?.alternatives?.[0]?.message?.text;
-
-    if (!content) {
-      throw new Error("No response from YandexGPT");
+    // ✅ ВАЖНО
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Yandex error: ${errText}`);
     }
 
-    const cleaned = content
-      .replace(/```json/g, "")
-      .replace(/```/g, "")
-      .trim();
+    const data = await response.json();
 
-    const parsed = JSON.parse(cleaned);
+    const content =
+      data?.result?.alternatives?.[0]?.message?.text;
+
+    if (!content) {
+      throw new Error("Empty AI response");
+    }
+
+    let parsed;
+
+    try {
+      parsed = JSON.parse(
+        content.replace(/```json/g, "").replace(/```/g, "").trim()
+      );
+    } catch {
+      parsed = {
+        meaning: content,
+        guidance: "Trust your intuition.",
+      };
+    }
 
     const result = {
-      card: parsed.card || "Unknown Card",
-      meaning: parsed.meaning || "No meaning provided",
-      guidance: parsed.guidance || "Trust your intuition",
+      card,
+      meaning:
+        parsed.meaning || "Mystical energy surrounds this card.",
+      guidance: parsed.guidance || "Trust your intuition.",
     };
 
-    await prisma.tarotReading.create({
-      data: result,
-    });
+    // ✅ safe prisma
+    if (prisma?.tarotReading) {
+      await prisma.tarotReading.create({
+        data: result,
+      });
+    }
 
     return NextResponse.json(result);
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    console.error("TAROT ERROR:", error);
 
     return NextResponse.json(
-      { error: "Tarot reading failed" },
+      { error: error?.message || "Tarot reading failed" },
       { status: 500 }
     );
   }
