@@ -1,84 +1,162 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
-import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
-import { SoulOrb } from "@/components/ui/soul-orb";
+import { SectionTitle } from "@/components/ui/section-title";
 
-import { fadeInUp, glowPulse } from "@/lib/motion";
+import type { SoulScanHistoryItem } from "@/types/history";
 
-export function HeroSection() {
+export function HistorySection() {
+  const [history, setHistory] = useState<SoulScanHistoryItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function loadHistory() {
+      try {
+        setError(null);
+
+        const response = await fetch("/api/history/soul-scan");
+
+        if (!response.ok) {
+          throw new Error("Failed to load history");
+        }
+
+        const data = await response.json();
+
+        setHistory(data);
+      } catch (err) {
+        console.error(err);
+        setError("Unable to load your Soul Journey right now");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadHistory();
+  }, []);
+
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
+  const truncate = (text: string, max: number = 220) => {
+    if (!text) return "";
+
+    return text.length > max
+      ? text.slice(0, max) + "..."
+      : text;
+  };
+
   return (
-    <section className="relative overflow-hidden">
-      {/* Background Glow */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-40 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-[#8B5CF6]/10 blur-3xl" />
-        <div className="absolute top-40 right-0 h-[400px] w-[400px] rounded-full bg-[#D6B25E]/10 blur-3xl" />
-      </div>
+    <section
+      id="history"
+      className="relative py-24 md:py-32"
+    >
+      <Container>
+        <SectionTitle
+          eyebrow="Soul Journey"
+          title="Your Previous Insights"
+          description="A timeline of your personal reflections and archetypal discoveries."
+        />
 
-      <Container className="relative z-10 py-24 md:py-32">
-        <div className="flex flex-col items-center text-center">
-          {/* Eyebrow */}
-          <motion.p
-            variants={fadeInUp}
-            initial="hidden"
-            animate="show"
-            className="mb-6 text-xs uppercase tracking-[0.35em] text-[#D6B25E]/70"
-          >
-            AI • Psychology • Archetypes • Dreams
-          </motion.p>
+        {/* Loading */}
+        {loading && (
+          <p className="mt-10 text-center text-[#F4F1EA]/60">
+            Listening to your inner world...
+          </p>
+        )}
 
-          {/* Title */}
-          <motion.h1
-            variants={fadeInUp}
-            initial="hidden"
-            animate="show"
-            transition={{ delay: 0.1 }}
-            className="font-[family:var(--font-cormorant)] text-4xl font-semibold leading-tight tracking-tight text-[#F4F1EA] md:text-6xl lg:text-7xl"
-          >
-            Discover your{" "}
-            <span className="bg-gradient-to-r from-[#D6B25E] via-[#F4F1EA] to-[#8B5CF6] bg-clip-text text-transparent">
-              inner self
-            </span>{" "}
-            through AI
-          </motion.h1>
+        {/* Error */}
+        {error && (
+          <p className="mt-10 text-center text-red-400/70">
+            {error}
+          </p>
+        )}
 
-          {/* Description */}
-          <motion.p
-            variants={fadeInUp}
-            initial="hidden"
-            animate="show"
-            transition={{ delay: 0.2 }}
-            className="mt-6 max-w-2xl text-sm leading-relaxed text-[#F4F1EA]/60 md:text-base"
-          >
-            SoulMirror AI helps you decode dreams, explore archetypes,
-            and uncover hidden patterns of your subconscious through
-            symbolic intelligence and advanced AI analysis.
-          </motion.p>
+        {/* Empty */}
+        {!loading &&
+          !error &&
+          history.length === 0 && (
+            <p className="mt-10 text-center text-[#F4F1EA]/60">
+              No reflections yet. Your Soul Journey
+              begins with your first insight.
+            </p>
+          )}
 
-          {/* CTA */}
-          <motion.div
-            variants={fadeInUp}
-            initial="hidden"
-            animate="show"
-            transition={{ delay: 0.3 }}
-            className="mt-10 flex flex-col items-center gap-4 sm:flex-row"
-          >
-            <Button variant="primary">Start Soul Scan</Button>
-            <Button variant="ghost">Explore Features</Button>
-          </motion.div>
+        {/* History */}
+        {!loading &&
+          !error &&
+          history.length > 0 && (
+            <div className="mt-14 space-y-8">
+              {history.map((item) => (
+                <div
+                  key={item.id}
+                  className="
+                    group
+                    relative
+                    overflow-hidden
+                    rounded-3xl
+                    border
+                    border-white/10
+                    bg-gradient-to-br
+                    from-white/[0.05]
+                    via-white/[0.03]
+                    to-white/[0.02]
+                    p-7
+                    backdrop-blur-2xl
+                    transition-all
+                    duration-500
+                    hover:-translate-y-1
+                    hover:border-[#D6B25E]/30
+                    hover:bg-white/[0.05]
+                    hover:shadow-[0_20px_60px_rgba(214,178,94,0.12)]
+                  "
+                >
+                  <div
+                    className="
+                      pointer-events-none
+                      absolute
+                      inset-0
+                      opacity-0
+                      transition-opacity
+                      duration-500
+                      group-hover:opacity-100
+                      bg-gradient-to-br
+                      from-[#D6B25E]/5
+                      via-transparent
+                      to-[#8B5CF6]/5
+                    "
+                  />
 
-          {/* Soul Orb */}
-          <motion.div
-            variants={glowPulse}
-            initial="rest"
-            animate="animate"
-            className="mt-20"
-          >
-            <SoulOrb size={260} />
-          </motion.div>
-        </div>
+                  <div className="relative z-10">
+                    <div className="mb-5 flex items-center justify-between">
+                      <h3 className="font-[family:var(--font-cormorant)] text-3xl tracking-wide text-[#F4F1EA]">
+                        {item.archetype}
+                      </h3>
+
+                      <span className="text-xs uppercase tracking-wider text-[#D6B25E]/70">
+                        {formatDate(item.createdAt)}
+                      </span>
+                    </div>
+
+                    <p className="mb-5 inline-flex rounded-full border border-[#D6B25E]/20 bg-[#D6B25E]/10 px-3 py-1 text-sm text-[#D6B25E]">
+                      {item.emotion}
+                    </p>
+
+                    <p className="leading-8 text-[#F4F1EA]/75">
+                      {truncate(item.insight)}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
       </Container>
     </section>
   );
