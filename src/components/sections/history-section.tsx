@@ -17,8 +17,7 @@ export function HistorySection() {
       try {
         setError(null);
 
-        // ✅ FIX: правильный endpoint
-        const response = await fetch("/api/soul-scan");
+        const response = await fetch("/api/soul-scan/history");
 
         if (!response.ok) {
           throw new Error("Failed to load history");
@@ -74,7 +73,7 @@ export function HistorySection() {
           </p>
         )}
 
-        {/* EMPTY STATE */}
+        {/* EMPTY */}
         {!loading && !error && history.length === 0 && (
           <p className="mt-10 text-center text-[#F4F1EA]/60">
             No reflections yet. Your Soul Journey begins with your first insight.
@@ -87,16 +86,7 @@ export function HistorySection() {
             {history.map((item) => (
               <div
                 key={item.id}
-                className="
-                  rounded-3xl
-                  border
-                  border-white/10
-                  bg-white/[0.03]
-                  p-6
-                  backdrop-blur-xl
-                  transition
-                  hover:bg-white/[0.05]
-                "
+                className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl transition hover:bg-white/[0.05]"
               >
                 <div className="mb-3 flex items-center justify-between">
                   <h3 className="font-[family:var(--font-cormorant)] text-2xl text-[#F4F1EA]">
