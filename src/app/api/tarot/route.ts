@@ -1,142 +1,82 @@
 import { NextResponse } from "next/server";
-
+import { prisma } from "@/lib/prisma";
 import {
-YANDEX_API_KEY,
-YANDEX_API_URL,
-YANDEX_FOLDER_ID,
+  YANDEX_API_KEY,
+  YANDEX_API_URL,
+  YANDEX_FOLDER_ID,
 } from "@/lib/yandex";
 
-import { tarotCards } from "@/lib/tarot";
-
 export async function POST() {
-try {
-const randomCard =
-tarotCards[
-Math.floor(
-Math.random() * tarotCards.length
-)
-];
-
-```
-const response = await fetch(
-  YANDEX_API_URL,
-  {
-    method: "POST",
-    headers: {
-      Authorization: `Api-Key ${YANDEX_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      modelUri: `gpt://${YANDEX_FOLDER_ID}/yandexgpt-lite/latest`,
-      completionOptions: {
-        stream: false,
-        temperature: 0.8,
-        maxTokens: 1000,
+  try {
+    const response = await fetch(YANDEX_API_URL, {
+      method: "POST",
+      headers: {
+        Authorization: `Api-Key ${YANDEX_API_KEY}`,
+        "Content-Type": "application/json",
       },
-      messages: [
-        {
-          role: "system",
-          text: `
-```
+      body: JSON.stringify({
+        modelUri: `gpt://${YANDEX_FOLDER_ID}/yandexgpt-lite/latest`,
+        completionOptions: {
+          stream: false,
+          temperature: 0.8,
+          maxTokens: 800,
+        },
+        messages: [
+          {
+            role: "system",
+            text: `
+You are Tarot AI.
 
-You are SoulMirror Tarot AI.
-
-Interpret tarot cards using:
-
-* symbolism
-* archetypes
-* psychology
-* personal growth
-
-Return ONLY valid JSON.
+Return ONLY valid JSON:
 
 {
-"card": "",
-"meaning": "",
-"guidance": ""
+  "card": "",
+  "meaning": "",
+  "guidance": ""
 }
 
 Rules:
+- No markdown
+- No explanation
+- JSON only
+            `,
+          },
+        ],
+      }),
+    });
 
-meaning:
-2-3 paragraphs explaining the symbolic meaning.
+    const data = await response.json();
 
-guidance:
-1 practical reflection for the user.
+    const content = data?.result?.alternatives?.[0]?.message?.text;
 
-No markdown.
-No code blocks.
+    if (!content) {
+      throw new Error("No response from YandexGPT");
+    }
 
-Return JSON only.
-`,
-},
-{
-role: "user",
-text: randomCard,
-},
-],
-}),
-}
-);
+    const cleaned = content
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
 
-````
-const data = await response.json();
+    const parsed = JSON.parse(cleaned);
 
-const content =
-  data?.result?.alternatives?.[0]?.message?.text;
+    const result = {
+      card: parsed.card || "Unknown Card",
+      meaning: parsed.meaning || "No meaning provided",
+      guidance: parsed.guidance || "Trust your intuition",
+    };
 
-if (!content) {
-  throw new Error(
-    "No response from YandexGPT"
-  );
-}
+    await prisma.tarotReading.create({
+      data: result,
+    });
 
-try {
-  const cleaned = content
-    .replace(/```json/g, "")
-    .replace(/```/g, "")
-    .trim();
+    return NextResponse.json(result);
+  } catch (error) {
+    console.error(error);
 
-  const parsed = JSON.parse(cleaned);
-
-  return NextResponse.json({
-    card:
-      parsed.card || randomCard,
-
-    meaning:
-      parsed.meaning ||
-      "No interpretation generated.",
-
-    guidance:
-      parsed.guidance ||
-      "Trust your intuition.",
-  });
-} catch {
-  return NextResponse.json({
-    card: randomCard,
-
-    meaning: content,
-
-    guidance:
-      "Reflect on the symbolism of this card.",
-  });
-}
-````
-
-} catch (error) {
-console.error(error);
-
-```
-return NextResponse.json(
-  {
-    error:
-      "Tarot reading failed",
-  },
-  {
-    status: 500,
+    return NextResponse.json(
+      { error: "Tarot reading failed" },
+      { status: 500 }
+    );
   }
-);
-```
-
-}
 }
