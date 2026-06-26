@@ -1,38 +1,52 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
+import { createServerClient } from "@supabase/ssr";
 
 export async function middleware(req: NextRequest) {
-  const res = NextResponse.next();
+  let res = NextResponse.next();
 
-  const supabase = createMiddlewareClient({
-    req,
-    res,
-  });
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return req.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) =>
+            req.cookies.set(name, value)
+          );
+          res = NextResponse.next();
+          cookiesToSet.forEach(({ name, value, options }) =>
+            res.cookies.set(name, value, options)
+          );
+        },
+      },
+    }
+  );
 
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const isAuthPage = req.nextUrl.pathname.startsWith("/auth");
+
   const isProtectedRoute =
-    req.nextUrl.pathname.startsWith("/dashboard") ||
     req.nextUrl.pathname.startsWith("/soul") ||
     req.nextUrl.pathname.startsWith("/dream") ||
     req.nextUrl.pathname.startsWith("/tarot");
 
-  // ❌ нет сессии → в auth
-  if (!session && isProtectedRoute) {
-    const redirectUrl = req.nextUrl.clone();
-    redirectUrl.pathname = "/auth";
-    return NextResponse.redirect(redirectUrl);
+  if (!user && isProtectedRoute) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/auth";
+    return NextResponse.redirect(url);
   }
 
-  // ❌ если уже logged in → не пускаем на auth
-  if (session && isAuthPage) {
-    const redirectUrl = req.nextUrl.clone();
-    redirectUrl.pathname = "/";
-    return NextResponse.redirect(redirectUrl);
+  if (user && isAuthPage) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/";
+    return NextResponse.redirect(url);
   }
 
   return res;
