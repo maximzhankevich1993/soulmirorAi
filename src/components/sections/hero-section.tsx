@@ -1,162 +1,47 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
+import { motion } from "framer-motion";
 import { Container } from "@/components/ui/container";
-import { SectionTitle } from "@/components/ui/section-title";
+import { Button } from "@/components/ui/button";
 
-import type { SoulScanHistoryItem } from "@/types/history";
-
-export function HistorySection() {
-  const [history, setHistory] = useState<SoulScanHistoryItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function loadHistory() {
-      try {
-        setError(null);
-
-        const response = await fetch("/api/history/soul-scan");
-
-        if (!response.ok) {
-          throw new Error("Failed to load history");
-        }
-
-        const data = await response.json();
-
-        setHistory(data);
-      } catch (err) {
-        console.error(err);
-        setError("Unable to load your Soul Journey right now");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadHistory();
-  }, []);
-
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
-
-  const truncate = (text: string, max: number = 220) => {
-    if (!text) return "";
-
-    return text.length > max
-      ? text.slice(0, max) + "..."
-      : text;
-  };
-
+export function HeroSection() {
   return (
-    <section
-      id="history"
-      className="relative py-24 md:py-32"
-    >
-      <Container>
-        <SectionTitle
-          eyebrow="Soul Journey"
-          title="Your Previous Insights"
-          description="A timeline of your personal reflections and archetypal discoveries."
-        />
+    <section className="relative flex min-h-[90vh] items-center justify-center overflow-hidden py-24">
+      {/* Background glow */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute left-1/2 top-1/3 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-[#D6B25E]/10 blur-3xl" />
+        <div className="absolute right-0 top-0 h-[300px] w-[300px] rounded-full bg-[#8B5CF6]/10 blur-3xl" />
+      </div>
 
-        {/* Loading */}
-        {loading && (
-          <p className="mt-10 text-center text-[#F4F1EA]/60">
-            Listening to your inner world...
+      <Container className="relative z-10 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          {/* Badge */}
+          <p className="mb-6 text-xs uppercase tracking-[0.35em] text-[#D6B25E]/70">
+            SoulMirror AI
           </p>
-        )}
 
-        {/* Error */}
-        {error && (
-          <p className="mt-10 text-center text-red-400/70">
-            {error}
+          {/* Title */}
+          <h1 className="font-[family:var(--font-cormorant)] text-5xl leading-tight text-[#F4F1EA] md:text-7xl">
+            Discover your
+            <span className="block text-[#D6B25E]">inner archetype</span>
+          </h1>
+
+          {/* Subtitle */}
+          <p className="mx-auto mt-6 max-w-2xl text-lg text-[#F4F1EA]/70">
+            AI-powered self-reflection, dream analysis, tarot insight and
+            shadow work — all in one mystical interface.
           </p>
-        )}
 
-        {/* Empty */}
-        {!loading &&
-          !error &&
-          history.length === 0 && (
-            <p className="mt-10 text-center text-[#F4F1EA]/60">
-              No reflections yet. Your Soul Journey
-              begins with your first insight.
-            </p>
-          )}
-
-        {/* History */}
-        {!loading &&
-          !error &&
-          history.length > 0 && (
-            <div className="mt-14 space-y-8">
-              {history.map((item) => (
-                <div
-                  key={item.id}
-                  className="
-                    group
-                    relative
-                    overflow-hidden
-                    rounded-3xl
-                    border
-                    border-white/10
-                    bg-gradient-to-br
-                    from-white/[0.05]
-                    via-white/[0.03]
-                    to-white/[0.02]
-                    p-7
-                    backdrop-blur-2xl
-                    transition-all
-                    duration-500
-                    hover:-translate-y-1
-                    hover:border-[#D6B25E]/30
-                    hover:bg-white/[0.05]
-                    hover:shadow-[0_20px_60px_rgba(214,178,94,0.12)]
-                  "
-                >
-                  <div
-                    className="
-                      pointer-events-none
-                      absolute
-                      inset-0
-                      opacity-0
-                      transition-opacity
-                      duration-500
-                      group-hover:opacity-100
-                      bg-gradient-to-br
-                      from-[#D6B25E]/5
-                      via-transparent
-                      to-[#8B5CF6]/5
-                    "
-                  />
-
-                  <div className="relative z-10">
-                    <div className="mb-5 flex items-center justify-between">
-                      <h3 className="font-[family:var(--font-cormorant)] text-3xl tracking-wide text-[#F4F1EA]">
-                        {item.archetype}
-                      </h3>
-
-                      <span className="text-xs uppercase tracking-wider text-[#D6B25E]/70">
-                        {formatDate(item.createdAt)}
-                      </span>
-                    </div>
-
-                    <p className="mb-5 inline-flex rounded-full border border-[#D6B25E]/20 bg-[#D6B25E]/10 px-3 py-1 text-sm text-[#D6B25E]">
-                      {item.emotion}
-                    </p>
-
-                    <p className="leading-8 text-[#F4F1EA]/75">
-                      {truncate(item.insight)}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+          {/* Buttons */}
+          <div className="mt-10 flex items-center justify-center gap-4">
+            <Button variant="primary">Start Reflection</Button>
+            <Button variant="secondary">Explore Features</Button>
+          </div>
+        </motion.div>
       </Container>
     </section>
   );
