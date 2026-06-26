@@ -6,8 +6,93 @@ import {
   YANDEX_FOLDER_ID,
 } from "@/lib/yandex";
 
+type PlanType = "free" | "day" | "pro";
+
+/**
+ * TEMP USER (потом заменим на Supabase Auth)
+ */
+function getUserId(req: Request) {
+  return "demo-user";
+}
+
+/**
+ * TEMP PLAN (потом Supabase)
+ */
+function getUserPlan(req: Request): PlanType {
+  return "free";
+}
+
+/**
+ * CHECK LIMIT
+ */
+async function checkLimit(userId: string, type: "dream") {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const usage = await prisma.userUsage.findFirst({
+    where: {
+      userId,
+      date: {
+        gte: today,
+      },
+    },
+  });
+
+  if (!usage) return { allowed: true };
+
+  if (usage.dream >= 1) {
+    return { allowed: false };
+  }
+
+  return { allowed: true };
+}
+
+/**
+ * INCREMENT USAGE
+ */
+async function incrementUsage(userId: string, type: "dream") {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  await prisma.userUsage.upsert({
+    where: {
+      userId_date: {
+        userId,
+        date: today,
+      },
+    },
+    create: {
+      userId,
+      date: today,
+      dream: 1,
+    },
+    update: {
+      dream: {
+        increment: 1,
+      },
+    },
+  });
+}
+
 export async function POST(req: Request) {
   try {
+    const userId = getUserId(req);
+    const plan = getUserPlan(req);
+
+    // 🚀 FREE LIMIT CHECK (day/pro bypass)
+    if (plan === "free") {
+      const limit = await checkLimit(userId, "dream");
+
+      if (!limit.allowed) {
+        return NextResponse.json(
+          {
+            error: "Daily limit reached (Free plan)",
+          },
+          { status: 403 }
+        );
+      }
+    }
+
     const body = await req.json();
     const dream = body.dream?.trim();
 
@@ -49,7 +134,6 @@ Return ONLY valid JSON:
 Rules:
 - symbols must be array of strings
 - no markdown
-- no extra text
 - JSON only
             `,
           },
@@ -72,7 +156,6 @@ Rules:
     const content =
       data?.result?.alternatives?.[0]?.message?.text;
 
-    // 🔥 SAFE FALLBACK (как в Soul Scan стиле)
     let result = {
       summary: "",
       symbols: [] as string[],
@@ -90,26 +173,25 @@ Rules:
         const parsed = JSON.parse(cleaned);
 
         result = {
-          summary: parsed.summary || "Dream interpretation generated.",
+          summary:
+            parsed.summary || "Dream interpretation generated.",
           symbols: Array.isArray(parsed.symbols)
             ? parsed.symbols
             : [],
           emotion: parsed.emotion || "Reflection",
-          interpretation:
-            parsed.interpretation || "",
+          interpretation: parsed.interpretation || "",
         };
       } catch {
-        // если JSON сломан — просто используем сырой текст
         result = {
           summary: "Dream interpretation generated.",
           symbols: [],
           emotion: "Reflection",
-          interpretation: content || "No interpretation available.",
+          interpretation: content || "",
         };
       }
     }
 
-    // 💾 save (safe)
+    // 💾 SAVE RESULT
     await prisma.dreamAnalysis.create({
       data: {
         dream,
@@ -120,17 +202,24 @@ Rules:
       },
     });
 
+    // 📊 INCREMENT USAGE (only free)
+    if (plan === "free") {
+      await incrementUsage(userId, "dream");
+    }
+
     return NextResponse.json(result);
   } catch (error) {
     console.error("DREAM API ERROR:", error);
 
-    // 🔥 NEVER FAIL FRONTEND
-    return NextResponse.json({
-      summary: "Dream interpretation unavailable.",
-      symbols: [],
-      emotion: "Unknown",
-      interpretation:
-        "We could not fully analyze this dream, but it still carries meaning within your subconscious.",
-    });
+    return NextResponse.json(
+      {
+        summary: "Dream interpretation unavailable.",
+        symbols: [],
+        emotion: "Unknown",
+        interpretation:
+          "We could not fully analyze this dream, but it still carries meaning.",
+      },
+      { status: 200 }
+    );
   }
 }
