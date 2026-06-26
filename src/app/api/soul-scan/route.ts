@@ -1,20 +1,43 @@
 import { NextResponse } from "next/server";
-
+import { prisma } from "@/lib/prisma";
 import {
   YANDEX_API_KEY,
   YANDEX_API_URL,
   YANDEX_FOLDER_ID,
 } from "@/lib/yandex";
 
-import { prisma } from "@/lib/prisma";
+import { getUser } from "@/lib/getUser";
 
-/**
- * POST - создаёт Soul Scan
- */
+const FREE_LIMIT = 1;
+
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    // 👤 1. получаем пользователя
+    const user = await getUser();
 
+    if (!user) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    // 📊 2. проверяем usage
+    const usage = await prisma.userUsage.findFirst({
+      where: {
+        userId: user.id,
+      },
+    });
+
+    if (usage && usage.soulScan >= FREE_LIMIT) {
+      return NextResponse.json(
+        { error: "Free limit reached" },
+        { status: 403 }
+      );
+    }
+
+    // 📥 3. читаем input
+    const body = await req.json();
     const text = body.text?.trim();
 
     if (!text) {
@@ -24,6 +47,7 @@ export async function POST(req: Request) {
       );
     }
 
+    // 🧠 4. вызываем AI
     const response = await fetch(YANDEX_API_URL, {
       method: "POST",
       headers: {
@@ -34,27 +58,23 @@ export async function POST(req: Request) {
         modelUri: `gpt://${YANDEX_FOLDER_ID}/yandexgpt-lite/latest`,
         completionOptions: {
           stream: false,
-          temperature: 0.8,
+          temperature: 0.7,
           maxTokens: 1200,
         },
         messages: [
           {
             role: "system",
             text: `
-You are SoulMirror AI.
+You are Soul AI.
 
 Return ONLY valid JSON:
-
 {
-"archetype": "",
-"emotion": "",
-"shadow": "",
-"reflection": "",
-"insight": ""
+  "archetype": "",
+  "emotion": "",
+  "shadow": "",
+  "reflection": "",
+  "insight": ""
 }
-
-Insight must be 3–6 paragraphs, deep, emotional, no lists, no markdown.
-Return JSON only.
             `,
           },
           {
@@ -71,28 +91,25 @@ Return JSON only.
       data?.result?.alternatives?.[0]?.message?.text;
 
     if (!content) {
-      throw new Error("No response from YandexGPT");
+      throw new Error("Empty AI response");
     }
 
-    const cleaned = content
-      .replace(/```json/g, "")
-      .replace(/```/g, "")
-      .trim();
-
-    const parsed = JSON.parse(cleaned);
+    const parsed = JSON.parse(
+      content.replace(/```json/g, "").replace(/```/g, "").trim()
+    );
 
     const result = {
-      archetype: parsed.archetype || "The Seeker",
-      emotion: parsed.emotion || "Reflection",
+      archetype: parsed.archetype || "Unknown",
+      emotion: parsed.emotion || "Neutral",
       shadow: parsed.shadow || "",
-      reflection:
-        parsed.reflection ||
-        "What part of yourself needs attention right now?",
+      reflection: parsed.reflection || "",
       insight: parsed.insight || "",
     };
 
+    // 💾 5. сохраняем результат
     await prisma.soulScan.create({
       data: {
+        userId: user.id,
         input: text,
         archetype: result.archetype,
         emotion: result.emotion,
@@ -100,43 +117,33 @@ Return JSON only.
       },
     });
 
-    return NextResponse.json(result);
-  } catch (error) {
-    console.error(error);
-
-    return NextResponse.json(
-      { error: "Soul Scan failed" },
-      { status: 500 }
-    );
-  }
-}
-
-/**
- * GET - история Soul Scan
- */
-export async function GET() {
-  try {
-    const scans = await prisma.soulScan.findMany({
-      orderBy: {
-        createdAt: "desc",
+    // 📈 6. увеличиваем usage
+    await prisma.userUsage.upsert({
+      where: {
+        userId: user.id,
       },
-      select: {
-        id: true,
-        input: true,
-        archetype: true,
-        emotion: true,
-        insight: true,
-        createdAt: true,
+      update: {
+        soulScan: {
+          increment: 1,
+        },
       },
-      take: 50,
+      create: {
+        userId: user.id,
+        soulScan: 1,
+        dream: 0,
+        tarot: 0,
+      },
     });
 
-    return NextResponse.json(scans);
-  } catch (error) {
-    console.error(error);
+    // 📤 7. ответ фронту
+    return NextResponse.json(result);
+  } catch (error: any) {
+    console.error("SOUL SCAN ERROR:", error);
 
     return NextResponse.json(
-      { error: "Failed to load history" },
+      {
+        error: error?.message || "Soul scan failed",
+      },
       { status: 500 }
     );
   }
