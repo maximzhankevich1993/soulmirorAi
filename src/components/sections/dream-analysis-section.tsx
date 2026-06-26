@@ -24,7 +24,7 @@ useState<DreamResult | null>(null);
 async function handleAnalyze() {
 if (!dream.trim()) return;
 
-```
+
 try {
   setLoading(true);
 
@@ -65,7 +65,7 @@ try {
 } finally {
   setLoading(false);
 }
-```
+
 
 }
 
@@ -74,7 +74,7 @@ return ( <section
    className="relative py-24 md:py-32"
  > <div className="pointer-events-none absolute inset-0"> <div className="absolute left-0 top-0 h-[400px] w-[400px] rounded-full bg-[#8B5CF6]/10 blur-3xl" />
 
-```
+
     <div className="absolute right-0 bottom-0 h-[400px] w-[400px] rounded-full bg-[#D6B25E]/10 blur-3xl" />
   </div>
 
@@ -219,7 +219,7 @@ return ( <section
     </div>
   </Container>
 </section>
-```
+
 
 );
 }
