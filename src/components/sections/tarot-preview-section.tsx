@@ -25,32 +25,26 @@ export function TarotPreviewSection() {
 
       const response = await fetch("/api/tarot", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          text: "Draw a tarot card for me",
-        }),
       });
 
-      const data = await response.json();
+      const data = await response.json().catch(() => null);
 
       if (!response.ok) {
         throw new Error(data?.error || "Tarot reading failed");
       }
 
-      if (!data?.card) {
-        throw new Error("Invalid tarot response");
+      if (!data || !data.card) {
+        throw new Error("Invalid response from server");
       }
 
       setResult({
         card: data.card,
-        meaning: data.meaning || "",
-        guidance: data.guidance || "",
+        meaning: data.meaning ?? "No meaning provided",
+        guidance: data.guidance ?? "Trust your intuition",
       });
-    } catch (error: any) {
-      console.error(error);
-      setError(error.message || "Something went wrong");
+    } catch (err: any) {
+      console.error(err);
+      setError(err?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -97,7 +91,7 @@ export function TarotPreviewSection() {
                   <div className="text-7xl text-[#D6B25E]">☾</div>
 
                   <p className="mt-8 font-[family:var(--font-cormorant)] text-3xl text-[#F4F1EA]">
-                    {result ? result.card : "SoulMirror"}
+                    {result?.card ?? "SoulMirror"}
                   </p>
                 </div>
               </div>
