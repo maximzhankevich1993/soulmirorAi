@@ -6,8 +6,38 @@ import {
   YANDEX_FOLDER_ID,
 } from "@/lib/yandex";
 
+const tarotCards = [
+  "The Fool",
+  "The Magician",
+  "The High Priestess",
+  "The Empress",
+  "The Emperor",
+  "The Lovers",
+  "The Chariot",
+  "Strength",
+  "The Hermit",
+  "Wheel of Fortune",
+  "Justice",
+  "The Hanged Man",
+  "Death",
+  "Temperance",
+  "The Devil",
+  "The Tower",
+  "The Star",
+  "The Moon",
+  "The Sun",
+  "Judgement",
+  "The World",
+];
+
+function getRandomCard() {
+  return tarotCards[Math.floor(Math.random() * tarotCards.length)];
+}
+
 export async function POST() {
   try {
+    const card = getRandomCard();
+
     const response = await fetch(YANDEX_API_URL, {
       method: "POST",
       headers: {
@@ -27,19 +57,21 @@ export async function POST() {
             text: `
 You are Tarot AI.
 
+You interpret tarot cards.
+
 Return ONLY valid JSON:
 
 {
-  "card": "",
   "meaning": "",
   "guidance": ""
 }
 
-Rules:
-- No markdown
-- No explanation
-- JSON only
+No markdown. No explanation.
             `,
+          },
+          {
+            role: "user",
+            text: `Card: ${card}`,
           },
         ],
       }),
@@ -61,9 +93,9 @@ Rules:
     const parsed = JSON.parse(cleaned);
 
     const result = {
-      card: parsed.card || "Unknown Card",
-      meaning: parsed.meaning || "No meaning provided",
-      guidance: parsed.guidance || "Trust your intuition",
+      card,
+      meaning: parsed.meaning || "Mystical energy surrounds this card.",
+      guidance: parsed.guidance || "Trust your intuition.",
     };
 
     await prisma.tarotReading.create({
