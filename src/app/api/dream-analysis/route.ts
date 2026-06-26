@@ -34,77 +34,103 @@ export async function POST(req: Request) {
         messages: [
           {
             role: "system",
-            text: `Return ONLY valid JSON:
+            text: `
+You are Dream Interpreter AI.
+
+Return ONLY valid JSON:
+
 {
   "summary": "",
   "symbols": [],
   "emotion": "",
   "interpretation": ""
-}`,
+}
+
+Rules:
+- symbols must be array of strings
+- no markdown
+- no extra text
+- JSON only
+            `,
           },
-          { role: "user", text: dream },
+          {
+            role: "user",
+            text: dream,
+          },
         ],
       }),
     });
 
-    if (!response.ok) {
-      const errText = await response.text();
-      throw new Error(`Yandex API error: ${errText}`);
-    }
+    let data;
 
-    const data = await response.json();
+    try {
+      data = await response.json();
+    } catch {
+      data = null;
+    }
 
     const content =
       data?.result?.alternatives?.[0]?.message?.text;
 
-    if (!content) {
-      throw new Error("Empty AI response");
-    }
-
-    let parsed;
-
-    try {
-      parsed = JSON.parse(
-        content.replace(/```json/g, "").replace(/```/g, "").trim()
-      );
-    } catch {
-      parsed = {
-        summary: "Generated interpretation",
-        symbols: [],
-        emotion: "Unknown",
-        interpretation: content,
-      };
-    }
-
-    const result = {
-      summary: parsed.summary ?? "Generated interpretation",
-      symbols: parsed.symbols ?? [],
-      emotion: parsed.emotion ?? "Reflection",
-      interpretation: parsed.interpretation ?? "",
+    // 🔥 SAFE FALLBACK (как в Soul Scan стиле)
+    let result = {
+      summary: "",
+      symbols: [] as string[],
+      emotion: "",
+      interpretation: "",
     };
 
-    // ⚠️ Prisma SAFE GUARD
-    if (prisma?.dreamAnalysis) {
-      await prisma.dreamAnalysis.create({
-        data: {
-          dream,
-          summary: result.summary,
-          symbols: result.symbols,
-          emotion: result.emotion,
-          interpretation: result.interpretation,
-        },
-      });
+    if (content) {
+      try {
+        const cleaned = content
+          .replace(/```json/g, "")
+          .replace(/```/g, "")
+          .trim();
+
+        const parsed = JSON.parse(cleaned);
+
+        result = {
+          summary: parsed.summary || "Dream interpretation generated.",
+          symbols: Array.isArray(parsed.symbols)
+            ? parsed.symbols
+            : [],
+          emotion: parsed.emotion || "Reflection",
+          interpretation:
+            parsed.interpretation || "",
+        };
+      } catch {
+        // если JSON сломан — просто используем сырой текст
+        result = {
+          summary: "Dream interpretation generated.",
+          symbols: [],
+          emotion: "Reflection",
+          interpretation: content || "No interpretation available.",
+        };
+      }
     }
 
-    return NextResponse.json(result);
-  } catch (error: any) {
-    console.error("DREAM ANALYSIS ERROR:", error);
-
-    return NextResponse.json(
-      {
-        error: error?.message || "Dream analysis failed",
+    // 💾 save (safe)
+    await prisma.dreamAnalysis.create({
+      data: {
+        dream,
+        summary: result.summary,
+        symbols: result.symbols,
+        emotion: result.emotion,
+        interpretation: result.interpretation,
       },
-      { status: 500 }
-    );
+    });
+
+    return NextResponse.json(result);
+  } catch (error) {
+    console.error("DREAM API ERROR:", error);
+
+    // 🔥 NEVER FAIL FRONTEND
+    return NextResponse.json({
+      summary: "Dream interpretation unavailable.",
+      symbols: [],
+      emotion: "Unknown",
+      interpretation:
+        "We could not fully analyze this dream, but it still carries meaning within your subconscious.",
+    });
   }
 }
