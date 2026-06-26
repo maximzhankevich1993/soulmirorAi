@@ -14,13 +14,9 @@ export async function middleware(req: NextRequest) {
           return req.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            req.cookies.set(name, value)
-          );
-          res = NextResponse.next();
-          cookiesToSet.forEach(({ name, value, options }) =>
-            res.cookies.set(name, value, options)
-          );
+          cookiesToSet.forEach(({ name, value, options }) => {
+            res.cookies.set(name, value, options);
+          });
         },
       },
     }
@@ -30,14 +26,15 @@ export async function middleware(req: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const isAuthPage = req.nextUrl.pathname.startsWith("/auth");
+  const path = req.nextUrl.pathname;
 
-  const isProtectedRoute =
-    req.nextUrl.pathname.startsWith("/soul") ||
-    req.nextUrl.pathname.startsWith("/dream") ||
-    req.nextUrl.pathname.startsWith("/tarot");
+  const isAuthPage = path.startsWith("/auth");
+  const isProtected =
+    path.startsWith("/soul") ||
+    path.startsWith("/dream") ||
+    path.startsWith("/tarot");
 
-  if (!user && isProtectedRoute) {
+  if (!user && isProtected) {
     const url = req.nextUrl.clone();
     url.pathname = "/auth";
     return NextResponse.redirect(url);
