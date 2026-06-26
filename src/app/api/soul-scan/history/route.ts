@@ -9,7 +9,6 @@ export async function GET() {
       },
       select: {
         id: true,
-        input: true,
         archetype: true,
         emotion: true,
         insight: true,
@@ -20,15 +19,13 @@ export async function GET() {
 
     return NextResponse.json(scans);
   } catch (error) {
-    console.error(error);
+    console.error("SOUL SCAN HISTORY ERROR:", error);
 
     return NextResponse.json(
       {
         error: "Failed to load history",
       },
-      {
-        status: 500,
-      }
+      { status: 500 }
     );
   }
 }
