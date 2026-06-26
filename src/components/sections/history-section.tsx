@@ -17,7 +17,8 @@ export function HistorySection() {
       try {
         setError(null);
 
-        const response = await fetch("/api/history/soul-scan");
+        // ✅ FIX: правильный endpoint
+        const response = await fetch("/api/soul-scan");
 
         if (!response.ok) {
           throw new Error("Failed to load history");
