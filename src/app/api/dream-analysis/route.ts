@@ -6,6 +6,8 @@ import {
   YANDEX_FOLDER_ID,
 } from "@/lib/yandex";
 
+import { getUser } from "@/lib/getUser";
+
 type PlanType = "free" | "day" | "pro";
 
 /**
