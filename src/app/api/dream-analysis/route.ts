@@ -10,19 +10,7 @@ import { getUser } from "@/lib/getUser";
 
 type PlanType = "free" | "day" | "pro";
 
-/**
- * TEMP USER (потом заменим на Supabase Auth)
- */
-function getUserId(req: Request) {
-  return "demo-user";
-}
 
-/**
- * TEMP PLAN (потом Supabase)
- */
-function getUserPlan(req: Request): PlanType {
-  return "free";
-}
 
 /**
  * CHECK LIMIT
@@ -78,8 +66,25 @@ async function incrementUsage(userId: string, type: "dream") {
 
 export async function POST(req: Request) {
   try {
-    const userId = getUserId(req);
-    const plan = getUserPlan(req);
+    const user = await getUser();
+
+if (!user) {
+  return NextResponse.json(
+    {
+      error: "Unauthorized",
+    },
+    {
+      status: 401,
+    }
+  );
+}
+
+const userId = user.id;
+
+// Пока оставляем бесплатный тариф.
+// После интеграции CryptoCloud будем получать
+// его из базы данных.
+const plan: PlanType = "free";
 
     // 🚀 FREE LIMIT CHECK (day/pro bypass)
     if (plan === "free") {
