@@ -200,14 +200,14 @@ Rules:
 
     // 💾 SAVE RESULT
     await prisma.dreamAnalysis.create({
-      data: {
-        dream,
-        summary: result.summary,
-        symbols: result.symbols,
-        emotion: result.emotion,
-        interpretation: result.interpretation,
-      },
-    });
+  data: {
+    userId,
+    dream,
+    summary: result.summary,
+    emotion: result.emotion,
+    interpretation: result.interpretation,
+  },
+});
 
     // 📊 INCREMENT USAGE (only free)
     if (plan === "free") {
