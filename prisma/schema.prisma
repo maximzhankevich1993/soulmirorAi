@@ -51,3 +51,10 @@ model UserUsage {
 
   @@unique([userId, date])
 }
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  plan      String   @default("free") // free | pro
+  createdAt DateTime @default(now())
+}
