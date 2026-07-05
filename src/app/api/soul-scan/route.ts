@@ -14,6 +14,8 @@ export async function POST(req: Request) {
   try {
     // 👤 1. получаем пользователя
     const user = await getUser();
+    const today = new Date();
+today.setHours(0, 0, 0, 0);
 
     if (!user) {
       return NextResponse.json(
@@ -24,10 +26,13 @@ export async function POST(req: Request) {
 
     // 📊 2. проверяем usage
     const usage = await prisma.userUsage.findFirst({
-      where: {
-        userId: user.id,
-      },
-    });
+  where: {
+    userId: user.id,
+    date: {
+      gte: today,
+    },
+  },
+});
 
     if (usage && usage.soulScan >= FREE_LIMIT) {
       return NextResponse.json(
@@ -119,20 +124,24 @@ Return ONLY valid JSON:
 
     // 📈 6. увеличиваем usage
     await prisma.userUsage.upsert({
-      where: {
-        userId: user.id,
-      },
+  where: {
+    userId_date: {
+      userId: user.id,
+      date: today,
+    },
+  },
       update: {
         soulScan: {
           increment: 1,
         },
       },
       create: {
-        userId: user.id,
-        soulScan: 1,
-        dream: 0,
-        tarot: 0,
-      },
+  userId: user.id,
+  date: today,
+  soulScan: 1,
+  dream: 0,
+  tarot: 0,
+},
     });
 
     // 📤 7. ответ фронту
