@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { Logo } from "@/components/ui/logo";
 import { MobileNav } from "@/components/layout/mobile-nav";
+import { AuthWidget } from "@/components/auth/auth-widget";
 
 const navigation = [
   { label: "Features", href: "#features" },
@@ -87,34 +88,36 @@ export function Navbar() {
             ))}
           </nav>
 
-          {/* Desktop CTA */}
-          <div className="hidden lg:block">
-            <Link
-              href="#pricing"
-              className="
-                relative
-                inline-flex
-                items-center
-                justify-center
-                overflow-hidden
-                rounded-2xl
-                border
-                border-[#D6B25E]/30
-                px-5
-                py-2.5
-                text-sm
-                font-medium
-                text-[#F4F1EA]
-                transition-all
-                duration-300
-                hover:border-[#D6B25E]/60
-                hover:shadow-[0_0_30px_rgba(214,178,94,0.15)]
-              "
-            >
-              <span className="absolute inset-0 bg-gradient-to-r from-[#D6B25E]/10 via-transparent to-[#8B5CF6]/10" />
-              <span className="relative z-10">Start Journey</span>
-            </Link>
-          </div>
+          {/* Desktop Actions */}
+<div className="hidden lg:flex items-center gap-4">
+  <Link
+    href="#pricing"
+    className="
+      relative
+      inline-flex
+      items-center
+      justify-center
+      overflow-hidden
+      rounded-2xl
+      border
+      border-[#D6B25E]/30
+      px-5
+      py-2.5
+      text-sm
+      font-medium
+      text-[#F4F1EA]
+      transition-all
+      duration-300
+      hover:border-[#D6B25E]/60
+      hover:shadow-[0_0_30px_rgba(214,178,94,0.15)]
+    "
+  >
+    <span className="absolute inset-0 bg-gradient-to-r from-[#D6B25E]/10 via-transparent to-[#8B5CF6]/10" />
+    <span className="relative z-10">Start Journey</span>
+  </Link>
+
+  <AuthWidget />
+</div>
 
           {/* Mobile */}
           <MobileNav />
