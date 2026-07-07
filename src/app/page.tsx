@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 
-import { AuthWidget } from "@/components/auth/auth-widget";
 
 import { HeroSection } from "@/components/sections/hero-section";
 import { FeaturesSection } from "@/components/sections/features-section";
@@ -23,10 +22,7 @@ export default function Page() {
       variants={staggerContainer}
       className="relative"
     >
-      {/* AUTH HEADER */}
-      <div className="absolute right-6 top-6 z-50">
-        <AuthWidget />
-      </div>
+    
 
       {/* Hero */}
       <motion.div variants={fadeInUp}>
