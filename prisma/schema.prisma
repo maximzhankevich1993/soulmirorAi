@@ -1,4 +1,3 @@
-prisma
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,37 +7,77 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
+model User {
+  id        String     @id @default(cuid())
+  email     String     @unique
+
+  plan      UserPlan?
+
+  createdAt DateTime   @default(now())
+}
+
+
+model UserPlan {
+  id        String   @id @default(cuid())
+
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+
+  plan      String   @default("free")
+  // free | day | monthly | yearly
+
+  expiresAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
 model SoulScan {
   id         String   @id @default(cuid())
+
   userId     String
+
   input      String
   archetype  String
   emotion    String
   insight    String
+
   createdAt  DateTime @default(now())
 }
 
+
 model DreamAnalysis {
   id             String   @id @default(cuid())
+
   userId         String
+
   dream          String
   summary        String
   emotion        String
   interpretation String
+
   createdAt      DateTime @default(now())
 }
 
+
 model TarotReading {
   id         String   @id @default(cuid())
+
   userId     String
+
   card       String
   meaning    String
   guidance   String
+
   createdAt  DateTime @default(now())
 }
 
+
 model UserUsage {
   id        String   @id @default(cuid())
+
   userId    String
   date      DateTime
 
@@ -49,12 +88,6 @@ model UserUsage {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([userId, date])
-}
 
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  plan      String   @default("free") // free | pro
-  createdAt DateTime @default(now())
+  @@unique([userId, date])
 }
