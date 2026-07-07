@@ -7,7 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
   id        String     @id @default(cuid())
   email     String     @unique
@@ -17,7 +16,6 @@ model User {
   createdAt DateTime   @default(now())
 }
 
-
 model UserPlan {
   id        String   @id @default(cuid())
 
@@ -25,14 +23,12 @@ model UserPlan {
   user      User     @relation(fields: [userId], references: [id])
 
   plan      String   @default("free")
-  // free | day | monthly | yearly
 
   expiresAt DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-
 
 model SoulScan {
   id         String   @id @default(cuid())
@@ -47,7 +43,6 @@ model SoulScan {
   createdAt  DateTime @default(now())
 }
 
-
 model DreamAnalysis {
   id             String   @id @default(cuid())
 
@@ -61,7 +56,6 @@ model DreamAnalysis {
   createdAt      DateTime @default(now())
 }
 
-
 model TarotReading {
   id         String   @id @default(cuid())
 
@@ -73,7 +67,6 @@ model TarotReading {
 
   createdAt  DateTime @default(now())
 }
-
 
 model UserUsage {
   id        String   @id @default(cuid())
@@ -87,7 +80,6 @@ model UserUsage {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
 
   @@unique([userId, date])
 }
