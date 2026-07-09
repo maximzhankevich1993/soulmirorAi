@@ -1,9 +1,6 @@
-export type GuestAction =
-  | "soulScan"
-  | "dream"
-  | "tarot";
+export type GuestAction = "soulScan" | "dream" | "tarot";
 
-const KEY = "soulmirror_guest_usage";
+const STORAGE_KEY = "soulmirror_guest";
 
 type GuestUsage = {
   soulScan: number;
@@ -22,29 +19,36 @@ function getUsage(): GuestUsage {
     return DEFAULT_USAGE;
   }
 
-  const saved = localStorage.getItem(KEY);
+  const saved = localStorage.getItem(STORAGE_KEY);
 
   if (!saved) {
     return DEFAULT_USAGE;
   }
 
-  return JSON.parse(saved);
+  try {
+    return JSON.parse(saved);
+  } catch {
+    return DEFAULT_USAGE;
+  }
 }
 
-function saveUsage(usage: GuestUsage) {
-  localStorage.setItem(KEY, JSON.stringify(usage));
+function saveUsage(data: GuestUsage) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
 export function canUseGuest(action: GuestAction) {
   const usage = getUsage();
-
   return usage[action] < 1;
 }
 
-export function useGuest(action: GuestAction) {
+export function consumeGuest(action: GuestAction) {
   const usage = getUsage();
 
-  usage[action] += 1;
+  usage[action]++;
 
   saveUsage(usage);
+}
+
+export function resetGuestUsage() {
+  localStorage.removeItem(STORAGE_KEY);
 }
