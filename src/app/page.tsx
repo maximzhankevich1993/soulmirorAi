@@ -2,13 +2,10 @@
 
 import { motion } from "framer-motion";
 
-
 import { HeroSection } from "@/components/sections/hero-section";
 import { FeaturesSection } from "@/components/sections/features-section";
 import { SoulScanSection } from "@/components/sections/soul-scan-section";
-import { HistorySection } from "@/components/sections/history-section";
 import { DreamAnalysisSection } from "@/components/sections/dream-analysis-section";
-import { DreamJournalSection } from "@/components/sections/dream-journal-section";
 import { TarotPreviewSection } from "@/components/sections/tarot-preview-section";
 import { PricingSection } from "@/components/sections/pricing-section";
 
@@ -22,8 +19,6 @@ export default function Page() {
       variants={staggerContainer}
       className="relative"
     >
-    
-
       {/* Hero */}
       <motion.div variants={fadeInUp}>
         <HeroSection />
@@ -39,19 +34,9 @@ export default function Page() {
         <SoulScanSection />
       </motion.div>
 
-      {/* Soul History */}
-      <motion.div variants={fadeInUp}>
-        <HistorySection />
-      </motion.div>
-
       {/* Dream Analysis */}
       <motion.div variants={fadeInUp}>
         <DreamAnalysisSection />
-      </motion.div>
-
-      {/* Dream Journal */}
-      <motion.div variants={fadeInUp}>
-        <DreamJournalSection />
       </motion.div>
 
       {/* Tarot */}
