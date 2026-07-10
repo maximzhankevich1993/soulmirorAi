@@ -6,7 +6,7 @@ import {
   YANDEX_FOLDER_ID,
 } from "@/lib/yandex";
 
-import { getUser } from "@/lib/getUser";
+import { checkAccess, increaseUsage } from "@/lib/usage";
 
 type PlanType = "free" | "day" | "pro";
 
