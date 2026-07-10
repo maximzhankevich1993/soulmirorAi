@@ -117,37 +117,21 @@ Return ONLY valid JSON:
     };
 
     // 💾 5. сохраняем результат
-    await prisma.soulScan.create({
-      data: {
-        userId: user.id,
-        input: text,
-        archetype: result.archetype,
-        emotion: result.emotion,
-        insight: result.insight,
-      },
-    });
-
-    // 📈 6. увеличиваем usage
-    await prisma.userUsage.upsert({
-  where: {
-    userId_date: {
+    if (user) {
+  await prisma.soulScan.create({
+    data: {
       userId: user.id,
-      date: today,
+      input: text,
+      archetype: result.archetype,
+      emotion: result.emotion,
+      insight: result.insight,
     },
-  },
-      update: {
-        soulScan: {
-          increment: 1,
-        },
-      },
-      create: {
-  userId: user.id,
-  date: today,
-  soulScan: 1,
-  dream: 0,
-  tarot: 0,
-},
-    });
+  });
+
+  await increaseUsage(user.id, "soulScan");
+}
+
+    
 
     // 📤 7. ответ фронту
     return NextResponse.json(result);
