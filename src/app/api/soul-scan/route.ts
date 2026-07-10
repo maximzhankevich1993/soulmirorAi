@@ -14,16 +14,20 @@ const FREE_LIMIT = 1;
 export async function POST(req: Request) {
   try {
     // 👤 1. получаем пользователя
-    const user = await getUser();
-    const today = new Date();
-today.setHours(0, 0, 0, 0);
+    const access = await checkAccess("soulScan");
 
-    if (!user) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+if (!access.allowed) {
+  return NextResponse.json(
+    {
+      error: access.reason,
+    },
+    {
+      status: 403,
     }
+  );
+}
+
+const user = await getUser();
 
     // 📊 2. проверяем usage
     const usage = await prisma.userUsage.findFirst({
