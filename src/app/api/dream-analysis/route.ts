@@ -9,39 +9,34 @@ import {
 import { checkAccess, increaseUsage } from "@/lib/usage";
 import { getUser } from "@/lib/getUser";
 
+export async function POST(req: Request) {
+  try {
+    const access = await checkAccess("dream");
 
-/**
- * CHECK LIMIT
- */
-
-
-/**
- * INCREMENT USAGE
- */
-
-
-const access = await checkAccess("dream");
-
-if (!access.allowed) {
-  return NextResponse.json(
-    {
-      error: access.reason,
-    },
-    {
-      status: 403,
+    if (!access.allowed) {
+      return NextResponse.json(
+        {
+          error: access.reason,
+        },
+        {
+          status: 403,
+        }
+      );
     }
-  );
-}
 
-const user = await getUser();
+    const user = await getUser();
 
     const body = await req.json();
     const dream = body.dream?.trim();
 
     if (!dream) {
       return NextResponse.json(
-        { error: "Dream is required" },
-        { status: 400 }
+        {
+          error: "Dream is required",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
@@ -77,7 +72,7 @@ Rules:
 - symbols must be array of strings
 - no markdown
 - JSON only
-            `,
+`,
           },
           {
             role: "user",
@@ -87,7 +82,7 @@ Rules:
       }),
     });
 
-    let data;
+    let data = null;
 
     try {
       data = await response.json();
@@ -121,35 +116,32 @@ Rules:
             ? parsed.symbols
             : [],
           emotion: parsed.emotion || "Reflection",
-          interpretation: parsed.interpretation || "",
+          interpretation:
+            parsed.interpretation || "",
         };
       } catch {
         result = {
           summary: "Dream interpretation generated.",
           symbols: [],
           emotion: "Reflection",
-          interpretation: content || "",
+          interpretation: content,
         };
       }
     }
 
-    // 💾 SAVE RESULT
     if (user) {
-  await prisma.dreamAnalysis.create({
-    data: {
-      userId: user.id,
-      dream,
-      summary: result.summary,
-      emotion: result.emotion,
-      interpretation: result.interpretation,
-    },
-  });
+      await prisma.dreamAnalysis.create({
+        data: {
+          userId: user.id,
+          dream,
+          summary: result.summary,
+          emotion: result.emotion,
+          interpretation: result.interpretation,
+        },
+      });
 
-  await increaseUsage(user.id, "dream");
-}
-
-    // 📊 INCREMENT USAGE (only free)
-    
+      await increaseUsage(user.id, "dream");
+    }
 
     return NextResponse.json(result);
   } catch (error) {
@@ -163,7 +155,9 @@ Rules:
         interpretation:
           "We could not fully analyze this dream, but it still carries meaning.",
       },
-      { status: 200 }
+      {
+        status: 200,
+      }
     );
   }
 }
