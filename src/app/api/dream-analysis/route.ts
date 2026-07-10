@@ -7,98 +7,33 @@ import {
 } from "@/lib/yandex";
 
 import { checkAccess, increaseUsage } from "@/lib/usage";
-
-type PlanType = "free" | "day" | "pro";
-
+import { getUser } from "@/lib/getUser";
 
 
 /**
  * CHECK LIMIT
  */
-async function checkLimit(userId: string, type: "dream") {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
 
-  const usage = await prisma.userUsage.findFirst({
-    where: {
-      userId,
-      date: {
-        gte: today,
-      },
-    },
-  });
-
-  if (!usage) return { allowed: true };
-
-  if (usage.dream >= 1) {
-    return { allowed: false };
-  }
-
-  return { allowed: true };
-}
 
 /**
  * INCREMENT USAGE
  */
-async function incrementUsage(userId: string, type: "dream") {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
 
-  await prisma.userUsage.upsert({
-    where: {
-      userId_date: {
-        userId,
-        date: today,
-      },
-    },
-    create: {
-      userId,
-      date: today,
-      dream: 1,
-    },
-    update: {
-      dream: {
-        increment: 1,
-      },
-    },
-  });
-}
 
-export async function POST(req: Request) {
-  try {
-    const user = await getUser();
+const access = await checkAccess("dream");
 
-if (!user) {
+if (!access.allowed) {
   return NextResponse.json(
     {
-      error: "Unauthorized",
+      error: access.reason,
     },
     {
-      status: 401,
+      status: 403,
     }
   );
 }
 
-const userId = user.id;
-
-// Пока оставляем бесплатный тариф.
-// После интеграции CryptoCloud будем получать
-// его из базы данных.
-const plan: PlanType = "free";
-
-    // 🚀 FREE LIMIT CHECK (day/pro bypass)
-    if (plan === "free") {
-      const limit = await checkLimit(userId, "dream");
-
-      if (!limit.allowed) {
-        return NextResponse.json(
-          {
-            error: "Daily limit reached (Free plan)",
-          },
-          { status: 403 }
-        );
-      }
-    }
+const user = await getUser();
 
     const body = await req.json();
     const dream = body.dream?.trim();
@@ -199,20 +134,22 @@ Rules:
     }
 
     // 💾 SAVE RESULT
-    await prisma.dreamAnalysis.create({
-  data: {
-    userId,
-    dream,
-    summary: result.summary,
-    emotion: result.emotion,
-    interpretation: result.interpretation,
-  },
-});
+    if (user) {
+  await prisma.dreamAnalysis.create({
+    data: {
+      userId: user.id,
+      dream,
+      summary: result.summary,
+      emotion: result.emotion,
+      interpretation: result.interpretation,
+    },
+  });
+
+  await increaseUsage(user.id, "dream");
+}
 
     // 📊 INCREMENT USAGE (only free)
-    if (plan === "free") {
-      await incrementUsage(userId, "dream");
-    }
+    
 
     return NextResponse.json(result);
   } catch (error) {
