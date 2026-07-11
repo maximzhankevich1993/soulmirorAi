@@ -6,7 +6,7 @@ import {
   YANDEX_FOLDER_ID,
 } from "@/lib/yandex";
 import { getUser } from "@/lib/getUser";
-import { getPlanLimits, type PlanType } from "@/lib/plans";
+import { checkAccess, increaseUsage } from "@/lib/usage";
 
 const tarotCards = [
   "The Fool",
@@ -36,91 +36,24 @@ function getRandomCard() {
   return tarotCards[Math.floor(Math.random() * tarotCards.length)];
 }
 
-async function checkLimit(userId: string, plan: PlanType) {
-  const limits = getPlanLimits(plan);
 
-  if (limits.tarotLimit === Infinity) {
-    return { allowed: true };
-  }
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const usage = await prisma.userUsage.findFirst({
-    where: {
-      userId,
-      date: {
-        gte: today,
-      },
-    },
-  });
-
-  if (!usage) {
-    return { allowed: true };
-  }
-
-  return {
-    allowed: usage.tarot < limits.tarotLimit,
-  };
-}
-
-async function incrementUsage(userId: string) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  await prisma.userUsage.upsert({
-    where: {
-      userId_date: {
-        userId,
-        date: today,
-      },
-    },
-    create: {
-      userId,
-      date: today,
-      tarot: 1,
-    },
-    update: {
-      tarot: {
-        increment: 1,
-      },
-    },
-  });
-}
 
 export async function POST() {
   try {
-    const user = await getUser();
+    const access = await checkAccess("tarot");
 
-    if (!user) {
-      return NextResponse.json(
-        {
-          error: "Unauthorized",
-        },
-        {
-          status: 401,
-        }
-      );
+if (!access.allowed) {
+  return NextResponse.json(
+    {
+      error: access.reason,
+    },
+    {
+      status: 403,
     }
+  );
+}
 
-    const userId = user.id;
-
-    // Пока всегда Free.
-    // После CryptoCloud будем брать тариф из БД.
-    const plan: PlanType = "free";
-
-    const limit = await checkLimit(userId, plan);
-
-    if (!limit.allowed) {
-      return NextResponse.json(
-        {
-          error: "Daily limit reached",
-        },
-        {
-          status: 403,
-        }
-      );
-    }
+const user = await getUser();
 
     const card = getRandomCard();
 
@@ -197,18 +130,17 @@ No markdown. No explanation.
     };
 
     // 💾 Save reading
-await prisma.tarotReading.create({
-  data: {
-    userId,
-    card: result.card,
-    meaning: result.meaning,
-    guidance: result.guidance,
-  },
-});
+if (user) {
+  await prisma.tarotReading.create({
+    data: {
+      userId: user.id,
+      card: result.card,
+      meaning: result.meaning,
+      guidance: result.guidance,
+    },
+  });
 
-// 📊 Increment usage
-if (plan === "free") {
-  await incrementUsage(userId);
+  await increaseUsage(user.id, "tarot");
 }
 
     return NextResponse.json(result);
