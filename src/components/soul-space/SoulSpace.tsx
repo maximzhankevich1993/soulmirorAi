@@ -7,14 +7,16 @@ import { LatestInsight } from "./LatestInsight";
 import { SoulProfile } from "./SoulProfile";
 import { JourneyTimeline } from "./JourneyTimeline";
 import { PremiumCard } from "./PremiumCard";
+import { CursorGlow } from "./CursorGlow";
 
 export function SoulSpace() {
   return (
     <>
+      <CursorGlow />
+
       <AmbientBackground />
 
       <main className="relative overflow-x-hidden">
-
         <SoulSpaceHero />
 
         <JourneyCard />
@@ -26,7 +28,6 @@ export function SoulSpace() {
         <JourneyTimeline />
 
         <PremiumCard />
-
       </main>
     </>
   );
