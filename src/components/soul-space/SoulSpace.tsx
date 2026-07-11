@@ -11,13 +11,50 @@ import { DreamConsole } from "./DreamConsole";
 import { TarotConsole } from "./TarotConsole";
 import { SoulJourneyTimeline } from "./SoulJourneyTimeline";
 import { SoulMemoryLoader } from "./SoulMemoryLoader";
+import { useState, useEffect } from "react";
+import { OnboardingRitual } from "@/components/onboarding/OnboardingRitual";
 
 
 export function SoulSpace() {
 
+const [showOnboarding, setShowOnboarding] =
+  useState(false);
+
+useEffect(() => {
+
+  const seen =
+    localStorage.getItem(
+      "soulmirror-onboarding"
+    );
+
+  if (!seen) {
+    setShowOnboarding(true);
+  }
+
+}, []);
+
   return (
 
     <>
+
+{showOnboarding && (
+
+  <OnboardingRitual
+
+    onContinue={() => {
+
+      localStorage.setItem(
+        "soulmirror-onboarding",
+        "true"
+      );
+
+      setShowOnboarding(false);
+
+    }}
+
+  />
+
+)}
 
       <main>
 
