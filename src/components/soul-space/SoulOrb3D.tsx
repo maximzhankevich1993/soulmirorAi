@@ -8,6 +8,7 @@ import {
   soulStates,
   type SoulState,
 } from "./SoulOrbStates";
+import { useSoulOrbStore } from "@/store/soul-orb-store";
 import { useRef } from "react";
 import * as THREE from "three";
 
@@ -65,7 +66,10 @@ function Orb({
 }
 
 export function SoulOrb3D() {
-const currentState: SoulState = "awakening";
+const currentState =
+  useSoulOrbStore(
+    (state) => state.state
+  );
 
 const state =
   soulStates[currentState];
