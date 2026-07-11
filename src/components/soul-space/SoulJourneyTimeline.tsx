@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Sparkles, Moon, CreditCard } from "lucide-react";
-
+import { useSoulJourney } from "@/hooks/useSoulJourney";
 
 interface JourneyItem {
   type: "soul" | "dream" | "tarot";
@@ -12,14 +12,13 @@ interface JourneyItem {
 }
 
 
-interface SoulJourneyTimelineProps {
-  items?: JourneyItem[];
-}
 
+export function SoulJourneyTimeline() {
 
-export function SoulJourneyTimeline({
-  items = [],
-}: SoulJourneyTimelineProps) {
+  const {
+    items,
+    loading,
+  } = useSoulJourney();
 
 
   const icons = {
