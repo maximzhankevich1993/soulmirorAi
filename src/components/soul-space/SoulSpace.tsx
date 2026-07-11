@@ -2,25 +2,31 @@
 
 import { AmbientBackground } from "./AmbientBackground";
 import { SoulSpaceHero } from "./SoulSpaceHero";
-import { JourneyCard } from "./JourneyCard";
 import { LatestInsight } from "./LatestInsight";
 import { SoulProfile } from "./SoulProfile";
-import { JourneyTimeline } from "./JourneyTimeline";
 import { PremiumCard } from "./PremiumCard";
 import { CursorGlow } from "./CursorGlow";
 import { SoulScanConsole } from "./SoulScanConsole";
 import { DreamConsole } from "./DreamConsole";
 import { TarotConsole } from "./TarotConsole";
 import { SoulJourneyTimeline } from "./SoulJourneyTimeline";
+import { SoulMemoryLoader } from "./SoulMemoryLoader";
+
 
 export function SoulSpace() {
+
   return (
+
     <>
-      <CursorGlow />
 
-      <AmbientBackground />
+      <main>
 
-      <main className="relative overflow-x-hidden">
+        <CursorGlow />
+
+        <AmbientBackground />
+
+        <SoulMemoryLoader />
+
         <SoulSpaceHero />
 
         <SoulScanConsole />
@@ -31,18 +37,15 @@ export function SoulSpace() {
 
         <SoulProfile />
 
-         <SoulJourneyTimeline />
-
-        <JourneyCard />
+        <SoulJourneyTimeline />
 
         <LatestInsight />
 
-        <SoulProfile />
-
-        <JourneyTimeline />
-
         <PremiumCard />
+
       </main>
+
     </>
+
   );
 }
