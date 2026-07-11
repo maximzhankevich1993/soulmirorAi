@@ -83,3 +83,18 @@ model UserUsage {
 
   @@unique([userId, date])
 }
+
+model GuestSession {
+  id        String   @id @default(cuid())
+
+  guestId   String   @unique
+
+  soulScan  Int      @default(0)
+  dream     Int      @default(0)
+  tarot     Int      @default(0)
+
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@index([guestId])
+}
