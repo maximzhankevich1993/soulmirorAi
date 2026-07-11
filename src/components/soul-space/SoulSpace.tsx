@@ -11,6 +11,7 @@ import { CursorGlow } from "./CursorGlow";
 import { SoulScanConsole } from "./SoulScanConsole";
 import { DreamConsole } from "./DreamConsole";
 import { TarotConsole } from "./TarotConsole";
+import { SoulJourneyTimeline } from "./SoulJourneyTimeline";
 
 export function SoulSpace() {
   return (
@@ -29,6 +30,8 @@ export function SoulSpace() {
         <TarotConsole />
 
         <SoulProfile />
+
+         <SoulJourneyTimeline />
 
         <JourneyCard />
 
