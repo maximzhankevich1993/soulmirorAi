@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useSoulOrbStore } from "@/store/soul-orb-store";
 import { getSoulState } from "@/components/soul-space/SoulOrbAI";
-
+import { useSoulMemoryStore } from "@/store/soul-memory-store";
 
 interface SoulResult {
   archetype: string;
@@ -27,6 +27,11 @@ export function useSoulAnalysis() {
     useSoulOrbStore(
       (state) => state.setState
     );
+
+const setMemory =
+  useSoulMemoryStore(
+    (state) => state.setMemory
+  );
 
 
   async function analyze(
@@ -66,6 +71,13 @@ export function useSoulAnalysis() {
 
 
       setResult(data);
+
+setMemory({
+  archetype: data.archetype ?? "Unknown",
+  emotion: data.emotion ?? "Calm",
+  insight: data.insight ?? "",
+  shadow: data.shadow ?? "",
+});
 
 
       const soulState =
