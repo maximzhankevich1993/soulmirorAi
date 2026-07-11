@@ -40,23 +40,19 @@ export function SoulMemoryLoader() {
 
         setMemory({
 
-          archetype:
-            data.archetype ??
-            "Unknown",
+  archetype:
+    data.archetype ?? "Unknown",
 
-          emotion:
-            data.emotion ??
-            "Calm",
+  emotion:
+    data.emotion ?? "Calm",
 
-          insight:
-            data.insight ??
-            "",
+  insight:
+    data.insight ?? "",
 
-          shadow:
-            data.shadow ??
-            "",
+  shadow:
+    data.shadow ?? "",
 
-        });
+});
 
 
       } catch(error){
