@@ -1,95 +1,249 @@
 "use client";
 
 import { motion } from "framer-motion";
-import {
-  Brain,
-  Moon,
-  Sparkles,
-  Shield,
-} from "lucide-react";
+import { Sparkles, Brain, Heart } from "lucide-react";
 
-const stats = [
-  {
-    title: "Primary Archetype",
-    value: "Sage",
-    icon: Brain,
-  },
-  {
-    title: "Dominant Emotion",
-    value: "Hope",
-    icon: Sparkles,
-  },
-  {
-    title: "Shadow",
-    value: "Explorer",
-    icon: Moon,
-  },
-  {
-    title: "Soul Balance",
-    value: "76%",
-    icon: Shield,
-  },
-];
 
-export function SoulProfile() {
+interface SoulProfileProps {
+  archetype?: string;
+  emotion?: string;
+  insight?: string;
+}
+
+
+export function SoulProfile({
+  archetype = "The Explorer",
+  emotion = "Awakening",
+  insight =
+    "You are entering a period of personal transformation.",
+}: SoulProfileProps) {
+
+
   return (
-    <section className="mx-auto mt-24 w-full max-w-7xl px-6">
 
-      <div className="mb-12">
-        <p className="text-xs uppercase tracking-[0.4em] text-[#D6B25E]/70">
-          Soul Profile
-        </p>
+    <section className="
+    mx-auto
+    mt-24
+    w-full
+    max-w-5xl
+    px-6
+    ">
 
-        <h2 className="mt-3 text-5xl font-light text-[#F4F1EA]">
-          Your Inner Identity
-        </h2>
-      </div>
 
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+      <motion.div
 
-        {stats.map((item) => {
-          const Icon = item.icon;
+        initial={{
+          opacity:0,
+          y:30,
+        }}
 
-          return (
-            <motion.div
-              key={item.title}
-              whileHover={{
-                y: -8,
-                scale: 1.02,
-              }}
-              transition={{
-                type: "spring",
-                stiffness: 220,
-              }}
-              className="relative overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.03] p-8 backdrop-blur-3xl"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-[#D6B25E]/10 via-transparent to-transparent" />
+        whileInView={{
+          opacity:1,
+          y:0,
+        }}
 
-              <div className="relative z-10">
+        viewport={{
+          once:true,
+        }}
 
-                <div className="mb-8 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/5">
-                  <Icon
-                    size={28}
-                    className="text-[#D6B25E]"
-                  />
-                </div>
+        className="
+        rounded-[40px]
+        border
+        border-white/10
+        bg-white/[0.03]
+        p-8
+        backdrop-blur-3xl
+        "
 
-                <p className="text-sm text-white/50">
-                  {item.title}
-                </p>
+      >
 
-                <h3 className="mt-3 font-[family:var(--font-cormorant)] text-4xl text-[#F4F1EA]">
-                  {item.value}
-                </h3>
 
-              </div>
+        <div className="
+        mb-10
+        flex
+        items-center
+        gap-4
+        ">
 
-            </motion.div>
-          );
-        })}
 
-      </div>
+          <div className="
+          flex
+          h-14
+          w-14
+          items-center
+          justify-center
+          rounded-2xl
+          bg-purple-500/10
+          ">
+
+            <Brain
+              size={28}
+              className="text-purple-300"
+            />
+
+          </div>
+
+
+          <div>
+
+            <p className="
+            text-xs
+            uppercase
+            tracking-[0.4em]
+            text-purple-300
+            ">
+
+              Soul Profile
+
+            </p>
+
+
+            <h2 className="
+            text-3xl
+            text-[#F4F1EA]
+            ">
+
+              Your inner identity
+
+            </h2>
+
+          </div>
+
+
+        </div>
+
+
+
+        <div className="
+        grid
+        gap-6
+        md:grid-cols-3
+        ">
+
+
+          <div className="
+          rounded-3xl
+          border
+          border-white/10
+          bg-black/20
+          p-6
+          ">
+
+            <Sparkles
+              className="mb-4 text-[#D6B25E]"
+            />
+
+
+            <p className="
+            text-xs
+            uppercase
+            text-white/40
+            ">
+
+              Archetype
+
+            </p>
+
+
+            <h3 className="
+            mt-3
+            text-2xl
+            text-white
+            ">
+
+              {archetype}
+
+            </h3>
+
+          </div>
+
+
+
+          <div className="
+          rounded-3xl
+          border
+          border-white/10
+          bg-black/20
+          p-6
+          ">
+
+
+            <Heart
+              className="mb-4 text-pink-300"
+            />
+
+
+            <p className="
+            text-xs
+            uppercase
+            text-white/40
+            ">
+
+              Current state
+
+            </p>
+
+
+            <h3 className="
+            mt-3
+            text-2xl
+            text-white
+            ">
+
+              {emotion}
+
+            </h3>
+
+
+          </div>
+
+
+
+          <div className="
+          rounded-3xl
+          border
+          border-white/10
+          bg-black/20
+          p-6
+          ">
+
+
+            <Brain
+              className="mb-4 text-blue-300"
+            />
+
+
+            <p className="
+            text-xs
+            uppercase
+            text-white/40
+            ">
+
+              Insight
+
+            </p>
+
+
+            <p className="
+            mt-3
+            text-white/70
+            ">
+
+              {insight}
+
+            </p>
+
+
+          </div>
+
+
+        </div>
+
+
+      </motion.div>
+
 
     </section>
+
   );
 }
