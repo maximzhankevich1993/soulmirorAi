@@ -4,22 +4,33 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Environment, Sphere } from "@react-three/drei";
 import { SoulParticles } from "./SoulParticles";
 import { SoulOrbInteraction } from "./SoulOrbInteraction";
+import {
+  soulStates,
+  type SoulState,
+} from "./SoulOrbStates";
 import { useRef } from "react";
 import * as THREE from "three";
 
-function Orb() {
+function Orb({
+  state,
+}: {
+  state: {
+    color: string;
+    emissive: string;
+  };
+}) {
   const mesh = useRef<THREE.Mesh>(null);
 
   const { intensity, scale: interactionScale } =
     SoulOrbInteraction();
 
-  useFrame((state) => {
+  useFrame((stateFrame) => {
     if (!mesh.current) return;
 
     mesh.current.rotation.y += 0.003;
 
     const breathing =
-      1 + Math.sin(state.clock.elapsedTime * 2) * 0.03;
+      1 + Math.sin(stateFrame.clock.elapsedTime * 2) * 0.03;
 
     const finalScale =
       breathing * interactionScale;
@@ -42,8 +53,8 @@ function Orb() {
         args={[1.35, 128, 128]}
       >
         <meshStandardMaterial
-          color="#D6B25E"
-          emissive="#8B5CF6"
+          color={state.color}
+          emissive={state.emissive}
           emissiveIntensity={intensity}
           roughness={0.15}
           metalness={0.8}
@@ -54,6 +65,10 @@ function Orb() {
 }
 
 export function SoulOrb3D() {
+const currentState: SoulState = "awakening";
+
+const state =
+  soulStates[currentState];
   return (
     <div className="h-[420px] w-[420px]">
 
@@ -68,10 +83,10 @@ export function SoulOrb3D() {
         <pointLight
           position={[3, 3, 3]}
           intensity={3}
-          color="#D6B25E"
+          color={state.color}
         />
 
-        <Orb />
+        <Orb state={state} />
         <SoulParticles />
 
         <Environment preset="night" />
