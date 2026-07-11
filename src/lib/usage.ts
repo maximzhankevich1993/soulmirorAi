@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { getUser } from "@/lib/getUser";
+import { getActor } from "@/lib/getActor";
 
 export type UsageType =
   | "soulScan"
@@ -24,7 +24,7 @@ const FREE_LIMIT = 1;
 export async function checkAccess(
   type: UsageType
 ): Promise<AccessResult> {
-  const user = await getUser();
+  const actor = await getActor();
 
   // -------------------------
   // Guest
