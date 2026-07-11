@@ -13,6 +13,7 @@ import { SoulJourneyTimeline } from "./SoulJourneyTimeline";
 import { SoulMemoryLoader } from "./SoulMemoryLoader";
 import { useState, useEffect } from "react";
 import { OnboardingRitual } from "@/components/onboarding/OnboardingRitual";
+import { SoulDashboard } from "./SoulDashboard";
 
 
 export function SoulSpace() {
@@ -65,6 +66,8 @@ useEffect(() => {
         <SoulMemoryLoader />
 
         <SoulSpaceHero />
+
+        <SoulDashboard />
 
         <SoulScanConsole />
 
