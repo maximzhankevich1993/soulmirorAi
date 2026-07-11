@@ -10,6 +10,7 @@ import { PremiumCard } from "./PremiumCard";
 import { CursorGlow } from "./CursorGlow";
 import { SoulScanConsole } from "./SoulScanConsole";
 import { DreamConsole } from "./DreamConsole";
+import { TarotConsole } from "./TarotConsole";
 
 export function SoulSpace() {
   return (
@@ -24,6 +25,8 @@ export function SoulSpace() {
         <SoulScanConsole />
 
         <DreamConsole />
+
+        <TarotConsole />
 
         <JourneyCard />
 
