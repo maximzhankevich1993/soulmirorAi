@@ -28,6 +28,8 @@ export function SoulSpace() {
 
         <TarotConsole />
 
+        <SoulProfile />
+
         <JourneyCard />
 
         <LatestInsight />
