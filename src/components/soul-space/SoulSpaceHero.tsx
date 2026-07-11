@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 
-import { SoulOrb } from "./SoulOrb";
+import { SoulOrb3D } from "./SoulOrb3D";
 
 export function SoulSpaceHero() {
   return (
@@ -44,7 +44,7 @@ export function SoulSpaceHero() {
         </motion.p>
 
         <div className="my-20">
-          <SoulOrb />
+          <SoulOrb3D />
         </div>
 
         <motion.div
