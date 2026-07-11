@@ -14,13 +14,10 @@ export async function GET() {
     }
 
 
-    const userId = actor.userId;
-
-
     const latestSoul =
       await prisma.soulScan.findFirst({
         where: {
-          userId,
+          userId: actor.userId,
         },
         orderBy: {
           createdAt: "desc",
@@ -43,19 +40,15 @@ export async function GET() {
     return NextResponse.json({
 
       archetype:
-        latestSoul.archetype ??
-        "Unknown",
+        latestSoul.archetype,
 
       emotion:
-        latestSoul.emotion ??
-        "Calm",
+        latestSoul.emotion,
 
       insight:
-        latestSoul.insight ??
-        "",
+        latestSoul.insight,
 
       shadow:
-        latestSoul.shadow ??
         "",
 
     });
