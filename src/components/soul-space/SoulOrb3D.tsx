@@ -28,10 +28,14 @@ function Orb({
   useFrame((stateFrame) => {
     if (!mesh.current) return;
 
-    mesh.current.rotation.y += 0.003;
+    mesh.current.rotation.y += state.rotation;
 
     const breathing =
-      1 + Math.sin(stateFrame.clock.elapsedTime * 2) * 0.03;
+  1 +
+  Math.sin(
+    stateFrame.clock.elapsedTime * 2
+  ) *
+  state.breathing;
 
     const finalScale =
       breathing * interactionScale;
