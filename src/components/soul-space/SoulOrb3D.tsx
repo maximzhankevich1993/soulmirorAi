@@ -2,6 +2,7 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Environment, Sphere } from "@react-three/drei";
+import { SoulParticles } from "./SoulParticles";
 import { useRef } from "react";
 import * as THREE from "three";
 
@@ -64,6 +65,7 @@ export function SoulOrb3D() {
         />
 
         <Orb />
+        <SoulParticles />
 
         <Environment preset="night" />
 
