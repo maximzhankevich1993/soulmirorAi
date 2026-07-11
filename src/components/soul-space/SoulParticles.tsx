@@ -1,52 +1,93 @@
 "use client";
 
 import { Points, PointMaterial } from "@react-three/drei";
-import { useMemo } from "react";
+import { useFrame } from "@react-three/fiber";
+import { useRef } from "react";
 import * as THREE from "three";
+import { useSoulOrbStore } from "@/store/soul-orb-store";
+import { soulStates } from "./SoulOrbStates";
+
 
 export function SoulParticles() {
-  const particles = useMemo(() => {
-    const positions = new Float32Array(1200 * 3);
 
-    for (let i = 0; i < 1200; i++) {
-      const radius = 1.8 + Math.random() * 1.2;
+  const ref =
+    useRef<THREE.Points>(null);
 
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(
-        2 * Math.random() - 1
-      );
 
-      positions[i * 3] =
-        radius *
-        Math.sin(phi) *
-        Math.cos(theta);
+  const currentState =
+    useSoulOrbStore(
+      (state)=>state.state
+    );
 
-      positions[i * 3 + 1] =
-        radius *
-        Math.sin(phi) *
-        Math.sin(theta);
 
-      positions[i * 3 + 2] =
-        radius *
-        Math.cos(phi);
-    }
+  const config =
+    soulStates[currentState];
 
-    return positions;
-  }, []);
+
+  const positions =
+    new Float32Array(
+      400 * 3
+    );
+
+
+  for (
+    let i = 0;
+    i < 400 * 3;
+    i++
+  ) {
+
+    positions[i] =
+      (Math.random() - 0.5) * 5;
+
+  }
+
+
+
+  useFrame((state)=>{
+
+    if(!ref.current) return;
+
+
+    ref.current.rotation.y +=
+      0.002 *
+      config.particleSpeed;
+
+
+    ref.current.rotation.x =
+      Math.sin(
+        state.clock.elapsedTime
+      ) * 0.05;
+
+  });
+
+
 
   return (
+
     <Points
-      positions={particles}
-      stride={3}
-      frustumCulled={false}
+      ref={ref}
+      positions={positions}
     >
+
       <PointMaterial
+
         transparent
-        color="#D6B25E"
-        size={0.018}
+
+        color={config.color}
+
+        size={
+          currentState === "awakening"
+            ? 0.035
+            : 0.02
+        }
+
         sizeAttenuation
+
         depthWrite={false}
+
       />
+
     </Points>
+
   );
 }
