@@ -26,28 +26,42 @@ export async function checkAccess(
 ): Promise<AccessResult> {
   const actor = await getActor();
 
-  // -------------------------
-  // Guest
-  // -------------------------
+  if (actor.type === "guest") {
+  const session = await prisma.guestSession.findUnique({
+    where: {
+      guestId: actor.guestId,
+    },
+  });
 
-  if (!user) {
+  const used = session?.[type] ?? 0;
+
+  if (used >= FREE_LIMIT) {
     return {
-      allowed: true,
+      allowed: false,
       guest: true,
       plan: "free",
-      remaining: 1,
+      remaining: 0,
+      reason: "FREE_LIMIT_REACHED",
     };
   }
+
+  return {
+    allowed: true,
+    guest: true,
+    plan: "free",
+    remaining: FREE_LIMIT - used,
+  };
+}
 
   // -------------------------
   // Registered user
   // -------------------------
 
   const dbUser = await prisma.user.findUnique({
-    where: {
-      email: user.email!,
-    },
-  });
+  where: {
+    id: actor.userId,
+  },
+});
 
   const plan =
     (dbUser?.plan as "free" | "day" | "pro") ??
@@ -57,7 +71,7 @@ export async function checkAccess(
     return {
       allowed: true,
       guest: false,
-      userId: user.id,
+      userId: actor.userId,
       plan,
       remaining: Infinity,
     };
@@ -70,7 +84,7 @@ export async function checkAccess(
   const usage = await prisma.userUsage.findUnique({
     where: {
       userId_date: {
-        userId: user.id,
+        userId: actor.userId,
         date: today,
       },
     },
@@ -83,7 +97,7 @@ export async function checkAccess(
     return {
       allowed: false,
       guest: false,
-      userId: user.id,
+      userId: actor.userId,
       plan,
       remaining: 0,
       reason: "FREE_LIMIT_REACHED",
@@ -93,7 +107,7 @@ export async function checkAccess(
   return {
     allowed: true,
     guest: false,
-    userId: user.id,
+    userId: actor.userId,
     plan,
     remaining: FREE_LIMIT - used,
   };
