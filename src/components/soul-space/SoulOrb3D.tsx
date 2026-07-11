@@ -3,24 +3,31 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Environment, Sphere } from "@react-three/drei";
 import { SoulParticles } from "./SoulParticles";
+import { SoulOrbInteraction } from "./SoulOrbInteraction";
 import { useRef } from "react";
 import * as THREE from "three";
 
 function Orb() {
   const mesh = useRef<THREE.Mesh>(null);
 
+  const { intensity, scale: interactionScale } =
+    SoulOrbInteraction();
+
   useFrame((state) => {
     if (!mesh.current) return;
 
     mesh.current.rotation.y += 0.003;
 
-    const scale =
+    const breathing =
       1 + Math.sin(state.clock.elapsedTime * 2) * 0.03;
 
+    const finalScale =
+      breathing * interactionScale;
+
     mesh.current.scale.set(
-      scale,
-      scale,
-      scale
+      finalScale,
+      finalScale,
+      finalScale
     );
   });
 
@@ -37,7 +44,7 @@ function Orb() {
         <meshStandardMaterial
           color="#D6B25E"
           emissive="#8B5CF6"
-          emissiveIntensity={1.8}
+          emissiveIntensity={intensity}
           roughness={0.15}
           metalness={0.8}
         />
