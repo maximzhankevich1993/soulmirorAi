@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useSoulOrbStore } from "@/store/soul-orb-store";
 import { getSoulState } from "@/components/soul-space/SoulOrbAI";
-
+import { useSoulMemoryStore } from "@/store/soul-memory-store";
 
 interface DreamResult {
   summary: string;
@@ -26,6 +26,11 @@ export function useDreamAnalysis() {
     useSoulOrbStore(
       (state) => state.setState
     );
+  
+  const setMemory =
+  useSoulMemoryStore(
+    (state) => state.setMemory
+  );
 
 
   async function analyzeDream(
@@ -65,6 +70,16 @@ export function useDreamAnalysis() {
 
 
       setResult(data);
+
+      setMemory({
+
+  emotion:
+    data.emotion,
+
+  insight:
+    data.interpretation,
+
+});
 
 
       const soulState =
