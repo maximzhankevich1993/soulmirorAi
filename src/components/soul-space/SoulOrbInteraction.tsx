@@ -2,43 +2,145 @@
 
 import { useEffect, useState } from "react";
 
+
 export function SoulOrbInteraction() {
-  const [energy, setEnergy] = useState(50);
+
+  const [intensity, setIntensity] =
+    useState(1);
+
+
+  const [scale, setScale] =
+    useState(1);
+
+
 
   useEffect(() => {
-    const handleMove = (event: MouseEvent) => {
+
+
+    function handleMove(
+      event: MouseEvent
+    ) {
+
+
       const x =
-        event.clientX / window.innerWidth;
+        event.clientX /
+        window.innerWidth;
+
 
       const y =
-        event.clientY / window.innerHeight;
+        event.clientY /
+        window.innerHeight;
 
-      const value =
-        Math.round(
-          ((x + y) / 2) * 100
+
+
+      const distance =
+        Math.sqrt(
+          Math.pow(
+            x - 0.5,
+            2
+          )
+          +
+          Math.pow(
+            y - 0.5,
+            2
+          )
         );
 
-      setEnergy(value);
-    };
+
+
+      const power =
+        Math.max(
+          0,
+          1 -
+          distance * 2
+        );
+
+
+
+      setIntensity(
+        1 +
+        power * 2
+      );
+
+
+      setScale(
+        1 +
+        power * 0.08
+      );
+
+    }
+
+
+
+    function handleClick(){
+
+      setIntensity(
+        4
+      );
+
+
+      setScale(
+        1.15
+      );
+
+
+      setTimeout(()=>{
+
+        setIntensity(
+          1
+        );
+
+
+        setScale(
+          1
+        );
+
+
+      },600);
+
+    }
+
+
 
     window.addEventListener(
       "mousemove",
       handleMove
     );
 
-    return () => {
+
+    window.addEventListener(
+      "click",
+      handleClick
+    );
+
+
+
+    return ()=>{
+
       window.removeEventListener(
         "mousemove",
         handleMove
       );
+
+
+      window.removeEventListener(
+        "click",
+        handleClick
+      );
+
     };
+
+
   }, []);
 
+
+
   return {
-    energy,
-    intensity:
-      1 + energy / 100,
-    scale:
-      1 + energy / 1000,
+
+    intensity,
+
+    scale,
+
   };
+
 }
