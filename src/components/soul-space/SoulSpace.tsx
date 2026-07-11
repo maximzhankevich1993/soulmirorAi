@@ -9,6 +9,7 @@ import { JourneyTimeline } from "./JourneyTimeline";
 import { PremiumCard } from "./PremiumCard";
 import { CursorGlow } from "./CursorGlow";
 import { SoulScanConsole } from "./SoulScanConsole";
+import { DreamConsole } from "./DreamConsole";
 
 export function SoulSpace() {
   return (
@@ -20,7 +21,9 @@ export function SoulSpace() {
       <main className="relative overflow-x-hidden">
         <SoulSpaceHero />
 
-<SoulScanConsole />
+        <SoulScanConsole />
+
+        <DreamConsole />
 
         <JourneyCard />
 
