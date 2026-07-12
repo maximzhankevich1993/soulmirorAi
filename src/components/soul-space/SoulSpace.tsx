@@ -58,35 +58,48 @@ useEffect(() => {
 
 )}
 
-      <main>
+     <main>
 
-        <CursorGlow />
+  <CursorGlow />
 
-        <AmbientBackground />
+  <AmbientBackground />
 
-        <SoulMemoryLoader />
+  <SoulMemoryLoader />
 
-        <SoulSpaceHero />
+  <SoulSpaceHero />
 
-        <SoulDashboard />
+  <SoulDashboard />
 
-        <DailyReflection />
+  <DailyReflection />
 
-        <SoulScanConsole />
 
-        <DreamConsole />
+  <section id="features">
+    <SoulScanConsole />
+  </section>
 
-        <TarotConsole />
 
-        <SoulProfile />
+  <section id="dreams">
+    <DreamConsole />
 
-        <SoulJourneyTimeline />
+    <TarotConsole />
+  </section>
 
-        <LatestInsight />
 
-        <PremiumCard />
+  <section id="journal">
+    <SoulProfile />
 
-      </main>
+    <SoulJourneyTimeline />
+
+    <LatestInsight />
+  </section>
+
+
+  <section id="pricing">
+    <PremiumCard />
+  </section>
+
+
+</main>
 
     </>
 
