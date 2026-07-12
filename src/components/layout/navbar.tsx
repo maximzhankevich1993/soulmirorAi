@@ -9,10 +9,22 @@ import { MobileNav } from "@/components/layout/mobile-nav";
 import { AuthWidget } from "@/components/auth/auth-widget";
 
 const navigation = [
-  { label: "Features", href: "#features" },
-  { label: "Dreams", href: "#dreams" },
-  { label: "Journal", href: "#journal" },
-  { label: "Pricing", href: "#pricing" },
+  {
+    label: "Features",
+    href: "#features",
+  },
+  {
+    label: "Dreams",
+    href: "#dreams",
+  },
+  {
+    label: "Journal",
+    href: "#journal",
+  },
+  {
+    label: "Pricing",
+    href: "#pricing",
+  },
 ];
 
 export function Navbar() {
@@ -55,17 +67,18 @@ export function Navbar() {
       <Container>
         <div className="flex h-20 items-center justify-between">
 
-          {/* Logo */}
-          <Logo />
+          <Link href="/">
+            <Logo />
+          </Link>
 
 
-          {/* Desktop Navigation */}
           <nav className="hidden items-center gap-8 lg:flex">
 
             {navigation.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
+                scroll={false}
                 className="
                   group
                   relative
@@ -77,10 +90,7 @@ export function Navbar() {
                 "
               >
 
-                <span>
-                  {item.label}
-                </span>
-
+                {item.label}
 
                 <span
                   className="
@@ -90,10 +100,7 @@ export function Navbar() {
                     h-px
                     w-0
                     -translate-x-1/2
-                    bg-gradient-to-r
-                    from-transparent
-                    via-[#D6B25E]
-                    to-transparent
+                    bg-[#D6B25E]
                     transition-all
                     duration-300
                     group-hover:w-full
@@ -106,16 +113,13 @@ export function Navbar() {
           </nav>
 
 
-          {/* Desktop Actions */}
           <div className="hidden items-center gap-4 lg:flex">
 
             <Link
-              href="#pricing"
+              href="#soul-scan"
+              scroll={false}
               className="
                 relative
-                inline-flex
-                items-center
-                justify-center
                 overflow-hidden
                 rounded-2xl
                 border
@@ -126,9 +130,7 @@ export function Navbar() {
                 font-medium
                 text-[#F4F1EA]
                 transition-all
-                duration-300
                 hover:border-[#D6B25E]/60
-                hover:shadow-[0_0_30px_rgba(214,178,94,0.15)]
               "
             >
 
@@ -138,11 +140,9 @@ export function Navbar() {
                   inset-0
                   bg-gradient-to-r
                   from-[#D6B25E]/10
-                  via-transparent
                   to-[#8B5CF6]/10
                 "
               />
-
 
               <span className="relative z-10">
                 Start Journey
@@ -150,20 +150,17 @@ export function Navbar() {
 
             </Link>
 
-
             <AuthWidget />
 
           </div>
 
 
-          {/* Mobile */}
           <MobileNav />
 
         </div>
       </Container>
 
 
-      {/* Luxury bottom glow line */}
       <div
         className="
           pointer-events-none
@@ -176,7 +173,6 @@ export function Navbar() {
           from-transparent
           via-[#D6B25E]/30
           to-transparent
-          opacity-60
         "
       />
 
