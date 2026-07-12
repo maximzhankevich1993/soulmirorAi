@@ -6,7 +6,7 @@ import { SoulOrb3D } from "./SoulOrb3D";
 
 export function SoulSpaceHero() {
   return (
-    <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-6">
+    <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-6 pt-32">
 
       <div className="mx-auto flex w-full max-w-7xl flex-col items-center">
 
@@ -23,7 +23,7 @@ export function SoulSpaceHero() {
           initial={{ opacity: 0, y: 35 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9 }}
-          className="max-w-4xl text-center font-[family:var(--font-cormorant)] text-6xl font-light leading-tight text-[#F4F1EA] md:text-8xl"
+          className="max-w-4xl text-center font-[family:var(--font-cormorant)] text5xl font-light leading-tight text-[#F4F1EA] md:text-7xl"
         >
           Your soul has changed
           <br />
@@ -37,13 +37,13 @@ export function SoulSpaceHero() {
             delay: 0.6,
             duration: 0.8,
           }}
-          className="mt-8 max-w-xl text-center text-lg leading-8 text-white/60"
+          className="mt-8 max-w-xl text-center text-base leading-7 md:text-lg text-white/60"
         >
           Every reflection shapes who you become.
           Continue your inner journey.
         </motion.p>
 
-        <div className="my-20">
+        <div className="my-12">
           <SoulOrb3D />
         </div>
 
@@ -60,7 +60,7 @@ export function SoulSpaceHero() {
           </span>
 
           <div className="mt-2 text-center">
-            <h2 className="text-3xl font-light text-[#F4F1EA]">
+            <h2 className="text-2xl font-light text-[#F4F1EA]">
               Balanced
             </h2>
 
@@ -77,7 +77,7 @@ export function SoulSpaceHero() {
           whileTap={{
             scale: 0.97,
           }}
-          className="mt-14 rounded-full bg-[#D6B25E] px-10 py-5 text-base font-semibold text-black shadow-[0_0_50px_rgba(214,178,94,.35)] transition-all"
+          className="mt-14 rounded-full bg-[#D6B25E] px-8 py-4 text-base font-semibold text-black shadow-[0_0_50px_rgba(214,178,94,.35)] transition-all"
         >
           Continue Journey
         </motion.button>
