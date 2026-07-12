@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -10,26 +9,10 @@ import { MobileNav } from "@/components/layout/mobile-nav";
 import { AuthWidget } from "@/components/auth/auth-widget";
 
 const navigation = [
-  {
-    label: "Home",
-    href: "/",
-  },
-  {
-    label: "Soul Scan",
-    href: "/soul-scan",
-  },
-  {
-    label: "Dreams",
-    href: "/dreams",
-  },
-  {
-    label: "Journal",
-    href: "/journal",
-  },
-  {
-    label: "Pricing",
-    href: "/pricing",
-  },
+  { label: "Features", href: "#features" },
+  { label: "Dreams", href: "#dreams" },
+  { label: "Journal", href: "#journal" },
+  { label: "Pricing", href: "#pricing" },
 ];
 
 export function Navbar() {
@@ -72,15 +55,14 @@ export function Navbar() {
       <Container>
         <div className="flex h-20 items-center justify-between">
 
-          <Link href="/">
-            <Logo />
-          </Link>
+          {/* Logo */}
+          <Logo />
 
 
+          {/* Desktop Navigation */}
           <nav className="hidden items-center gap-8 lg:flex">
 
             {navigation.map((item) => (
-
               <Link
                 key={item.label}
                 href={item.href}
@@ -119,16 +101,16 @@ export function Navbar() {
                 />
 
               </Link>
-
             ))}
 
           </nav>
 
 
+          {/* Desktop Actions */}
           <div className="hidden items-center gap-4 lg:flex">
 
             <Link
-              href="/journey"
+              href="#pricing"
               className="
                 relative
                 inline-flex
@@ -161,6 +143,7 @@ export function Navbar() {
                 "
               />
 
+
               <span className="relative z-10">
                 Start Journey
               </span>
@@ -173,12 +156,14 @@ export function Navbar() {
           </div>
 
 
+          {/* Mobile */}
           <MobileNav />
 
         </div>
       </Container>
 
 
+      {/* Luxury bottom glow line */}
       <div
         className="
           pointer-events-none
@@ -198,4 +183,3 @@ export function Navbar() {
     </header>
   );
 }
-
