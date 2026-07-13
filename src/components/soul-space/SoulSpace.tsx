@@ -15,6 +15,7 @@ import { useState, useEffect } from "react";
 import { OnboardingRitual } from "@/components/onboarding/OnboardingRitual";
 import { SoulDashboard } from "./SoulDashboard";
 import { DailyReflection } from "./DailyReflection";
+import { GlobalParticles } from "./GlobalParticles";
 
 
 export function SoulSpace() {
@@ -60,9 +61,11 @@ useEffect(() => {
 
      <main>
 
-  <CursorGlow />
+ <CursorGlow />
 
-  <AmbientBackground />
+<GlobalParticles />
+
+<AmbientBackground />
 
   <SoulMemoryLoader />
 
