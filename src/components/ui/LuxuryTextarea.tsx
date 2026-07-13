@@ -1,4 +1,4 @@
-```tsx id="7x3m1p"
+
 "use client";
 
 import { TextareaHTMLAttributes } from "react";
@@ -56,4 +56,4 @@ export function LuxuryTextarea({
     </div>
   );
 }
-```
+
