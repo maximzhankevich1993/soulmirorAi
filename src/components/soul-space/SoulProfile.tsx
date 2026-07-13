@@ -1,8 +1,18 @@
+
 "use client";
 
 import { motion } from "framer-motion";
-import { Sparkles, Brain, Heart } from "lucide-react";
+import {
+  Sparkles,
+  Brain,
+  Heart,
+  Moon,
+} from "lucide-react";
+
 import { useSoulMemoryStore } from "@/store/soul-memory-store";
+
+import { GlassCard } from "@/components/ui/GlassCard";
+import { GlowIcon } from "@/components/ui/GlowIcon";
 
 
 export function SoulProfile() {
@@ -15,12 +25,38 @@ export function SoulProfile() {
   } = useSoulMemoryStore();
 
 
+  const items = [
+    {
+      title: "Archetype",
+      value: archetype,
+      icon: Sparkles,
+      color: "text-[#D6B25E]",
+    },
+
+    {
+      title: "Current State",
+      value: emotion,
+      icon: Heart,
+      color: "text-pink-300",
+    },
+
+    {
+      title: "Soul Insight",
+      value:
+        insight ||
+        "Complete Soul Scan to reveal your insight.",
+      icon: Brain,
+      color: "text-purple-300",
+    },
+  ];
+
+
   return (
 
     <section
       className="
       mx-auto
-      mt-24
+      mt-16
       w-full
       max-w-5xl
       px-6
@@ -30,222 +66,188 @@ export function SoulProfile() {
       <motion.div
 
         initial={{
-          opacity: 0,
-          y: 30,
+          opacity:0,
+          y:25,
         }}
 
         whileInView={{
-          opacity: 1,
-          y: 0,
+          opacity:1,
+          y:0,
         }}
 
         viewport={{
-          once: true,
+          once:true,
         }}
-
-        className="
-        rounded-[40px]
-        border
-        border-white/10
-        bg-white/[0.03]
-        p-8
-        backdrop-blur-3xl
-        "
 
       >
 
-        <div className="
-        mb-10
-        flex
-        items-center
-        gap-4
-        ">
-
-          <div className="
-          flex
-          h-14
-          w-14
-          items-center
-          justify-center
-          rounded-2xl
-          bg-purple-500/10
-          ">
-
-            <Brain
-              size={28}
-              className="text-purple-300"
-            />
-
-          </div>
+        <GlassCard
+          highlight
+          className="p-6 md:p-8"
+        >
 
 
-          <div>
+          <div
+            className="
+            flex
+            items-center
+            gap-4
+            "
+          >
 
-            <p className="
-            text-xs
-            uppercase
-            tracking-[0.4em]
-            text-purple-300
-            ">
-              Soul Profile
-            </p>
+            <GlowIcon size="lg">
 
+              <Moon
+                size={24}
+                className="text-[#D6B25E]"
+              />
 
-            <h2 className="
-            text-3xl
-            text-[#F4F1EA]
-            ">
-              Your inner identity
-            </h2>
-
-          </div>
-
-        </div>
+            </GlowIcon>
 
 
+            <div>
 
-        <div className="
-        grid
-        gap-6
-        md:grid-cols-3
-        ">
-
-
-          <div className="
-          rounded-3xl
-          border
-          border-white/10
-          bg-black/20
-          p-6
-          ">
-
-            <Sparkles
-              className="mb-4 text-[#D6B25E]"
-            />
-
-            <p className="
-            text-xs
-            uppercase
-            text-white/40
-            ">
-              Archetype
-            </p>
+              <p
+                className="
+                text-[11px]
+                uppercase
+                tracking-[0.4em]
+                text-[#D6B25E]
+                "
+              >
+                Soul Profile
+              </p>
 
 
-            <h3 className="
-            mt-3
-            text-2xl
-            text-white
-            ">
-              {archetype}
-            </h3>
+              <h2
+                className="
+                mt-1
+                text-2xl
+                font-light
+                text-[#F4F1EA]
+                "
+              >
+                Your inner identity
+              </h2>
+
+            </div>
+
 
           </div>
 
 
 
-          <div className="
-          rounded-3xl
-          border
-          border-white/10
-          bg-black/20
-          p-6
-          ">
+          <div
+            className="
+            mt-8
+            grid
+            gap-4
+            md:grid-cols-3
+            "
+          >
 
-            <Heart
-              className="mb-4 text-pink-300"
-            />
+            {items.map((item)=>{
 
-
-            <p className="
-            text-xs
-            uppercase
-            text-white/40
-            ">
-              Current state
-            </p>
+              const Icon = item.icon;
 
 
-            <h3 className="
-            mt-3
-            text-2xl
-            text-white
-            ">
-              {emotion}
-            </h3>
+              return (
+
+                <div
+                  key={item.title}
+                  className="
+                  rounded-3xl
+                  border
+                  border-white/10
+                  bg-black/20
+                  p-5
+                  "
+                >
+
+                  <Icon
+                    size={22}
+                    className={item.color}
+                  />
+
+
+                  <p
+                    className="
+                    mt-4
+                    text-[10px]
+                    uppercase
+                    tracking-[0.3em]
+                    text-white/40
+                    "
+                  >
+                    {item.title}
+                  </p>
+
+
+                  <p
+                    className="
+                    mt-3
+                    text-lg
+                    leading-7
+                    text-[#F4F1EA]
+                    "
+                  >
+                    {item.value}
+                  </p>
+
+
+                </div>
+
+              );
+
+            })}
+
 
           </div>
 
 
 
-          <div className="
-          rounded-3xl
-          border
-          border-white/10
-          bg-black/20
-          p-6
-          ">
+          {shadow && (
 
-            <Brain
-              className="mb-4 text-blue-300"
-            />
+            <div
+              className="
+              mt-5
+              rounded-3xl
+              border
+              border-purple-400/20
+              bg-purple-500/5
+              p-5
+              "
+            >
 
-
-            <p className="
-            text-xs
-            uppercase
-            text-white/40
-            ">
-              Inner insight
-            </p>
-
-
-            <p className="
-            mt-3
-            text-white/70
-            ">
-              {insight ||
-              "Complete Soul Scan to reveal your insight."}
-            </p>
-
-          </div>
+              <p
+                className="
+                text-[10px]
+                uppercase
+                tracking-[0.35em]
+                text-purple-300
+                "
+              >
+                Shadow Aspect
+              </p>
 
 
-        </div>
+              <p
+                className="
+                mt-3
+                leading-7
+                text-white/70
+                "
+              >
+                {shadow}
+              </p>
 
 
+            </div>
 
-        {shadow && (
-
-          <div className="
-          mt-6
-          rounded-3xl
-          border
-          border-purple-500/20
-          bg-purple-500/5
-          p-6
-          ">
-
-            <p className="
-            text-xs
-            uppercase
-            tracking-widest
-            text-purple-300
-            ">
-              Shadow Aspect
-            </p>
+          )}
 
 
-            <p className="
-            mt-3
-            text-white/70
-            ">
-              {shadow}
-            </p>
-
-          </div>
-
-        )}
+        </GlassCard>
 
 
       </motion.div>
@@ -255,3 +257,4 @@ export function SoulProfile() {
 
   );
 }
+
