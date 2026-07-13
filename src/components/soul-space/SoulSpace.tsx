@@ -5,7 +5,7 @@ import { SoulSpaceHero } from "./SoulSpaceHero";
 import { LatestInsight } from "./LatestInsight";
 import { SoulProfile } from "./SoulProfile";
 import { PremiumCard } from "./PremiumCard";
-import { CursorGlow } from "./CursorGlow";
+import { CursorAtmosphere } from "./CursorAtmosphere";
 import { SoulScanConsole } from "./SoulScanConsole";
 import { DreamConsole } from "./DreamConsole";
 import { TarotConsole } from "./TarotConsole";
@@ -61,7 +61,7 @@ useEffect(() => {
 
      <main>
 
- <CursorGlow />
+<CursorAtmosphere />
 
 <GlobalParticles />
 
