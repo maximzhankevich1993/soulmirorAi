@@ -1,8 +1,18 @@
+```tsx
 "use client";
 
 import { motion } from "framer-motion";
-import { Sparkles, Moon, CreditCard } from "lucide-react";
+import {
+  Sparkles,
+  Moon,
+  CreditCard,
+} from "lucide-react";
+
 import { useSoulJourney } from "@/hooks/useSoulJourney";
+
+import { GlassCard } from "@/components/ui/GlassCard";
+import { GlowIcon } from "@/components/ui/GlowIcon";
+
 
 interface JourneyItem {
   type: "soul" | "dream" | "tarot";
@@ -12,12 +22,10 @@ interface JourneyItem {
 }
 
 
-
 export function SoulJourneyTimeline() {
 
   const {
     items,
-    loading,
   } = useSoulJourney();
 
 
@@ -33,38 +41,38 @@ export function SoulJourneyTimeline() {
     <section
       className="
       mx-auto
-      mt-24
+      mt-16
       w-full
-      max-w-5xl
+      max-w-4xl
       px-6
       "
     >
 
-      <div className="
-      rounded-[40px]
-      border
-      border-white/10
-      bg-white/[0.03]
-      p-8
-      backdrop-blur-3xl
-      ">
+      <GlassCard
+        highlight
+        className="p-6 md:p-8"
+      >
 
-
-        <p className="
-        text-xs
-        uppercase
-        tracking-[0.4em]
-        text-[#D6B25E]
-        ">
+        <p
+          className="
+          text-[11px]
+          uppercase
+          tracking-[0.4em]
+          text-[#D6B25E]
+          "
+        >
           Soul Journey
         </p>
 
 
-        <h2 className="
-        mt-3
-        text-3xl
-        text-[#F4F1EA]
-        ">
+        <h2
+          className="
+          mt-2
+          text-2xl
+          font-light
+          text-[#F4F1EA]
+          "
+        >
           Your evolution timeline
         </h2>
 
@@ -72,17 +80,21 @@ export function SoulJourneyTimeline() {
 
         {items.length === 0 && (
 
-          <div className="
-          mt-10
-          rounded-3xl
-          border
-          border-white/10
-          bg-black/20
-          p-6
-          text-white/50
-          ">
+          <div
+            className="
+            mt-8
+            rounded-2xl
+            border
+            border-white/10
+            bg-black/20
+            p-5
+            text-sm
+            text-white/50
+            "
+          >
 
-            Your journey will appear here after your first analysis.
+            Your journey will appear here after your
+            first analysis.
 
           </div>
 
@@ -90,11 +102,13 @@ export function SoulJourneyTimeline() {
 
 
 
-        <div className="
-        mt-10
-        space-y-6
-        ">
-
+        <div
+          className="
+          relative
+          mt-8
+          space-y-5
+          "
+        >
 
           {items.map(
             (item,index)=>{
@@ -111,7 +125,7 @@ export function SoulJourneyTimeline() {
 
                   initial={{
                     opacity:0,
-                    x:-20,
+                    x:-15,
                   }}
 
                   whileInView={{
@@ -123,62 +137,71 @@ export function SoulJourneyTimeline() {
                     once:true,
                   }}
 
+                  transition={{
+                    delay:index * 0.05,
+                  }}
+
                   className="
+                  relative
                   flex
-                  gap-5
+                  gap-4
                   rounded-3xl
                   border
                   border-white/10
-                  bg-black/20
-                  p-6
+                  bg-white/[0.03]
+                  p-5
                   "
 
                 >
 
-                  <div className="
-                  flex
-                  h-12
-                  w-12
-                  shrink-0
-                  items-center
-                  justify-center
-                  rounded-2xl
-                  bg-[#D6B25E]/10
-                  ">
+
+                  <GlowIcon>
 
                     <Icon
+                      size={20}
                       className="text-[#D6B25E]"
-                      size={24}
                     />
 
-                  </div>
+                  </GlowIcon>
+
 
 
                   <div>
 
-                    <p className="
-                    text-xs
-                    text-white/40
-                    ">
+                    <p
+                      className="
+                      text-[10px]
+                      uppercase
+                      tracking-widest
+                      text-white/40
+                      "
+                    >
                       {item.date}
                     </p>
 
 
-                    <h3 className="
-                    mt-1
-                    text-xl
-                    text-white
-                    ">
+                    <h3
+                      className="
+                      mt-1
+                      text-lg
+                      text-[#F4F1EA]
+                      "
+                    >
                       {item.title}
                     </h3>
 
 
-                    <p className="
-                    mt-2
-                    text-white/60
-                    ">
+                    <p
+                      className="
+                      mt-2
+                      text-sm
+                      leading-6
+                      text-white/60
+                      "
+                    >
                       {item.description}
                     </p>
+
 
                   </div>
 
@@ -194,9 +217,11 @@ export function SoulJourneyTimeline() {
         </div>
 
 
-      </div>
+      </GlassCard>
+
 
     </section>
 
   );
 }
+```
