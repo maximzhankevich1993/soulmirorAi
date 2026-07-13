@@ -1,7 +1,12 @@
+
 "use client";
 
-import { useSoulMemoryStore } from "@/store/soul-memory-store";
 import { Sparkles } from "lucide-react";
+
+import { useSoulMemoryStore } from "@/store/soul-memory-store";
+import { GlassCard } from "@/components/ui/GlassCard";
+import { GlowIcon } from "@/components/ui/GlowIcon";
+
 
 const reflections = {
 
@@ -22,10 +27,12 @@ const reflections = {
 
 };
 
+
 export function DailyReflection() {
 
   const { emotion } =
     useSoulMemoryStore();
+
 
   const reflection =
     reflections[
@@ -33,44 +40,90 @@ export function DailyReflection() {
     ] ??
     "Every day your soul writes a new chapter.";
 
+
   return (
 
-    <section className="mx-auto mt-20 w-full max-w-5xl px-6">
+    <section
+      className="
+      mx-auto
+      mt-16
+      w-full
+      max-w-4xl
+      px-6
+      "
+    >
 
-      <div
-        className="
-        rounded-[36px]
-        border
-        border-[#D6B25E]/20
-        bg-gradient-to-br
-        from-[#D6B25E]/10
-        to-transparent
-        p-8
-        backdrop-blur-2xl
-        "
+      <GlassCard
+        highlight
+        className="p-6 md:p-7"
       >
 
-        <div className="flex items-center gap-3">
+        <div
+          className="
+          flex
+          items-center
+          gap-4
+          "
+        >
 
-          <Sparkles
-            className="text-[#D6B25E]"
-            size={24}
-          />
+          <GlowIcon>
 
-          <p className="uppercase tracking-[0.35em] text-xs text-[#D6B25E]">
-            Daily Reflection
-          </p>
+            <Sparkles
+              size={20}
+              className="text-[#D6B25E]"
+            />
+
+          </GlowIcon>
+
+
+          <div>
+
+            <p
+              className="
+              text-[11px]
+              uppercase
+              tracking-[0.35em]
+              text-[#D6B25E]
+              "
+            >
+              Daily Reflection
+            </p>
+
+            <p
+              className="
+              mt-1
+              text-xs
+              text-white/40
+              "
+            >
+              AI Soul Guidance
+            </p>
+
+          </div>
+
 
         </div>
 
-        <h2 className="mt-6 text-3xl text-[#F4F1EA]">
+
+        <h2
+          className="
+          mt-6
+          max-w-3xl
+          text-2xl
+          font-light
+          leading-relaxed
+          text-[#F4F1EA]
+          md:text-3xl
+          "
+        >
           {reflection}
         </h2>
 
-      </div>
+
+      </GlassCard>
 
     </section>
 
   );
-
 }
+
