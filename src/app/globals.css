@@ -1,94 +1,245 @@
 @import "tailwindcss";
 
 
-/* =========================
-   Base System Reset
-========================= */
+:root {
+
+  --background: #09090b;
+  --foreground: #f4f1ea;
+
+  --gold: #d6b25e;
+  --purple: #8b5cf6;
+
+}
+
+
 
 html {
+
   scroll-behavior: smooth;
+
+  background:
+    var(--background);
+
 }
+
+
 
 body {
-  background-color: #09090b;
-  color: #f4f1ea;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
+
+  min-height:100vh;
+
+  background:
+
+    radial-gradient(
+      circle at 50% -10%,
+      rgba(214,178,94,0.12),
+      transparent 35%
+    ),
+
+    radial-gradient(
+      circle at 85% 40%,
+      rgba(139,92,246,0.08),
+      transparent 30%
+    ),
+
+    #09090b;
+
+
+  color:
+    var(--foreground);
+
+
+  -webkit-font-smoothing:
+    antialiased;
+
+
+  -moz-osx-font-smoothing:
+    grayscale;
+
+
+  text-rendering:
+    optimizeLegibility;
+
 }
+
+
 
 /* =========================
-   Selection Styling
+   Base
 ========================= */
 
-::selection {
-  background: rgba(214, 178, 94, 0.25);
-  color: #f4f1ea;
-}
-
-/* =========================
-   Scrollbar (Luxury Thin)
-========================= */
-
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(214, 178, 94, 0.25);
-  border-radius: 999px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(214, 178, 94, 0.4);
-}
-
-/* =========================
-   Blur Rendering Fix
-========================= */
 
 * {
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
+
+  box-sizing:border-box;
+
+  -webkit-backface-visibility:hidden;
+
+  backface-visibility:hidden;
+
 }
 
+
+
+canvas {
+
+  touch-action:none;
+
+}
+
+
+
 /* =========================
-   Focus States (Luxury Minimal)
+   Selection
 ========================= */
+
+
+::selection {
+
+  background:
+    rgba(214,178,94,0.25);
+
+  color:
+    #f4f1ea;
+
+}
+
+
+
+/* =========================
+   Scrollbar
+========================= */
+
+
+::-webkit-scrollbar {
+
+  width:6px;
+
+}
+
+
+::-webkit-scrollbar-track {
+
+  background:
+    transparent;
+
+}
+
+
+::-webkit-scrollbar-thumb {
+
+  background:
+    rgba(214,178,94,0.25);
+
+  border-radius:
+    999px;
+
+}
+
+
+
+::-webkit-scrollbar-thumb:hover {
+
+  background:
+    rgba(214,178,94,0.45);
+
+}
+
+
+
+/* =========================
+   Focus
+========================= */
+
 
 :focus-visible {
-  outline: 1px solid rgba(214, 178, 94, 0.4);
-  outline-offset: 2px;
+
+  outline:
+    1px solid rgba(214,178,94,0.5);
+
+  outline-offset:
+    3px;
+
 }
 
+
+
 /* =========================
-   Glass Enhancement
+   Glass
 ========================= */
+
 
 .glass {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+
+  background:
+    rgba(255,255,255,0.03);
+
+
+  backdrop-filter:
+    blur(30px);
+
+
+  -webkit-backdrop-filter:
+    blur(30px);
+
+
+  border:
+    1px solid rgba(255,255,255,0.08);
+
 }
+
+
 
 /* =========================
-   Subtle Noise Layer (optional visual depth)
+   Luxury Glow
 ========================= */
 
-.noise {
-  position: relative;
+
+.gold-glow {
+
+  box-shadow:
+    0 0 60px rgba(214,178,94,0.18);
+
 }
 
+
+
+.purple-glow {
+
+  box-shadow:
+    0 0 60px rgba(139,92,246,0.18);
+
+}
+
+
+
+/* =========================
+   Noise
+========================= */
+
+
+.noise {
+
+  position:relative;
+
+}
+
+
 .noise::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.03;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.4'/%3E%3C/svg%3E");
+
+  content:"";
+
+  position:absolute;
+
+  inset:0;
+
+  pointer-events:none;
+
+  opacity:0.03;
+
+
+  background-image:url(
+    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.4'/%3E%3C/svg%3E"
+  );
+
 }
