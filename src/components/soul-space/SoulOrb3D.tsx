@@ -2,103 +2,35 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
-  Float,
   Environment,
-  Sphere,
+  Float,
 } from "@react-three/drei";
 
-import { useRef } from "react";
+import {
+  useRef,
+} from "react";
+
 import * as THREE from "three";
 
 import { SoulParticles } from "./SoulParticles";
 import { SoulOrbInteraction } from "./SoulOrbInteraction";
-
 import { soulStates } from "./SoulOrbStates";
 
-import { useSoulOrbStore } from "@/store/soul-orb-store";
-
-
-function OrbRing({
-  rotation,
-  speed,
-  radius,
-}: {
-  rotation: [number, number, number];
-  speed: number;
-  radius: number;
-}) {
-
-  const ring =
-    useRef<THREE.Mesh>(null);
-
-
-  useFrame((state) => {
-
-    if (!ring.current) return;
-
-
-    ring.current.rotation.z += speed;
-
-
-    ring.current.rotation.x =
-      rotation[0] +
-      Math.sin(
-        state.clock.elapsedTime * 0.5
-      ) * 0.08;
-
-  });
-
-
-  return (
-
-    <mesh
-      ref={ring}
-      rotation={rotation}
-    >
-
-      <torusGeometry
-        args={[
-          radius,
-          0.018,
-          32,
-          200,
-        ]}
-      />
-
-
-      <meshPhysicalMaterial
-
-        color="#D6B25E"
-
-        emissive="#D6B25E"
-
-        emissiveIntensity={3}
-
-        metalness={1}
-
-        roughness={0}
-
-        clearcoat={1}
-
-      />
-
-    </mesh>
-
-  );
-
-}
+import {
+  useSoulOrbStore,
+} from "@/store/soul-orb-store";
 
 
 
-function SoulCore(){
+function SoulCore() {
 
-  const core =
+  const mesh =
     useRef<THREE.Mesh>(null);
 
 
   useFrame((state)=>{
 
-    if(!core.current)
+    if(!mesh.current)
       return;
 
 
@@ -108,16 +40,15 @@ function SoulCore(){
 
     const pulse =
       1 +
-      Math.sin(time * 2) *
-      0.08;
+      Math.sin(time * 2.5) * 0.08;
 
 
-    core.current.scale.setScalar(
+    mesh.current.scale.setScalar(
       pulse
     );
 
 
-    core.current.rotation.y =
+    mesh.current.rotation.y =
       time * 0.5;
 
 
@@ -126,15 +57,16 @@ function SoulCore(){
 
   return (
 
-    <mesh ref={core}>
+    <mesh ref={mesh}>
 
 
-      <sphereGeometry
+      <icosahedronGeometry
+
         args={[
-          0.38,
-          64,
-          64,
+          0.42,
+          5,
         ]}
+
       />
 
 
@@ -148,11 +80,13 @@ function SoulCore(){
 
         roughness={0}
 
-        metalness={0.2}
+        metalness={0.4}
 
         transmission={0.5}
 
         thickness={2}
+
+        clearcoat={1}
 
       />
 
@@ -166,23 +100,153 @@ function SoulCore(){
 
 
 
+
+function EnergyRing({
+
+  rotation,
+
+  speed,
+
+  radius,
+
+}:{
+
+  rotation:
+    [number,number,number];
+
+  speed:number;
+
+  radius:number;
+
+}){
+
+
+  const ring =
+    useRef<THREE.Mesh>(null);
+
+
+
+  useFrame((state)=>{
+
+
+    if(!ring.current)
+      return;
+
+
+    const time =
+      state.clock.elapsedTime;
+
+
+
+    const pulse =
+      1 +
+      Math.sin(
+        time * 1.8
+      ) * 0.035;
+
+
+
+    ring.current.scale.setScalar(
+      pulse
+    );
+
+
+    ring.current.rotation.z +=
+      speed;
+
+
+    ring.current.rotation.y =
+      Math.sin(
+        time * 0.4
+      ) * 0.15;
+
+
+
+  });
+
+
+
+  return (
+
+    <mesh
+
+      ref={ring}
+
+      rotation={rotation}
+
+    >
+
+
+      <torusGeometry
+
+        args={[
+          radius,
+          0.012,
+          24,
+          160,
+        ]}
+
+      />
+
+
+      <meshPhysicalMaterial
+
+        color="#D6B25E"
+
+        emissive="#D6B25E"
+
+        emissiveIntensity={5}
+
+        metalness={1}
+
+        roughness={0}
+
+        clearcoat={1}
+
+      />
+
+
+    </mesh>
+
+  );
+
+}
+
+
+
+
+
+
+
 function EnergyThread(){
+
 
   const mesh =
     useRef<THREE.Mesh>(null);
 
 
+
   useFrame((state)=>{
+
 
     if(!mesh.current)
       return;
 
 
-    mesh.current.rotation.y =
-      state.clock.elapsedTime * 0.2;
+    mesh.current.rotation.x =
+      Math.sin(
+        state.clock.elapsedTime
+      ) * 0.3;
+
+
+
+    mesh.current.rotation.y +=
+      0.003;
+
 
 
   });
+
 
 
   return (
@@ -193,9 +257,9 @@ function EnergyThread(){
       <torusGeometry
 
         args={[
-          0.85,
-          0.008,
-          16,
+          0.75,
+          0.004,
+          12,
           200,
         ]}
 
@@ -204,11 +268,11 @@ function EnergyThread(){
 
       <meshStandardMaterial
 
-        color="#D6B25E"
+        color="#8B5CF6"
 
-        emissive="#D6B25E"
+        emissive="#8B5CF6"
 
-        emissiveIntensity={6}
+        emissiveIntensity={5}
 
       />
 
@@ -223,49 +287,12 @@ function EnergyThread(){
 
 
 
-function OrbCore() {
+
+function SoulAura(){
 
 
   const mesh =
     useRef<THREE.Mesh>(null);
-
-
-  const material =
-    useRef<THREE.MeshPhysicalMaterial>(null);
-
-
-
-  const currentState =
-    useSoulOrbStore(
-      state => state.state
-    );
-
-
-  const config =
-    soulStates[currentState];
-
-
-
-  const {
-    intensity,
-    scale,
-  } =
-    SoulOrbInteraction();
-
-
-
-  const color =
-    useRef(
-      new THREE.Color(
-        config.color
-      )
-    );
-
-
-  const target =
-    new THREE.Color(
-      config.color
-    );
 
 
 
@@ -282,114 +309,56 @@ function OrbCore() {
 
 
     mesh.current.rotation.y =
-      time * 0.15;
-
-
-
-    const breathe =
-      1 +
-      Math.sin(
-        time * 1.8
-      ) * 0.035;
+      time * 0.1;
 
 
 
     mesh.current.scale.setScalar(
-      breathe * scale
+      1 +
+      Math.sin(time) * 0.05
     );
-
-
-
-    color.current.lerp(
-      target,
-      0.04
-    );
-
-
-
-    if(material.current){
-
-      material.current.color =
-        color.current;
-
-
-      material.current.emissiveIntensity =
-        THREE.MathUtils.lerp(
-
-          material.current.emissiveIntensity,
-
-          config.intensity *
-          intensity,
-
-          0.04
-
-        );
-
-    }
-
 
 
   });
 
 
 
-
   return (
 
-    <Float
+    <mesh ref={mesh}>
 
-      speed={1.5}
 
-      rotationIntensity={0.25}
-
-      floatIntensity={0.35}
-
-    >
-
-      <Sphere
-
-        ref={mesh}
+      <sphereGeometry
 
         args={[
-          1.05,
-          96,
-          96,
+          0.95,
+          64,
+          64,
         ]}
 
-      >
+      />
 
 
-        <meshPhysicalMaterial
+      <meshPhysicalMaterial
 
-          ref={material}
+        color="#D6B25E"
 
-          transmission={0.7}
+        emissive="#D6B25E"
 
-          thickness={3}
+        emissiveIntensity={1}
 
-          roughness={0.02}
+        transparent
 
-          metalness={0.15}
+        opacity={0.08}
 
-          clearcoat={1}
+        roughness={0}
 
-          clearcoatRoughness={0}
+        transmission={1}
 
-          transparent
-
-          opacity={0.35}
-
-          emissive={config.emissive}
-
-          emissiveIntensity={1.5}
-
-        />
+      />
 
 
-      </Sphere>
-
-
-    </Float>
+    </mesh>
 
   );
 
@@ -399,12 +368,21 @@ function OrbCore() {
 
 
 
+
 export function SoulOrb3D(){
+
+
+  const {
+    scale,
+  } =
+    SoulOrbInteraction();
+
 
 
   return (
 
     <div
+
       className="
       relative
       h-[300px]
@@ -412,17 +390,20 @@ export function SoulOrb3D(){
       md:h-[340px]
       md:w-[340px]
       "
+
     >
 
 
       <div
+
         className="
         absolute
         inset-0
         rounded-full
         bg-[#D6B25E]/10
-        blur-[90px]
+        blur-[100px]
         "
+
       />
 
 
@@ -430,18 +411,23 @@ export function SoulOrb3D(){
       <Canvas
 
         camera={{
+
           position:[
             0,
             0,
             3.5,
           ],
+
         }}
 
       >
 
 
+
         <ambientLight
-          intensity={0.8}
+
+          intensity={1}
+
         />
 
 
@@ -449,12 +435,12 @@ export function SoulOrb3D(){
         <pointLight
 
           position={[
-            2,
-            2,
-            2,
+            3,
+            3,
+            3,
           ]}
 
-          intensity={2}
+          intensity={3}
 
           color="#D6B25E"
 
@@ -465,12 +451,12 @@ export function SoulOrb3D(){
         <pointLight
 
           position={[
+            -3,
             -2,
-            -1,
             2,
           ]}
 
-          intensity={1}
+          intensity={2}
 
           color="#8B5CF6"
 
@@ -478,58 +464,82 @@ export function SoulOrb3D(){
 
 
 
-        <OrbCore />
 
-        <SoulCore />
+        <Float
 
-        <EnergyThread />
+          speed={1.5}
 
+          floatIntensity={0.4}
 
-        <OrbRing
-
-          rotation={[
-            0,
-            0,
-            0
-          ]}
-
-          speed={0.002}
-
-          radius={1.35}
-
-        />
+        >
 
 
+          <group
 
-        <OrbRing
+            scale={scale}
 
-          rotation={[
-            Math.PI / 2,
-            0,
-            0
-          ]}
-
-          speed={-0.0015}
-
-          radius={1.32}
-
-        />
+          >
 
 
+            <SoulAura />
 
-        <OrbRing
 
-          rotation={[
-            0,
-            Math.PI / 2,
-            0
-          ]}
+            <SoulCore />
 
-          speed={0.001}
 
-          radius={1.38}
+            <EnergyThread />
 
-        />
+
+            <EnergyRing
+
+              rotation={[
+                0,
+                0,
+                0
+              ]}
+
+              speed={0.003}
+
+              radius={1.15}
+
+            />
+
+
+            <EnergyRing
+
+              rotation={[
+                Math.PI / 2,
+                0,
+                0
+              ]}
+
+              speed={-0.002}
+
+              radius={1.18}
+
+            />
+
+
+            <EnergyRing
+
+              rotation={[
+                0,
+                Math.PI / 2,
+                0
+              ]}
+
+              speed={0.0015}
+
+              radius={1.22}
+
+            />
+
+
+          </group>
+
+
+        </Float>
+
 
 
 
@@ -538,7 +548,9 @@ export function SoulOrb3D(){
 
 
         <Environment
+
           preset="night"
+
         />
 
 
