@@ -16,7 +16,7 @@ import { OnboardingRitual } from "@/components/onboarding/OnboardingRitual";
 import { SoulDashboard } from "./SoulDashboard";
 import { DailyReflection } from "./DailyReflection";
 import { GlobalParticles } from "./GlobalParticles";
-
+import { EonEcosystemSection } from "@/components/sections/eon-ecosystem-section";
 
 export function SoulSpace() {
 
@@ -70,6 +70,8 @@ useEffect(() => {
   <SoulMemoryLoader />
 
   <SoulSpaceHero />
+
+  <EonEcosystemSection />
 
   <SoulDashboard />
 
