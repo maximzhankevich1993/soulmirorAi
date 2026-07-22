@@ -9,39 +9,48 @@ export function Logo() {
   return (
 
     <Link
+
       href="/"
-      aria-label="SoulMirror AI home"
+
+      aria-label="EON AI home"
+
       className="
       group
       inline-flex
       items-center
       gap-3
       "
+
     >
 
 
-      <div className="
-      relative
-      flex
-      h-11
-      w-11
-      items-center
-      justify-center
-      ">
+      {/* EON Core Symbol */}
 
+      <div
 
-        {/* Aura */}
+        className="
+        relative
+        flex
+        h-11
+        w-11
+        items-center
+        justify-center
+        "
+
+      >
+
 
         <motion.div
 
           animate={{
             scale:[1,1.15,1],
-            opacity:[0.35,0.6,0.35],
+            opacity:[0.35,0.65,0.35],
           }}
 
           transition={{
-            duration:4,
+            duration:5,
             repeat:Infinity,
+            ease:"easeInOut",
           }}
 
           className="
@@ -56,12 +65,10 @@ export function Logo() {
 
 
 
-        {/* Symbol */}
-
         <motion.div
 
           whileHover={{
-            rotate:25,
+            rotate:20,
             scale:1.08,
           }}
 
@@ -90,29 +97,48 @@ export function Logo() {
         >
 
 
-          {/* Outer orbit */}
+          {/* EON Orbit */}
 
-          <div className="
-          absolute
-          inset-1
-          rounded-full
-          border
-          border-[#D6B25E]/20
-          " />
+          <motion.div
+
+            animate={{
+              rotate:360,
+            }}
+
+            transition={{
+              duration:30,
+              repeat:Infinity,
+              ease:"linear",
+            }}
+
+            className="
+            absolute
+            inset-1
+            rounded-full
+            border
+            border-[#D6B25E]/20
+            "
+
+          />
 
 
-          {/* Mirror Core */}
 
-          <div className="
-          relative
-          h-4
-          w-4
-          rounded-full
-          border
-          border-[#D6B25E]
-          bg-[#D6B25E]/10
-          shadow-[0_0_15px_rgba(214,178,94,.8)]
-          " />
+          {/* Core */}
+
+          <div
+
+            className="
+            h-4
+            w-4
+            rounded-full
+            border
+            border-[#D6B25E]
+            bg-[#D6B25E]/10
+            shadow-[0_0_20px_rgba(214,178,94,.8)]
+            "
+
+          />
+
 
 
         </motion.div>
@@ -122,11 +148,20 @@ export function Logo() {
 
 
 
-      <div className="
-      flex
-      flex-col
-      leading-none
-      ">
+
+
+      {/* Brand */}
+
+
+      <div
+
+        className="
+        flex
+        flex-col
+        leading-none
+        "
+
+      >
 
 
         <span
@@ -135,36 +170,43 @@ export function Logo() {
           font-[family:var(--font-cormorant)]
           text-2xl
           font-semibold
-          tracking-[0.04em]
+          tracking-[0.08em]
           text-[#F4F1EA]
-          transition-colors
-          duration-300
-          group-hover:text-white
           "
 
         >
-          SoulMirror
+
+          EON AI
+
         </span>
+
+
 
 
         <span
 
           className="
-          text-[10px]
+          mt-1
+          text-[9px]
           uppercase
           tracking-[0.45em]
           text-[#D6B25E]
           "
 
         >
-          AI
+
+          SoulMirror
+
         </span>
+
 
 
       </div>
 
 
+
     </Link>
 
   );
+
 }
