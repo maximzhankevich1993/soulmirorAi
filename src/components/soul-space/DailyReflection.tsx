@@ -1,9 +1,16 @@
-
 "use client";
 
-import { Sparkles } from "lucide-react";
+import {
+  Sparkles,
+  Brain,
+  Heart,
+  TrendingUp,
+} from "lucide-react";
+
+import { motion } from "framer-motion";
 
 import { useSoulMemoryStore } from "@/store/soul-memory-store";
+
 import { GlassCard } from "@/components/ui/GlassCard";
 import { GlowIcon } from "@/components/ui/GlowIcon";
 
@@ -11,26 +18,28 @@ import { GlowIcon } from "@/components/ui/GlowIcon";
 const reflections = {
 
   Calm:
-    "Today is a good day to listen more than speak.",
+    "Your mind is entering a state of clarity. Today is ideal for observation and conscious decisions.",
 
   Healing:
-    "Old wounds don't disappear overnight. Be patient with yourself.",
+    "Your emotional patterns show a period of transformation. Growth requires patience and self-awareness.",
 
   Fear:
-    "Courage is not the absence of fear, but moving despite it.",
+    "Your system detects uncertainty, but also the potential for a new level of confidence.",
 
   Joy:
-    "Share your energy. Someone needs your light today.",
+    "Your emotional energy is expanding. Positive connections can accelerate your evolution.",
 
   Focus:
-    "One meaningful action today is worth more than ten unfinished ones.",
+    "Your current pattern supports deep work and meaningful progress.",
 
 };
 
 
 export function DailyReflection() {
 
-  const { emotion } =
+  const {
+    emotion,
+  } =
     useSoulMemoryStore();
 
 
@@ -38,92 +47,316 @@ export function DailyReflection() {
     reflections[
       emotion as keyof typeof reflections
     ] ??
-    "Every day your soul writes a new chapter.";
+    "Your intelligence profile continues evolving through every experience.";
+
+
+  const metrics = [
+
+    {
+      label:"Emotional State",
+      value: emotion || "Balanced",
+      icon:Heart,
+    },
+
+    {
+      label:"Pattern Growth",
+      value:"+8%",
+      icon:TrendingUp,
+    },
+
+    {
+      label:"AI Insight",
+      value:"Active",
+      icon:Brain,
+    },
+
+  ];
 
 
   return (
 
     <section
       className="
+      relative
       mx-auto
-      mt-16
+      mt-24
       w-full
-      max-w-4xl
+      max-w-5xl
       px-6
       "
     >
 
-      <GlassCard
-        highlight
-        className="p-6 md:p-7"
+
+      <motion.div
+
+        initial={{
+          opacity:0,
+          y:30,
+        }}
+
+        whileInView={{
+          opacity:1,
+          y:0,
+        }}
+
+        viewport={{
+          once:true,
+        }}
+
+        transition={{
+          duration:0.8,
+        }}
+
       >
 
-        <div
+        <GlassCard
+          highlight
           className="
-          flex
-          items-center
-          gap-4
+          relative
+          overflow-hidden
+          p-8
+          md:p-10
           "
         >
 
-          <GlowIcon>
+          {/* Ambient Glow */}
 
-            <Sparkles
-              size={20}
-              className="text-[#D6B25E]"
-            />
+          <div
+            className="
+            pointer-events-none
+            absolute
+            right-0
+            top-0
+            h-64
+            w-64
+            rounded-full
+            bg-[#D6B25E]/10
+            blur-[100px]
+            "
+          />
 
-          </GlowIcon>
+
+          <div
+            className="
+            relative
+            z-10
+            flex
+            items-center
+            gap-4
+            "
+          >
+
+            <GlowIcon>
+
+              <Sparkles
+                size={22}
+                className="
+                text-[#D6B25E]
+                "
+              />
+
+            </GlowIcon>
 
 
-          <div>
+            <div>
 
-            <p
-              className="
-              text-[11px]
-              uppercase
-              tracking-[0.35em]
-              text-[#D6B25E]
-              "
-            >
-              Daily Reflection
-            </p>
+              <p
+                className="
+                text-[11px]
+                uppercase
+                tracking-[0.4em]
+                text-[#D6B25E]
+                "
+              >
+                Daily Intelligence Reflection
+              </p>
 
-            <p
-              className="
-              mt-1
-              text-xs
-              text-white/40
-              "
-            >
-              AI Soul Guidance
-            </p>
+
+              <p
+                className="
+                mt-2
+                text-xs
+                text-white/40
+                "
+              >
+                Powered by EON AI
+              </p>
+
+            </div>
 
           </div>
 
 
-        </div>
+
+          <h2
+            className="
+            relative
+            z-10
+            mt-8
+            max-w-3xl
+            font-[family:var(--font-cormorant)]
+            text-3xl
+            font-light
+            leading-relaxed
+            text-[#F4F1EA]
+            md:text-4xl
+            "
+          >
+            {reflection}
+          </h2>
 
 
-        <h2
+
+          <div
+            className="
+            relative
+            z-10
+            mt-10
+            grid
+            gap-4
+            sm:grid-cols-3
+            "
+          >
+
+            {metrics.map((metric,index)=>{
+
+              const Icon = metric.icon;
+
+
+              return (
+
+                <motion.div
+
+                  key={metric.label}
+
+                  initial={{
+                    opacity:0,
+                    y:15,
+                  }}
+
+                  whileInView={{
+                    opacity:1,
+                    y:0,
+                  }}
+
+                  viewport={{
+                    once:true,
+                  }}
+
+                  transition={{
+                    delay:index * 0.1,
+                  }}
+
+                  className="
+                  rounded-2xl
+                  border
+                  border-white/10
+                  bg-white/[0.03]
+                  p-5
+                  "
+                >
+
+                  <Icon
+                    size={18}
+                    className="
+                    text-[#D6B25E]
+                    "
+                  />
+
+
+                  <p
+                    className="
+                    mt-4
+                    text-[10px]
+                    uppercase
+                    tracking-[0.3em]
+                    text-white/40
+                    "
+                  >
+                    {metric.label}
+                  </p>
+
+
+                  <p
+                    className="
+                    mt-2
+                    text-lg
+                    font-light
+                    text-[#F4F1EA]
+                    "
+                  >
+                    {metric.value}
+                  </p>
+
+
+                </motion.div>
+
+              );
+
+            })}
+
+          </div>
+
+        </GlassCard>
+
+      </motion.div>
+
+
+      <motion.div
+
+        initial={{
+          opacity:0,
+        }}
+
+        whileInView={{
+          opacity:1,
+        }}
+
+        viewport={{
+          once:true,
+        }}
+
+        transition={{
+          delay:0.4,
+        }}
+
+        className="
+        mt-8
+        flex
+        justify-center
+        "
+      >
+
+        <div
           className="
-          mt-6
-          max-w-3xl
-          text-2xl
-          font-light
-          leading-relaxed
-          text-[#F4F1EA]
-          md:text-3xl
+          rounded-full
+          border
+          border-[#D6B25E]/10
+          bg-white/[0.02]
+          px-6
+          py-3
+          backdrop-blur-xl
           "
         >
-          {reflection}
-        </h2>
 
+          <p
+            className="
+            text-[10px]
+            uppercase
+            tracking-[0.45em]
+            text-white/40
+            "
+          >
+            EON Intelligence Engine • Personal Evolution System
+          </p>
 
-      </GlassCard>
+        </div>
+
+      </motion.div>
+
 
     </section>
 
   );
-}
 
+}
