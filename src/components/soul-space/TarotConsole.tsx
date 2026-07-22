@@ -1,11 +1,23 @@
-
 "use client";
 
-import { MoonStar, Sparkles } from "lucide-react";
-import { motion } from "framer-motion";
-import { useState } from "react";
+import {
+  MoonStar,
+  Sparkles,
+  Brain,
+} from "lucide-react";
 
-import { AIConsole } from "@/components/ui/AIConsole";
+import {
+  motion,
+} from "framer-motion";
+
+import {
+  useState,
+} from "react";
+
+
+import {
+  AIConsole,
+} from "@/components/ui/AIConsole";
 
 
 interface TarotResult {
@@ -16,24 +28,39 @@ interface TarotResult {
 
 
 export function TarotConsole() {
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] =
+
+
+  const [loading,setLoading] =
+    useState(false);
+
+
+  const [result,setResult] =
     useState<TarotResult | null>(null);
 
 
-  async function drawCard() {
+
+  async function drawCard(){
+
     try {
+
       setLoading(true);
 
 
       const response =
-        await fetch("/api/tarot", {
-          method: "POST",
-        });
+        await fetch(
+          "/api/tarot",
+          {
+            method:"POST",
+          }
+        );
 
 
-      if (!response.ok) {
-        throw new Error("Tarot failed");
+      if(!response.ok){
+
+        throw new Error(
+          "Tarot failed"
+        );
+
       }
 
 
@@ -44,66 +71,101 @@ export function TarotConsole() {
       setResult(data);
 
 
-    } catch(error) {
+    } catch(error){
+
 
       console.error(
         "TAROT ERROR",
         error
       );
 
+
     } finally {
+
 
       setLoading(false);
 
+
     }
+
   }
 
 
+
   return (
+
     <AIConsole
 
+
       icon={
+
         <MoonStar
-          size={20}
-          className="text-[#D6B25E]"
+
+          size={22}
+
+          className="
+          text-[#D6B25E]
+          "
+
         />
+
       }
 
 
-      eyebrow="Tarot Reflection"
+
+      eyebrow="EON Symbolic Intelligence"
 
 
-      title="Draw your card"
+
+      title="Explore archetypal symbols"
 
 
-      placeholder="Your intuition is waiting..."
+
+      description="
+      Discover symbolic patterns
+      through AI-powered archetype analysis.
+      "
+
+
+
+      placeholder="
+      Your intuition is waiting...
+      "
+
 
 
       value=""
 
 
-      onChange={() => {}}
+      onChange={()=>{}}
+
 
 
       onSubmit={drawCard}
 
 
+
       loading={loading}
 
 
-      buttonText="Draw Tarot Card"
+
+      buttonText="Reveal Symbol"
 
 
-      loadingText="Connecting..."
+
+      loadingText="Analyzing archetype..."
+
 
 
       result={
+
         result && (
 
           <motion.div
+
             initial={{
               opacity:0,
-              y:20,
+              y:25,
             }}
 
             animate={{
@@ -111,70 +173,215 @@ export function TarotConsole() {
               y:0,
             }}
 
+            transition={{
+              duration:0.6,
+            }}
+
             className="
-            rounded-3xl
+            space-y-7
+            rounded-[32px]
             border
             border-[#D6B25E]/20
-            bg-[#D6B25E]/5
-            p-5
+            bg-gradient-to-br
+            from-[#D6B25E]/10
+            via-white/[0.03]
+            to-[#8B5CF6]/10
+            p-7
             text-center
             "
+
           >
-
-            <p
-              className="
-              text-[11px]
-              uppercase
-              tracking-[0.35em]
-              text-[#D6B25E]
-              "
-            >
-              Your Card
-            </p>
-
-
-            <h3
-              className="
-              mt-3
-              text-3xl
-              font-light
-              text-[#F4F1EA]
-              "
-            >
-              {result.card}
-            </h3>
-
-
-            <p
-              className="
-              mt-5
-              leading-7
-              text-white/70
-              "
-            >
-              {result.meaning}
-            </p>
 
 
             <div
               className="
-              mt-5
-              rounded-2xl
-              bg-white/5
-              p-4
-              text-white/80
+              flex
+              flex-col
+              items-center
+              gap-3
               "
             >
-              {result.guidance}
+
+              <div
+                className="
+                flex
+                h-12
+                w-12
+                items-center
+                justify-center
+                rounded-2xl
+                bg-[#D6B25E]/10
+                "
+              >
+
+                <Brain
+                  size={22}
+                  className="
+                  text-[#D6B25E]
+                  "
+                />
+
+              </div>
+
+
+              <p
+                className="
+                text-[10px]
+                uppercase
+                tracking-[0.4em]
+                text-[#D6B25E]
+                "
+              >
+                Symbolic Intelligence Result
+              </p>
+
+
+              <p
+                className="
+                text-xs
+                text-white/40
+                "
+              >
+                Powered by EON AI
+              </p>
+
+
+            </div>
+
+
+
+            <div>
+
+              <h3
+                className="
+                font-[family:var(--font-cormorant)]
+                text-5xl
+                font-light
+                text-[#F4F1EA]
+                "
+              >
+                {result.card}
+              </h3>
+
+            </div>
+
+
+
+            <div>
+
+              <p
+                className="
+                text-[11px]
+                uppercase
+                tracking-[0.35em]
+                text-white/40
+                "
+              >
+                Symbol Meaning
+              </p>
+
+
+              <p
+                className="
+                mt-4
+                leading-8
+                text-white/70
+                "
+              >
+                {result.meaning}
+              </p>
+
+            </div>
+
+
+
+            <div
+              className="
+              rounded-2xl
+              border
+              border-white/10
+              bg-white/[0.03]
+              p-5
+              "
+            >
+
+              <div
+                className="
+                flex
+                items-center
+                justify-center
+                gap-2
+                "
+              >
+
+                <Sparkles
+                  size={15}
+                  className="
+                  text-[#D6B25E]
+                  "
+                />
+
+
+                <p
+                  className="
+                  text-[10px]
+                  uppercase
+                  tracking-[0.35em]
+                  text-white/40
+                  "
+                >
+                  Guidance
+                </p>
+
+              </div>
+
+
+              <p
+                className="
+                mt-3
+                text-white/80
+                "
+              >
+                {result.guidance}
+              </p>
+
+
+            </div>
+
+
+
+            <div
+              className="
+              border-t
+              border-white/10
+              pt-5
+              "
+            >
+
+              <p
+                className="
+                text-[10px]
+                uppercase
+                tracking-[0.4em]
+                text-white/30
+                "
+              >
+                EON Intelligence Engine • Symbol Analysis System
+              </p>
+
+
             </div>
 
 
           </motion.div>
 
         )
+
       }
 
-    />
-  );
-}
 
+    />
+
+  );
+
+}
