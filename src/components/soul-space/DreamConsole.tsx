@@ -1,84 +1,145 @@
-
 "use client";
 
-import { Moon, Sparkles } from "lucide-react";
-import { motion } from "framer-motion";
-import { useState } from "react";
+import {
+  Moon,
+  Sparkles,
+  Brain,
+} from "lucide-react";
 
-import { AIConsole } from "@/components/ui/AIConsole";
-import { useDreamAnalysis } from "@/hooks/useDreamAnalysis";
+import {
+  motion,
+} from "framer-motion";
+
+import {
+  useState,
+} from "react";
+
+
+import {
+  AIConsole,
+} from "@/components/ui/AIConsole";
+
+
+import {
+  useDreamAnalysis,
+} from "@/hooks/useDreamAnalysis";
+
 
 
 export function DreamConsole() {
-  const [dream, setDream] = useState("");
+
+
+  const [dream,setDream] =
+    useState("");
+
+
 
   const {
     analyzeDream,
     loading,
     result,
-  } = useDreamAnalysis();
+  } =
+    useDreamAnalysis();
 
 
-  async function handleSubmit() {
-    if (!dream.trim()) return;
+
+  async function handleSubmit(){
+
+
+    if(!dream.trim())
+      return;
+
 
     await analyzeDream(dream);
 
+
     setDream("");
+
+
   }
 
 
+
   return (
+
     <AIConsole
 
+
       icon={
+
         <Moon
-          size={20}
-          className="text-purple-300"
+
+          size={22}
+
+          className="
+          text-purple-300
+          "
+
         />
+
       }
 
 
-      eyebrow="Dream Analysis"
+
+      eyebrow="EON Dream Intelligence"
 
 
-      title="Decode your dreams"
+
+      title="Decode subconscious patterns"
+
+
+
+      description="
+      AI interpretation of dream symbols,
+      emotional signals and hidden patterns.
+      "
+
 
 
       placeholder="
-Describe your dream...
-symbols, places, people, feelings
-"
+      Describe your dream...
+      symbols, places, people,
+      emotions and experiences
+      "
+
 
 
       value={dream}
 
 
+
       onChange={setDream}
+
 
 
       onSubmit={handleSubmit}
 
 
+
       loading={loading}
 
 
-      buttonText="Reveal Dream Meaning"
+
+      buttonText="Analyze Dream"
 
 
-      loadingText="Interpreting dream..."
+
+      loadingText="Reading subconscious patterns..."
+
 
 
       color="purple"
 
 
       result={
+
         result && (
 
           <motion.div
+
             initial={{
               opacity:0,
-              y:20,
+              y:25,
             }}
 
             animate={{
@@ -86,81 +147,247 @@ symbols, places, people, feelings
               y:0,
             }}
 
+            transition={{
+              duration:0.6,
+            }}
+
             className="
-            rounded-3xl
+            space-y-7
+            rounded-[32px]
             border
             border-purple-400/20
-            bg-purple-500/5
-            p-5
+            bg-gradient-to-br
+            from-purple-500/10
+            via-white/[0.03]
+            to-[#D6B25E]/10
+            p-7
             "
           >
 
-            <p
+
+            <div
               className="
-              text-[11px]
-              uppercase
-              tracking-[0.35em]
-              text-purple-300
+              flex
+              items-center
+              gap-4
               "
             >
-              Dream Insight
-            </p>
+
+              <div
+                className="
+                flex
+                h-11
+                w-11
+                items-center
+                justify-center
+                rounded-2xl
+                bg-purple-500/10
+                "
+              >
+
+                <Brain
+                  size={21}
+                  className="
+                  text-purple-300
+                  "
+                />
+
+              </div>
 
 
-            <h3
-              className="
-              mt-3
-              text-2xl
-              font-light
-              text-[#F4F1EA]
-              "
-            >
-              {result.summary}
-            </h3>
+              <div>
+
+                <p
+                  className="
+                  text-[10px]
+                  uppercase
+                  tracking-[0.4em]
+                  text-purple-300
+                  "
+                >
+                  Dream Intelligence Result
+                </p>
 
 
-            <div className="mt-5 flex flex-wrap gap-2">
+                <p
+                  className="
+                  mt-1
+                  text-xs
+                  text-white/40
+                  "
+                >
+                  Powered by EON AI
+                </p>
 
-              {result.symbols?.map(
-                (symbol, index) => (
-                  <span
-                    key={index}
-                    className="
-                    rounded-full
-                    border
-                    border-white/10
-                    bg-white/5
-                    px-3
-                    py-1.5
-                    text-xs
-                    text-white/70
-                    "
-                  >
-                    {symbol}
-                  </span>
-                )
-              )}
+              </div>
+
 
             </div>
 
 
-            <p
+
+            <div>
+
+              <p
+                className="
+                text-[11px]
+                uppercase
+                tracking-[0.35em]
+                text-white/40
+                "
+              >
+                Core Meaning
+              </p>
+
+
+              <h3
+                className="
+                mt-3
+                text-3xl
+                font-light
+                leading-relaxed
+                text-[#F4F1EA]
+                "
+              >
+                {result.summary}
+              </h3>
+
+            </div>
+
+
+
+            <div>
+
+              <p
+                className="
+                text-[11px]
+                uppercase
+                tracking-[0.35em]
+                text-white/40
+                "
+              >
+                Symbolic Patterns
+              </p>
+
+
+
+              <div
+                className="
+                mt-4
+                flex
+                flex-wrap
+                gap-3
+                "
+              >
+
+                {result.symbols?.map(
+                  (symbol,index)=>(
+                    
+                    <span
+
+                      key={index}
+
+                      className="
+                      rounded-full
+                      border
+                      border-purple-400/20
+                      bg-purple-500/10
+                      px-4
+                      py-2
+                      text-xs
+                      text-purple-100/80
+                      "
+
+                    >
+                      {symbol}
+                    </span>
+
+                  )
+                )}
+
+              </div>
+
+            </div>
+
+
+            <div>
+
+              <p
+                className="
+                text-[11px]
+                uppercase
+                tracking-[0.35em]
+                text-white/40
+                "
+              >
+                AI Interpretation
+              </p>
+
+
+              <p
+                className="
+                mt-4
+                text-base
+                leading-8
+                text-white/70
+                "
+              >
+                {result.interpretation}
+              </p>
+
+            </div>
+
+
+
+            <div
               className="
-              mt-5
-              leading-7
-              text-white/70
+              border-t
+              border-white/10
+              pt-5
               "
             >
-              {result.interpretation}
-            </p>
+
+              <div
+                className="
+                flex
+                items-center
+                gap-3
+                "
+              >
+
+                <Sparkles
+                  size={15}
+                  className="
+                  text-[#D6B25E]
+                  "
+                />
+
+
+                <p
+                  className="
+                  text-[10px]
+                  uppercase
+                  tracking-[0.4em]
+                  text-white/30
+                  "
+                >
+                  EON Intelligence Engine • Dream Analysis System
+                </p>
+
+              </div>
+
+            </div>
 
 
           </motion.div>
 
         )
+
       }
 
-    />
-  );
-}
 
+    />
+
+  );
+
+}
