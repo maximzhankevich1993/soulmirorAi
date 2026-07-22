@@ -1,88 +1,400 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 
 import { SoulOrb3D } from "./SoulOrb3D";
 
 export function SoulSpaceHero() {
   return (
-    <section className="relative flex min-h-[860px] items-center justify-center overflow-hidden px-6 pt-32">
+    <section
+      className="
+      relative
+      flex
+      min-h-[920px]
+      items-center
+      justify-center
+      overflow-hidden
+      px-6
+      pt-32
+      "
+    >
 
-      <div className="mx-auto flex w-full max-w-5xl flex-col items-center">
+      {/* Background Glow */}
+
+      <div
+        className="
+        pointer-events-none
+        absolute
+        left-1/2
+        top-20
+        h-[700px]
+        w-[700px]
+        -translate-x-1/2
+        rounded-full
+        bg-[#D6B25E]/10
+        blur-[180px]
+        "
+      />
+
+      <div
+        className="
+        pointer-events-none
+        absolute
+        right-0
+        top-40
+        h-[420px]
+        w-[420px]
+        rounded-full
+        bg-[#8B5CF6]/10
+        blur-[180px]
+        "
+      />
+
+      <div
+        className="
+        relative
+        z-10
+        mx-auto
+        flex
+        w-full
+        max-w-6xl
+        flex-col
+        items-center
+        "
+      >
 
         <motion.p
-          initial={{ opacity: 0, y: 25 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-          className="mb-6 text-xs uppercase tracking-[0.55em] text-[#D6B25E]/80"
+          initial={{
+            opacity:0,
+            y:20,
+          }}
+          animate={{
+            opacity:1,
+            y:0,
+          }}
+          transition={{
+            duration:0.8,
+          }}
+          className="
+          text-[11px]
+          uppercase
+          tracking-[0.55em]
+          text-[#D6B25E]
+          "
         >
-          Welcome back
+          EON AI presents
         </motion.p>
 
         <motion.h1
-          initial={{ opacity: 0, y: 35 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9 }}
-          className="max-w-4xl text-center font-[family:var(--font-cormorant)] text-5xl font-light leading-tight text-[#F4F1EA] md:text-6xl"
+          initial={{
+            opacity:0,
+            y:30,
+          }}
+          animate={{
+            opacity:1,
+            y:0,
+          }}
+          transition={{
+            delay:0.2,
+            duration:1,
+          }}
+          className="
+          mt-8
+          text-center
+          font-[family:var(--font-cormorant)]
+          text-6xl
+          font-light
+          leading-[0.9]
+          tracking-tight
+          text-[#F4F1EA]
+          md:text-8xl
+          "
         >
-          Your soul has changed
+          SOUL
           <br />
-          since yesterday.
+          MIRROR
         </motion.h1>
 
         <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{
-            delay: 0.6,
-            duration: 0.8,
+          initial={{
+            opacity:0,
           }}
-          className="mt-8 max-w-lg text-center text-base leading-7 md:text-lg text-white/60"
+          animate={{
+            opacity:1,
+          }}
+          transition={{
+            delay:0.45,
+          }}
+          className="
+          mt-8
+          text-sm
+          uppercase
+          tracking-[0.45em]
+          text-[#D6B25E]
+          "
         >
-          Every reflection shapes who you become.
-          Continue your inner journey.
+          Personal Intelligence Experience
         </motion.p>
 
-        <div className="my-10">
-          <SoulOrb3D />
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 25 }}
-          animate={{ opacity: 1, y: 0 }}
+        <motion.p
+          initial={{
+            opacity:0,
+          }}
+          animate={{
+            opacity:1,
+          }}
+          transition={{
+            delay:0.6,
+          }}
+          className="
+          mt-8
+          max-w-2xl
+          text-center
+          text-lg
+          leading-8
+          text-white/60
+          "
+        >
+          Your personal intelligence mirror.
+          <br />
+          An AI system designed to understand
+          identity, dreams, archetypes
+          and human evolution.
+        </motion.p>
+                <motion.div
+          initial={{
+            opacity: 0,
+            scale: 0.9,
+          }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+          }}
           transition={{
             delay: 0.8,
+            duration: 1,
           }}
-          className="rounded-full border border-[#D6B25E]/20 bg-white/5 px-6 py-2 backdrop-blur-xl"
+          className="my-14"
         >
-          <span className="text-sm uppercase tracking-[0.35em] text-[#D6B25E]">
-            Soul State
-          </span>
-
-          <div className="mt-2 text-center">
-            <h2 className="text-xl font-light text-[#F4F1EA]">
-              Balanced
-            </h2>
-
-            <p className="mt-2 text-white/50">
-              Harmony • 76%
-            </p>
-          </div>
+          <SoulOrb3D />
         </motion.div>
 
-        <motion.button
-          whileHover={{
-            scale: 1.05,
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 20,
           }}
-          whileTap={{
-            scale: 0.97,
+          animate={{
+            opacity: 1,
+            y: 0,
           }}
-          className="mt-10 rounded-full bg-[#D6B25E] px-7 py-3.5 text-base font-semibold text-black shadow-[0_0_50px_rgba(214,178,94,.35)] transition-all"
+          transition={{
+            delay: 1,
+          }}
+          className="
+            rounded-full
+            border
+            border-[#D6B25E]/20
+            bg-white/[0.03]
+            px-6
+            py-2
+            backdrop-blur-2xl
+          "
         >
-          Continue Journey
-        </motion.button>
+          <span
+            className="
+              text-[11px]
+              uppercase
+              tracking-[0.35em]
+              text-[#D6B25E]
+            "
+          >
+            A Product by EON AI
+          </span>
+        </motion.div>
 
-      </div>
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 25,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            delay: 1.2,
+          }}
+          className="
+            mt-10
+            rounded-[30px]
+            border
+            border-white/10
+            bg-white/[0.03]
+            px-10
+            py-8
+            backdrop-blur-3xl
+          "
+        >
+
+          <p
+            className="
+              text-xs
+              uppercase
+              tracking-[0.4em]
+              text-[#D6B25E]
+            "
+          >
+            Powered by EON AI
+          </p>
+
+          <h2
+            className="
+              mt-4
+              text-center
+              text-3xl
+              font-light
+              text-[#F4F1EA]
+            "
+          >
+            First Generation
+          </h2>
+
+          <p
+            className="
+              mt-3
+              text-center
+              text-white/55
+            "
+          >
+            Personal Intelligence System
+          </p>
+
+        </motion.div>
+                <motion.div
+          initial={{
+            opacity: 0,
+            y: 30,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            delay: 1.4,
+            duration: 0.8,
+          }}
+          className="
+            mt-12
+            flex
+            flex-col
+            items-center
+            gap-5
+            sm:flex-row
+          "
+        >
+
+          <motion.button
+            whileHover={{
+              scale: 1.04,
+            }}
+            whileTap={{
+              scale: 0.97,
+            }}
+            className="
+              group
+              flex
+              items-center
+              gap-3
+              rounded-full
+              bg-[#D6B25E]
+              px-8
+              py-4
+              text-base
+              font-semibold
+              text-[#050505]
+              shadow-[0_0_60px_rgba(214,178,94,.35)]
+              transition-all
+            "
+          >
+
+            Start Experience
+
+            <ArrowRight
+              size={18}
+              className="
+                transition-transform
+                duration-300
+                group-hover:translate-x-1
+              "
+            />
+
+          </motion.button>
+
+          <motion.a
+            whileHover={{
+              scale: 1.02,
+            }}
+            href="#ecosystem"
+            className="
+              rounded-full
+              border
+              border-white/10
+              bg-white/[0.03]
+              px-8
+              py-4
+              text-sm
+              uppercase
+              tracking-[0.25em]
+              text-white/70
+              backdrop-blur-xl
+              transition-all
+              hover:border-[#D6B25E]/30
+              hover:text-[#F4F1EA]
+            "
+          >
+            Explore Ecosystem
+          </motion.a>
+
+        </motion.div>
+
+        <motion.div
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          transition={{
+            delay: 1.7,
+          }}
+          className="
+            mt-16
+            flex
+            flex-wrap
+            items-center
+            justify-center
+            gap-8
+            text-[11px]
+            uppercase
+            tracking-[0.35em]
+            text-white/30
+          "
+        >
+
+          <span>Identity</span>
+
+          <span>Dreams</span>
+
+          <span>Archetypes</span>
+
+          <span>Emotions</span>
+
+          <span>Evolution</span>
+
+        </motion.div>
+              </div>
 
     </section>
   );
