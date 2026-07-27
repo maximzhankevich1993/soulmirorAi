@@ -1,8 +1,8 @@
-
 "use client";
 
 import { ReactNode } from "react";
 import { motion } from "framer-motion";
+import clsx from "clsx";
 
 interface GradientButtonProps {
   children: ReactNode;
@@ -16,63 +16,202 @@ export function GradientButton({
   children,
   onClick,
   disabled = false,
-  className = "",
+  className,
   icon,
 }: GradientButtonProps) {
   return (
+
     <motion.button
+
       whileHover={{
-        scale: 1.02,
+        scale: 1.03,
+        y: -2,
       }}
+
       whileTap={{
-        scale: 0.97,
+        scale: 0.98,
       }}
+
+      transition={{
+        type: "spring",
+        stiffness: 260,
+      }}
+
       onClick={onClick}
+
       disabled={disabled}
-      className={`
+
+      className={clsx(
+        `
+        group
         relative
-        flex
-        w-full
+        inline-flex
         items-center
         justify-center
-        gap-2
+        gap-3
         overflow-hidden
+
         rounded-full
-        bg-gradient-to-r
-        from-[#D6B25E]
-        via-[#E7CA7A]
-        to-[#8B5CF6]
+
         px-8
         py-4
-        text-sm
-        font-semibold
-        text-black
-        shadow-[0_0_40px_rgba(214,178,94,.25)]
+
+        font-medium
+        text-[#050505]
+
         transition-all
-        duration-300
-        disabled:cursor-not-allowed
+        duration-500
+
+        disabled:pointer-events-none
         disabled:opacity-50
-        ${className}
-      `}
+        `,
+        className
+      )}
+
     >
-      <span
+
+      {/* Glow */}
+
+      <motion.div
+
+        animate={{
+          opacity: [0.45, 0.8, 0.45],
+          scale: [1, 1.08, 1],
+        }}
+
+        transition={{
+          duration: 5,
+          repeat: Infinity,
+        }}
+
         className="
-        pointer-events-none
         absolute
         inset-0
-        bg-white/20
-        opacity-0
-        transition-opacity
-        duration-300
-        hover:opacity-100
+        rounded-full
+        bg-[#D6B25E]
+        blur-xl
+        "
+
+      />
+
+      {/* Main Gradient */}
+
+      <div
+        className="
+        absolute
+        inset-0
+
+        bg-gradient-to-r
+        from-[#D6B25E]
+        via-[#E8CF88]
+        to-[#C79A42]
         "
       />
 
-      <span className="relative z-10 flex items-center gap-2">
+      {/* Reflection */}
+
+      <div
+        className="
+        absolute
+        inset-x-0
+        top-0
+        h-1/2
+
+        bg-gradient-to-b
+        from-white/35
+        to-transparent
+        "
+      />
+
+      {/* Hover */}
+
+      <motion.div
+
+        initial={{
+          x: "-120%",
+        }}
+
+        whileHover={{
+          x: "120%",
+        }}
+
+        transition={{
+          duration: 0.9,
+        }}
+
+        className="
+        absolute
+        inset-y-0
+        w-24
+
+        bg-gradient-to-r
+        from-transparent
+        via-white/35
+        to-transparent
+
+        rotate-12
+        "
+
+      />
+
+      {/* Border */}
+
+      <div
+        className="
+        absolute
+        inset-0
+
+        rounded-full
+
+        ring-1
+        ring-inset
+        ring-white/30
+        "
+      />
+
+      {/* Content */}
+
+      <span
+        className="
+        relative
+        z-10
+
+        flex
+        items-center
+        gap-3
+
+        text-sm
+        uppercase
+        tracking-[0.15em]
+
+        transition-transform
+        duration-300
+
+        group-hover:tracking-[0.2em]
+        "
+      >
+
         {children}
 
-        {icon}
+        {icon && (
+
+          <motion.span
+
+            whileHover={{
+              x: 3,
+            }}
+
+          >
+
+            {icon}
+
+          </motion.span>
+
+        )}
+
       </span>
+
     </motion.button>
+
   );
 }
