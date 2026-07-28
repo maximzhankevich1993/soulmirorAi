@@ -5,6 +5,7 @@ import {
   ArrowRight,
   Sparkles,
   Infinity,
+  ShieldCheck,
 } from "lucide-react";
 
 import { motion } from "framer-motion";
@@ -29,466 +30,505 @@ import {
 export function PremiumCard() {
 
 
+  function handleUpgrade(){
+
+    // TODO:
+    // cryptoClaud payment
+    // create checkout session
+    // redirect user
+
+    console.log(
+      "START PRO CHECKOUT"
+    );
+
+  }
+
+
+
+  const features = [
+
+    "Unlimited Soul Intelligence Scans",
+
+    "Advanced Dream Analysis",
+
+    "Personal Evolution Memory",
+
+    "Future AI Insights",
+
+  ];
+
+
+
+
   return (
 
 
-    <section
+<section
 
-      className="
-      relative
-      mx-auto
-      mt-24
-      w-full
-      max-w-6xl
-      px-6
-      "
+className="
+relative
+mx-auto
+mt-24
+w-full
+max-w-6xl
+px-6
+"
 
-    >
+>
 
 
 
-      <motion.div
+<motion.div
 
+whileHover={{
+scale:1.015,
+}}
 
-        whileHover={{
+transition={{
 
-          scale:1.015,
+type:"spring",
 
-        }}
+stiffness:220,
 
+}}
 
+>
 
-        transition={{
 
-          type:"spring",
 
-          stiffness:220,
+<GlassCard
 
-        }}
+highlight
 
+className="
+relative
+overflow-hidden
+p-8
+md:p-10
+"
 
+>
 
-      >
 
 
+<div
 
-        <GlassCard
+className="
+pointer-events-none
+absolute
+right-0
+top-0
+h-96
+w-96
+rounded-full
+bg-[#D6B25E]/10
+blur-[140px]
+"
 
+/>
 
-          highlight
 
 
-          className="
-          relative
-          overflow-hidden
-          p-8
-          md:p-10
-          "
 
 
-        >
+<div
 
+className="
+relative
+z-10
+flex
+flex-col
+gap-10
+lg:flex-row
+lg:items-center
+lg:justify-between
+"
 
+>
 
-          {/* EON Ambient Glow */}
 
-          <div
 
-            className="
-            pointer-events-none
-            absolute
-            right-0
-            top-0
-            h-96
-            w-96
-            rounded-full
-            bg-[#D6B25E]/10
-            blur-[140px]
-            "
 
-          />
+<div className="max-w-3xl">
 
 
+<GlowIcon size="lg">
 
 
-          <div
+<Crown
 
-            className="
-            relative
-            z-10
-            flex
-            flex-col
-            gap-10
-            lg:flex-row
-            lg:items-center
-            lg:justify-between
-            "
+size={26}
 
-          >
+className="
+text-[#D6B25E]
+"
 
+/>
 
 
+</GlowIcon>
 
 
-            <div className="max-w-3xl">
 
 
-              <GlowIcon size="lg">
 
+<div
 
-                <Crown
+className="
+mt-6
+flex
+items-center
+gap-3
+"
 
-                  size={26}
+>
 
-                  className="
-                  text-[#D6B25E]
-                  "
 
-                />
+<p
 
+className="
+text-[11px]
+uppercase
+tracking-[0.45em]
+text-[#D6B25E]
+"
 
-              </GlowIcon>
+>
 
+SoulMirror Pro
 
+</p>
 
 
 
-              <div
+<span
 
-                className="
-                mt-6
-                flex
-                items-center
-                gap-3
-                "
+className="
+rounded-full
+border
+border-[#D6B25E]/20
+bg-[#D6B25E]/5
+px-3
+py-1
+text-[9px]
+uppercase
+tracking-[0.3em]
+text-[#D6B25E]
+"
 
-              >
+>
 
+EON AI
 
+</span>
 
-                <p
 
-                  className="
-                  text-[11px]
-                  uppercase
-                  tracking-[0.45em]
-                  text-[#D6B25E]
-                  "
+</div>
 
-                >
 
-                  SoulMirror Pro
 
-                </p>
 
 
 
 
-                <span
+<h2
 
-                  className="
-                  rounded-full
-                  border
-                  border-[#D6B25E]/20
-                  bg-[#D6B25E]/5
-                  px-3
-                  py-1
-                  text-[9px]
-                  uppercase
-                  tracking-[0.3em]
-                  text-[#D6B25E]
-                  "
+className="
+mt-4
+font-[family:var(--font-cormorant)]
+text-4xl
+font-light
+leading-tight
+text-[#F4F1EA]
+md:text-6xl
+"
 
-                >
+>
 
-                  by EON AI
+Unlock your complete
+<br/>
 
-                </span>
+personal intelligence system.
 
+</h2>
 
 
-              </div>
 
 
 
 
 
+<p
 
-              <h2
+className="
+mt-6
+max-w-2xl
+leading-8
+text-white/60
+"
 
+>
 
-                className="
-                mt-4
-                font-[family:var(--font-cormorant)]
-                text-4xl
-                font-light
-                leading-tight
-                text-[#F4F1EA]
-                md:text-6xl
-                "
+A deeper AI relationship with your identity,
+memory, emotions and future potential.
 
-              >
+</p>
 
-                Unlock your complete
-                <br />
 
-                personal intelligence system.
 
-              </h2>
 
 
 
+<div
 
+className="
+mt-8
+grid
+gap-3
+"
 
+>
 
-              <p
 
+{
+features.map(
+(feature)=>(
+<div
 
-                className="
-                mt-6
-                max-w-2xl
-                text-base
-                leading-8
-                text-white/60
-                "
+key={feature}
 
-              >
+className="
+flex
+items-center
+gap-3
+text-sm
+text-white/60
+"
 
-                Access advanced AI reflection,
-                dream intelligence, identity analysis
-                and your evolving personal profile
-                powered by EON Intelligence Engine.
+>
 
-              </p>
+<ShieldCheck
 
+size={16}
 
+className="
+text-[#D6B25E]
+"
 
+/>
 
 
+{feature}
 
 
-              <div
+</div>
 
-                className="
-                mt-8
-                flex
-                flex-wrap
-                gap-3
-                "
+)
 
-              >
+)
 
+}
 
 
-                <span
 
-                  className="
-                  flex
-                  items-center
-                  gap-2
-                  rounded-full
-                  border
-                  border-white/10
-                  bg-white/[0.03]
-                  px-4
-                  py-2
-                  text-xs
-                  text-white/60
-                  "
+</div>
 
-                >
 
-                  <Sparkles size={14}/>
 
-                  Unlimited AI Insights
 
-                </span>
+</div>
 
 
 
 
 
-                <span
 
-                  className="
-                  flex
-                  items-center
-                  gap-2
-                  rounded-full
-                  border
-                  border-white/10
-                  bg-white/[0.03]
-                  px-4
-                  py-2
-                  text-xs
-                  text-white/60
-                  "
 
-                >
 
-                  <Infinity size={14}/>
 
-                  Evolution Memory
 
-                </span>
+<div
 
+className="
+flex
+flex-col
+lg:items-end
+"
 
+>
 
 
-              </div>
 
 
+<p
 
-            </div>
+className="
+text-[10px]
+uppercase
+tracking-[0.4em]
+text-white/40
+"
 
+>
 
+Premium Intelligence Access
 
+</p>
 
 
 
 
 
-            <div
+<h3
 
+className="
+mt-4
+text-6xl
+font-light
+text-[#F4F1EA]
+"
 
-              className="
-              flex
-              flex-col
-              items-start
-              lg:items-end
-              "
+>
 
-            >
+$19
 
+</h3>
 
 
 
-              <p
 
-                className="
-                text-[10px]
-                uppercase
-                tracking-[0.4em]
-                text-white/40
-                "
+<p
 
-              >
+className="
+mt-2
+text-white/50
+"
 
-                Personal Intelligence Access
+>
 
-              </p>
+per month
 
+</p>
 
 
 
 
-              <h3
 
-                className="
-                mt-4
-                text-6xl
-                font-light
-                text-[#F4F1EA]
-                "
 
-              >
 
-                $19
+<GradientButton
 
-              </h3>
+onClick={handleUpgrade}
 
+className="
+mt-8
+w-auto
+px-10
+"
 
+icon={
 
+<ArrowRight
 
-              <p
+size={18}
 
-                className="
-                mt-2
-                text-white/50
-                "
+/>
 
-              >
+}
 
-                per month
+>
 
-              </p>
 
+Start Pro Experience
 
 
+</GradientButton>
 
 
-              <GradientButton
 
 
-                className="
-                mt-8
-                w-auto
-                px-10
-                "
 
 
-                icon={
+<p
 
-                  <ArrowRight size={18}/>
+className="
+mt-5
+text-right
+text-[10px]
+uppercase
+tracking-[0.3em]
+text-white/30
+"
 
-                }
+>
 
+Crypto payment available
 
-              >
+</p>
 
-                Enter Pro Experience
 
-              </GradientButton>
 
 
+</div>
 
 
 
 
-              <p
 
-                className="
-                mt-5
-                text-right
-                text-[10px]
-                uppercase
-                tracking-[0.3em]
-                text-white/30
-                "
 
-              >
+</div>
 
-                Powered by EON AI
 
-              </p>
 
 
 
 
-            </div>
+<div
 
+className="
+relative
+z-10
+mt-10
+border-t
+border-white/10
+pt-5
+"
 
+>
 
 
-          </div>
+<p
 
+className="
+text-[10px]
+uppercase
+tracking-[0.4em]
+text-white/30
+"
 
+>
 
+Powered by EON Intelligence Engine • Premium Layer
 
+</p>
 
-        </GlassCard>
 
+</div>
 
 
 
-      </motion.div>
 
+</GlassCard>
 
 
 
-    </section>
+</motion.div>
 
 
-  );
+
+</section>
+
+
+);
 
 }
