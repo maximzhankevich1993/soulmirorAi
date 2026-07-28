@@ -16,13 +16,17 @@ import {
 
 import * as THREE from "three";
 
+
 import {
   useSoulOrbStore,
 } from "@/store/soul-orb-store";
 
+
 import {
   soulStates,
 } from "./SoulOrbStates";
+
+
 
 
 
@@ -34,42 +38,44 @@ export function SoulParticles() {
 
 
 
+
+
   const currentState =
     useSoulOrbStore(
-      (state)=>state.state
+      state =>
+        state.state
     );
 
 
 
+
   const config =
-    soulStates[currentState];
+    soulStates[
+      currentState
+    ];
 
 
 
-  /*
-    Generate particles once
-  */
+
+
+
 
   const positions =
     useMemo(()=>{
 
 
-      const count = 900;
-
-
       const array =
         new Float32Array(
-          count * 3
+          600 * 3
         );
 
 
 
       for(
         let i = 0;
-        i < count;
+        i < 600 * 3;
         i++
       ){
-
 
         const radius =
           1.2 +
@@ -95,7 +101,7 @@ export function SoulParticles() {
             0.5
           )
           *
-          1.8;
+          2;
 
 
 
@@ -130,6 +136,10 @@ export function SoulParticles() {
 
 
 
+
+
+
+
   useFrame((state)=>{
 
 
@@ -143,48 +153,57 @@ export function SoulParticles() {
 
 
 
-    /*
-      Orbital movement
-    */
 
 
-    ref.current.rotation.y =
-      time *
-      0.08 *
+
+    ref.current.rotation.y +=
+
+      0.0015 *
       config.particleSpeed;
 
 
 
+
+
+
     ref.current.rotation.x =
+
       Math.sin(
-        time * 0.3
+        time * 0.25
       )
       *
-      0.12;
+      0.08;
 
 
 
-    /*
-      Energy breathing
-    */
 
 
-    const pulse =
+
+
+    const scale =
+
       1 +
       Math.sin(
-        time * 2
+        time *
+        config.particleSpeed
       )
       *
-      0.04;
+      config.breathing;
+
+
 
 
 
     ref.current.scale.setScalar(
-      pulse
+      scale
     );
 
 
+
   });
+
+
+
 
 
 
@@ -196,7 +215,9 @@ export function SoulParticles() {
 
       ref={ref}
 
-      positions={positions}
+      positions={
+        positions
+      }
 
     >
 
@@ -212,21 +233,38 @@ export function SoulParticles() {
 
 
         size={
-          currentState === "awakening"
+
+          currentState ===
+          "awakening"
+
           ? 0.045
-          : 0.025
+
+          :
+          
+          currentState ===
+          "shadow"
+
+          ? 0.018
+
+          :
+          
+          0.028
+
         }
+
 
 
         sizeAttenuation
 
 
-        depthWrite={false}
 
-
-        blending={
-          THREE.AdditiveBlending
+        depthWrite={
+          false
         }
+
+
+
+        opacity={0.8}
 
 
       />
