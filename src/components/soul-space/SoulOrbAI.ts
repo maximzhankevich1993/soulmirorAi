@@ -1,4 +1,9 @@
-import type { SoulState } from "./SoulOrbStates";
+import type {
+  SoulState,
+} from "./SoulOrbStates";
+
+
+
 
 
 export function getSoulState(
@@ -6,54 +11,195 @@ export function getSoulState(
   archetype?: string
 ): SoulState {
 
+
+
   const value =
-    `${emotion} ${archetype}`.toLowerCase();
+    `${emotion ?? ""} ${archetype ?? ""}`
+      .toLowerCase();
 
 
-  // Healing emotions
+
+
+
+
+  /*
+    SHADOW
+    Internal conflict
+  */
+
   if (
-    value.includes("sad") ||
-    value.includes("hurt") ||
-    value.includes("pain") ||
-    value.includes("healing") ||
-    value.includes("loss")
-  ) {
-    return "healing";
-  }
 
+    [
+      "fear",
+      "fearful",
+      "anxiety",
+      "anxious",
+      "anger",
+      "rage",
+      "shadow",
+      "conflict",
+      "confused",
+      "lost",
+      "страх",
+      "тревог",
+      "злость",
+      "гнев",
+      "тень",
+      "потерян"
 
-  // Shadow emotions
-  if (
-    value.includes("fear") ||
-    value.includes("anger") ||
-    value.includes("shadow") ||
-    value.includes("anxiety")
-  ) {
+    ]
+    .some(
+      word =>
+        value.includes(word)
+    )
+
+  ){
+
     return "shadow";
+
   }
 
 
-  // Focus emotions
+
+
+
+
+
+
+  /*
+    HEALING
+    Emotional recovery
+  */
+
   if (
-    value.includes("focus") ||
-    value.includes("clarity") ||
-    value.includes("wisdom") ||
-    value.includes("sage")
-  ) {
-    return "focus";
+
+    [
+
+      "sad",
+      "hurt",
+      "pain",
+      "loss",
+      "healing",
+      "broken",
+      "recover",
+      "forgive",
+      "trauma",
+      "melancholy",
+      "грусть",
+      "боль",
+      "исцел",
+      "прощ",
+      "восстанов"
+
+    ]
+    .some(
+      word =>
+        value.includes(word)
+    )
+
+  ){
+
+    return "healing";
+
   }
 
 
-  // Transformation
+
+
+
+
+
+
+  /*
+    AWAKENING
+    Transformation
+  */
+
   if (
-    value.includes("change") ||
-    value.includes("awakening") ||
-    value.includes("growth") ||
-    value.includes("rebirth")
-  ) {
+
+    [
+
+      "awakening",
+      "rebirth",
+      "change",
+      "growth",
+      "evolution",
+      "transformation",
+      "new beginning",
+      "awakening soul",
+      "пробужден",
+      "перерожд",
+      "рост",
+      "измен",
+      "эволюц"
+
+    ]
+    .some(
+      word =>
+        value.includes(word)
+    )
+
+  ){
+
     return "awakening";
+
   }
 
+
+
+
+
+
+
+
+
+  /*
+    FOCUS
+    Intelligence / clarity
+  */
+
+  if (
+
+    [
+
+      "focus",
+      "clarity",
+      "wisdom",
+      "sage",
+      "vision",
+      "creative",
+      "creator",
+      "strategy",
+      "knowledge",
+      "ясность",
+      "мудр",
+      "фокус",
+      "творч"
+
+    ]
+    .some(
+      word =>
+        value.includes(word)
+    )
+
+  ){
+
+    return "focus";
+
+  }
+
+
+
+
+
+
+
+
+
+  /*
+    Default
+  */
 
   return "calm";
+
 }
