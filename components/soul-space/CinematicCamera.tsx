@@ -1,38 +1,28 @@
 "use client";
 
-import { useFrame, useThree } from "@react-three/fiber";
-import { useRef } from "react";
+import {
+  useFrame,
+  useThree,
+} from "@react-three/fiber";
+
+import {
+  useRef,
+} from "react";
 
 import * as THREE from "three";
 
 
-interface CinematicCameraProps {
-  enabled?: boolean;
-  intensity?: number;
-}
+
+export function CinematicCamera() {
 
 
-export function CinematicCamera({
-  enabled = true,
-  intensity = 1,
-}: CinematicCameraProps) {
+  const {
+    camera,
+  } = useThree();
 
 
-  const { camera } =
-    useThree();
 
-
-  const targetPosition =
-    useRef(
-      new THREE.Vector3(
-        0,
-        0,
-        3.5
-      )
-    );
-
-
-  const lookTarget =
+  const target =
     useRef(
       new THREE.Vector3(
         0,
@@ -43,12 +33,20 @@ export function CinematicCamera({
 
 
 
-  useFrame((state, delta)=>{
+  const basePosition =
+    useRef(
+      new THREE.Vector3(
+        0,
+        0,
+        3.5
+      )
+    );
 
 
-    if(!enabled)
-      return;
 
+
+
+  useFrame((state)=>{
 
 
     const time =
@@ -56,23 +54,11 @@ export function CinematicCamera({
 
 
 
+
+
     /*
-      Cinematic breathing
-      Маленькое движение камеры,
-      как в кино
+      Cinematic breathing movement
     */
-
-
-    const cinematicZ =
-      3.5 +
-      Math.sin(
-        time * 0.35
-      )
-      *
-      0.08
-      *
-      intensity;
-
 
 
     const cinematicX =
@@ -80,9 +66,7 @@ export function CinematicCamera({
         time * 0.18
       )
       *
-      0.05
-      *
-      intensity;
+      0.08;
 
 
 
@@ -91,43 +75,69 @@ export function CinematicCamera({
         time * 0.22
       )
       *
-      0.04
+      0.05;
+
+
+
+
+
+    const cinematicZ =
+      3.5 +
+      Math.sin(
+        time * 0.15
+      )
       *
-      intensity;
+      0.08;
 
 
 
-    targetPosition.current.set(
-      cinematicX,
-      cinematicY,
-      cinematicZ
-    );
 
 
-
-    /*
-      Smooth camera movement
-    */
 
 
     camera.position.lerp(
-      targetPosition.current,
-      delta * 1.5
+
+      new THREE.Vector3(
+
+        basePosition.current.x
+          +
+        cinematicX,
+
+
+        basePosition.current.y
+          +
+        cinematicY,
+
+
+        cinematicZ
+
+      ),
+
+      0.025
+
     );
 
 
 
+
+
+
+
+
     /*
-      Camera focus
+      Smooth camera focus
     */
 
 
     camera.lookAt(
-      lookTarget.current
+      target.current
     );
 
 
+
   });
+
+
 
 
 
