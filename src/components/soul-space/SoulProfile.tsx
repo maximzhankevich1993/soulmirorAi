@@ -8,6 +8,7 @@ import {
   Heart,
   Moon,
   Eye,
+  Quote,
 } from "lucide-react";
 
 
@@ -35,6 +36,7 @@ export function SoulProfile() {
     emotion,
     insight,
     shadow,
+    reflection,
   } =
     useSoulMemoryStore();
 
@@ -44,503 +46,617 @@ export function SoulProfile() {
 
     {
       title:"Core Archetype",
+
       value:
         archetype ||
-        "Unknown",
-      subtitle:"Identity Pattern",
+        "Awaiting Discovery",
+
+      subtitle:
+        "Identity Pattern",
+
       icon:Sparkles,
-      color:"text-[#D6B25E]",
+
+      color:
+        "text-[#D6B25E]",
+
     },
 
 
     {
       title:"Current State",
+
       value:
         emotion ||
         "Balanced",
-      subtitle:"Emotional Intelligence",
+
+      subtitle:
+        "Emotional Intelligence",
+
       icon:Heart,
-      color:"text-pink-300",
+
+      color:
+        "text-pink-300",
+
     },
 
 
     {
       title:"AI Insight",
+
       value:
         insight ||
-        "Complete Soul Scan to unlock your personal intelligence profile.",
-      subtitle:"Personal Analysis",
+        "Complete your first Soul Scan to reveal your personal intelligence.",
+
+      subtitle:
+        "Deep Analysis",
+
       icon:Brain,
-      color:"text-purple-300",
+
+      color:
+        "text-purple-300",
+
     },
+
 
   ];
 
 
 
+
+
   return (
 
-    <section
+<section
 
-      className="
-      relative
-      mx-auto
-      mt-24
-      w-full
-      max-w-6xl
-      px-6
-      "
+className="
+relative
+mx-auto
+mt-24
+w-full
+max-w-6xl
+px-6
+"
 
-    >
+>
 
 
-      <motion.div
+<motion.div
 
+initial={{
+opacity:0,
+y:30,
+}}
 
-        initial={{
-          opacity:0,
-          y:30,
-        }}
+whileInView={{
+opacity:1,
+y:0,
+}}
 
+viewport={{
+once:true,
+}}
 
-        whileInView={{
-          opacity:1,
-          y:0,
-        }}
+transition={{
+duration:0.8,
+}}
 
+>
 
-        viewport={{
-          once:true,
-        }}
 
+<GlassCard
 
-        transition={{
-          duration:0.8,
-        }}
+highlight
 
+className="
+relative
+overflow-hidden
+p-8
+md:p-10
+"
 
-      >
+>
 
 
-        <GlassCard
 
-          highlight
+<div
 
-          className="
-          relative
-          overflow-hidden
-          p-8
-          md:p-10
-          "
+className="
+pointer-events-none
+absolute
+right-0
+top-0
+h-80
+w-80
+rounded-full
+bg-[#D6B25E]/10
+blur-[130px]
+"
 
-        >
+/>
 
 
-          {/* Ambient Glow */}
 
-          <div
 
-            className="
-            pointer-events-none
-            absolute
-            right-0
-            top-0
-            h-72
-            w-72
-            rounded-full
-            bg-[#D6B25E]/10
-            blur-[120px]
-            "
 
-          />
+<div
 
+className="
+relative
+z-10
+flex
+items-center
+gap-5
+"
 
+>
 
-          <div
 
-            className="
-            relative
-            z-10
-            flex
-            items-center
-            gap-5
-            "
+<GlowIcon size="lg">
 
-          >
 
+<Moon
 
-            <GlowIcon size="lg">
+size={28}
 
+className="
+text-[#D6B25E]
+"
 
-              <Moon
+/>
 
-                size={26}
 
-                className="
-                text-[#D6B25E]
-                "
+</GlowIcon>
 
-              />
 
 
-            </GlowIcon>
+<div>
 
 
+<p
 
-            <div>
+className="
+text-[11px]
+uppercase
+tracking-[0.45em]
+text-[#D6B25E]
+"
 
+>
 
-              <p
+EON Identity System
 
-                className="
-                text-[11px]
-                uppercase
-                tracking-[0.45em]
-                text-[#D6B25E]
-                "
+</p>
 
-              >
 
-                EON Identity Profile
 
-              </p>
+<h2
 
+className="
+mt-2
+font-[family:var(--font-cormorant)]
+text-4xl
+font-light
+text-[#F4F1EA]
+"
 
+>
 
-              <h2
+Your Living Profile
 
-                className="
-                mt-2
-                font-[family:var(--font-cormorant)]
-                text-4xl
-                font-light
-                text-[#F4F1EA]
-                "
+</h2>
 
-              >
 
-                Your Personal Intelligence
 
-              </h2>
+<p
 
+className="
+mt-3
+max-w-xl
+text-sm
+leading-7
+text-white/40
+"
 
+>
 
-              <p
+A constantly evolving intelligence profile
+built from your emotions, memories and patterns.
 
-                className="
-                mt-3
-                text-sm
-                text-white/40
-                "
+</p>
 
-              >
 
-                A living profile created through your memories,
-                emotions and patterns.
+</div>
 
-              </p>
 
+</div>
 
-            </div>
 
 
-          </div>
 
 
 
 
 
-          <div
+<div
 
-            className="
-            relative
-            z-10
-            mt-10
-            grid
-            gap-5
-            md:grid-cols-3
-            "
+className="
+relative
+z-10
+mt-10
+grid
+gap-5
+md:grid-cols-3
+"
 
-          >
+>
 
 
-            {items.map((item,index)=>{
+{
+items.map(
+(item,index)=>{
 
 
-              const Icon =
-                item.icon;
+const Icon =
+item.icon;
 
 
 
-              return (
+return (
 
+<motion.div
 
-                <motion.div
+key={item.title}
 
+initial={{
+opacity:0,
+y:20,
+}}
 
-                  key={item.title}
+whileInView={{
+opacity:1,
+y:0,
+}}
 
+viewport={{
+once:true,
+}}
 
-                  initial={{
-                    opacity:0,
-                    y:20,
-                  }}
+transition={{
+delay:index*0.1,
+}}
 
+className="
+rounded-3xl
+border
+border-white/10
+bg-white/[0.03]
+p-6
+hover:border-[#D6B25E]/20
+transition-all
+"
 
-                  whileInView={{
-                    opacity:1,
-                    y:0,
-                  }}
+>
 
 
-                  viewport={{
-                    once:true,
-                  }}
+<Icon
 
+size={24}
 
-                  transition={{
-                    delay:index * 0.1,
-                  }}
+className={item.color}
 
+/>
 
-                  className="
-                  rounded-3xl
-                  border
-                  border-white/10
-                  bg-white/[0.03]
-                  p-6
-                  transition-all
-                  duration-500
-                  hover:-translate-y-2
-                  hover:border-[#D6B25E]/20
-                  "
 
 
-                >
+<p
 
+className="
+mt-5
+text-[10px]
+uppercase
+tracking-[0.35em]
+text-white/40
+"
 
-                  <Icon
+>
 
-                    size={24}
+{item.title}
 
-                    className={item.color}
+</p>
 
-                  />
 
 
+<p
 
-                  <p
+className="
+mt-3
+text-lg
+leading-7
+text-[#F4F1EA]
+"
 
-                    className="
-                    mt-5
-                    text-[10px]
-                    uppercase
-                    tracking-[0.35em]
-                    text-white/40
-                    "
+>
 
-                  >
+{item.value}
 
-                    {item.title}
+</p>
 
-                  </p>
 
 
+<p
 
+className="
+mt-3
+text-xs
+uppercase
+tracking-[0.25em]
+text-white/30
+"
 
-                  <p
+>
 
-                    className="
-                    mt-3
-                    text-lg
-                    leading-7
-                    text-[#F4F1EA]
-                    "
+{item.subtitle}
 
-                  >
+</p>
 
-                    {item.value}
 
-                  </p>
+</motion.div>
 
 
+)
 
-                  <p
+}
 
-                    className="
-                    mt-3
-                    text-xs
-                    uppercase
-                    tracking-[0.25em]
-                    text-white/30
-                    "
+)
 
-                  >
+}
 
-                    {item.subtitle}
 
-                  </p>
+</div>
 
 
-                </motion.div>
 
 
-              );
 
 
-            })}
 
 
-          </div>
 
+{reflection && (
 
+<motion.div
 
+initial={{
+opacity:0,
+y:20,
+}}
 
+whileInView={{
+opacity:1,
+y:0,
+}}
 
-          {shadow && (
+viewport={{
+once:true,
+}}
 
+className="
+relative
+z-10
+mt-6
+rounded-3xl
+border
+border-[#D6B25E]/20
+bg-[#D6B25E]/5
+p-6
+"
 
-            <motion.div
+>
 
 
-              initial={{
-                opacity:0,
-              }}
+<div
 
+className="
+flex
+items-center
+gap-3
+"
 
-              whileInView={{
-                opacity:1,
-              }}
+>
 
 
-              viewport={{
-                once:true,
-              }}
+<Quote
 
+size={18}
 
-              className="
-              relative
-              z-10
-              mt-6
-              rounded-3xl
-              border
-              border-purple-400/20
-              bg-purple-500/5
-              p-6
-              "
+className="
+text-[#D6B25E]
+"
 
+/>
 
-            >
 
 
-              <div
+<p
 
-                className="
-                flex
-                items-center
-                gap-3
-                "
+className="
+text-[10px]
+uppercase
+tracking-[0.4em]
+text-[#D6B25E]
+"
 
-              >
+>
 
+Soul Reflection
 
-                <Eye
+</p>
 
-                  size={18}
 
-                  className="
-                  text-purple-300
-                  "
+</div>
 
-                />
 
 
-                <p
+<p
 
-                  className="
-                  text-[10px]
-                  uppercase
-                  tracking-[0.4em]
-                  text-purple-300
-                  "
+className="
+mt-4
+italic
+leading-8
+text-white/70
+"
 
-                >
+>
 
-                  Shadow Intelligence
+{reflection}
 
-                </p>
+</p>
 
 
-              </div>
 
+</motion.div>
 
 
-              <p
+)}
 
-                className="
-                mt-4
-                leading-8
-                text-white/70
-                "
 
-              >
 
-                {shadow}
 
-              </p>
 
 
-            </motion.div>
 
 
-          )}
 
+{shadow && (
 
+<motion.div
 
+className="
+relative
+z-10
+mt-6
+rounded-3xl
+border
+border-purple-400/20
+bg-purple-500/5
+p-6
+"
 
+>
 
-          <div
 
-            className="
-            relative
-            z-10
-            mt-8
-            border-t
-            border-white/10
-            pt-5
-            "
+<div
 
-          >
+className="
+flex
+items-center
+gap-3
+"
 
-            <p
+>
 
-              className="
-              text-[10px]
-              uppercase
-              tracking-[0.4em]
-              text-white/30
-              "
 
-            >
+<Eye
 
-              Powered by EON Intelligence Engine • Identity System
+size={18}
 
-            </p>
+className="
+text-purple-300
+"
 
+/>
 
-          </div>
 
 
+<p
 
-        </GlassCard>
+className="
+text-[10px]
+uppercase
+tracking-[0.4em]
+text-purple-300
+"
 
+>
 
-      </motion.div>
+Shadow Intelligence
 
+</p>
 
-    </section>
 
+</div>
 
-  );
+
+
+<p
+
+className="
+mt-4
+leading-8
+text-white/70
+"
+
+>
+
+{shadow}
+
+</p>
+
+
+</motion.div>
+
+
+)}
+
+
+
+
+
+
+
+<div
+
+className="
+relative
+z-10
+mt-8
+border-t
+border-white/10
+pt-5
+"
+
+>
+
+
+<p
+
+className="
+text-[10px]
+uppercase
+tracking-[0.4em]
+text-white/30
+"
+
+>
+
+Powered by EON Intelligence Engine • Personal Identity Layer
+
+</p>
+
+
+</div>
+
+
+
+</GlassCard>
+
+
+</motion.div>
+
+
+</section>
+
+
+);
 
 }
