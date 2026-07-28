@@ -1,12 +1,27 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 
 export function SoulOrbInteraction() {
 
+
+  const targetIntensity =
+    useRef(1);
+
+
+  const targetScale =
+    useRef(1);
+
+
+
   const [intensity, setIntensity] =
     useState(1);
+
 
 
   const [scale, setScale] =
@@ -14,12 +29,63 @@ export function SoulOrbInteraction() {
 
 
 
-  useEffect(() => {
 
 
-    function handleMove(
-      event: MouseEvent
-    ) {
+  useEffect(()=>{
+
+
+    let animationFrame:number;
+
+
+
+    function update(){
+
+
+      setIntensity((value)=>{
+
+        return value +
+          (
+            targetIntensity.current -
+            value
+          )
+          *
+          0.08;
+
+      });
+
+
+
+      setScale((value)=>{
+
+        return value +
+          (
+            targetScale.current -
+            value
+          )
+          *
+          0.08;
+
+      });
+
+
+
+      animationFrame =
+        requestAnimationFrame(
+          update
+        );
+
+    }
+
+
+
+    update();
+
+
+
+
+    function handlePointer(
+      event: PointerEvent
+    ){
 
 
       const x =
@@ -33,105 +99,133 @@ export function SoulOrbInteraction() {
 
 
 
+
       const distance =
         Math.sqrt(
+
           Math.pow(
             x - 0.5,
             2
           )
+
           +
+
           Math.pow(
             y - 0.5,
             2
           )
+
         );
 
 
 
-      const power =
+
+      const presence =
         Math.max(
           0,
           1 -
-          distance * 2
+          distance * 2.5
         );
 
 
 
-      setIntensity(
+
+      targetIntensity.current =
         1 +
-        power * 2
-      );
+        presence * 1.8;
 
 
-      setScale(
+
+
+      targetScale.current =
         1 +
-        power * 0.08
-      );
+        presence * 0.06;
+
 
     }
 
 
 
-    function handleClick(){
-
-      setIntensity(
-        4
-      );
 
 
-      setScale(
-        1.15
-      );
+    function handleInteraction(){
+
+
+      targetIntensity.current =
+        5;
+
+
+
+      targetScale.current =
+        1.18;
+
 
 
       setTimeout(()=>{
 
-        setIntensity(
-          1
-        );
+
+        targetIntensity.current =
+          1;
 
 
-        setScale(
-          1
-        );
+
+        targetScale.current =
+          1;
 
 
-      },600);
+
+      },700);
+
 
     }
 
 
 
-    window.addEventListener(
-      "mousemove",
-      handleMove
-    );
 
 
     window.addEventListener(
-      "click",
-      handleClick
+      "pointermove",
+      handlePointer
     );
+
+
+
+    window.addEventListener(
+      "pointerdown",
+      handleInteraction
+    );
+
 
 
 
     return ()=>{
 
-      window.removeEventListener(
-        "mousemove",
-        handleMove
+
+      cancelAnimationFrame(
+        animationFrame
       );
 
 
+
       window.removeEventListener(
-        "click",
-        handleClick
+        "pointermove",
+        handlePointer
       );
+
+
+
+      window.removeEventListener(
+        "pointerdown",
+        handleInteraction
+      );
+
 
     };
 
 
-  }, []);
+  },[]);
+
+
 
 
 
