@@ -1,32 +1,106 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 
-import { SoulOrb3D } from "./SoulOrb3D";
+import {
+  ArrowRight,
+} from "lucide-react";
+
+import {
+  useRef,
+} from "react";
+
+import {
+  SoulOrb3D,
+} from "./SoulOrb3D";
+
+
+
 
 
 export function SoulSpaceHero() {
+
+
+  const ref =
+    useRef<HTMLDivElement>(null);
+
+
+
+  const {
+    scrollYProgress,
+  } =
+  useScroll({
+
+    target: ref,
+
+    offset:[
+      "start start",
+      "end start",
+    ],
+
+  });
+
+
+
+
+
+  const orbY =
+    useTransform(
+      scrollYProgress,
+      [0,1],
+      [0,-180]
+    );
+
+
+
+  const orbScale =
+    useTransform(
+      scrollYProgress,
+      [0,1],
+      [1,0.85]
+    );
+
+
+
+
+
+  const opacity =
+    useTransform(
+      scrollYProgress,
+      [0,0.8],
+      [1,0]
+    );
+
+
+
+
+
 
   return (
 
     <section
 
+      ref={ref}
+
       className="
       relative
-      flex
-      min-h-[960px]
-      items-center
-      justify-center
+      min-h-screen
       overflow-hidden
       px-6
-      pt-32
+      pt-40
       "
 
     >
 
 
-      {/* Ambient System Glow */}
+
+
+
+      {/* Cinematic background */}
 
 
       <div
@@ -35,16 +109,17 @@ export function SoulSpaceHero() {
         pointer-events-none
         absolute
         left-1/2
-        top-10
-        h-[800px]
-        w-[800px]
+        top-20
+        h-[700px]
+        w-[700px]
         -translate-x-1/2
         rounded-full
         bg-[#D6B25E]/10
-        blur-[200px]
+        blur-[180px]
         "
 
       />
+
 
 
 
@@ -53,8 +128,8 @@ export function SoulSpaceHero() {
         className="
         pointer-events-none
         absolute
-        right-[-150px]
-        top-40
+        right-[-200px]
+        top-1/3
         h-[500px]
         w-[500px]
         rounded-full
@@ -67,7 +142,15 @@ export function SoulSpaceHero() {
 
 
 
-      <div
+
+
+
+
+      <motion.div
+
+        style={{
+          opacity,
+        }}
 
         className="
         relative
@@ -84,14 +167,12 @@ export function SoulSpaceHero() {
 
 
 
-        {/* Brand */}
-
 
         <motion.p
 
           initial={{
             opacity:0,
-            y:20,
+            y:30,
           }}
 
           animate={{
@@ -100,11 +181,11 @@ export function SoulSpaceHero() {
           }}
 
           transition={{
-            duration:0.8,
+            duration:1,
           }}
 
           className="
-          text-[10px]
+          text-[11px]
           uppercase
           tracking-[0.6em]
           text-[#D6B25E]
@@ -121,7 +202,6 @@ export function SoulSpaceHero() {
 
 
 
-        {/* Main Title */}
 
 
 
@@ -129,21 +209,23 @@ export function SoulSpaceHero() {
 
           initial={{
             opacity:0,
+            scale:0.9,
             y:40,
           }}
 
           animate={{
             opacity:1,
+            scale:1,
             y:0,
           }}
 
           transition={{
+            duration:1.2,
             delay:0.2,
-            duration:1,
           }}
 
           className="
-          mt-10
+          mt-8
           text-center
           font-[family:var(--font-cormorant)]
           text-7xl
@@ -151,17 +233,21 @@ export function SoulSpaceHero() {
           leading-[0.85]
           tracking-tight
           text-[#F4F1EA]
-          md:text-[120px]
+          md:text-9xl
           "
 
         >
 
           SOUL
-          <br/>
+
+          <br />
+
           MIRROR
 
 
         </motion.h1>
+
+
 
 
 
@@ -180,14 +266,14 @@ export function SoulSpaceHero() {
           }}
 
           transition={{
-            delay:0.5,
+            delay:0.8,
           }}
 
           className="
           mt-8
           text-xs
           uppercase
-          tracking-[0.55em]
+          tracking-[0.5em]
           text-[#D6B25E]
           "
 
@@ -202,18 +288,23 @@ export function SoulSpaceHero() {
 
 
 
+
+
+
         <motion.p
 
           initial={{
             opacity:0,
+            y:20,
           }}
 
           animate={{
             opacity:1,
+            y:0,
           }}
 
           transition={{
-            delay:0.7,
+            delay:1,
           }}
 
           className="
@@ -227,15 +318,19 @@ export function SoulSpaceHero() {
 
         >
 
-          A personal intelligence mirror
-          designed to understand your identity,
-          patterns, emotions and evolution.
+          Your personal intelligence mirror.
 
-          <br/>
+          <br />
 
-          Powered by EON AI intelligence systems.
+          AI designed to understand
+
+          identity, dreams,
+
+          archetypes and evolution.
+
 
         </motion.p>
+
 
 
 
@@ -250,9 +345,14 @@ export function SoulSpaceHero() {
 
         <motion.div
 
+          style={{
+            y:orbY,
+            scale:orbScale,
+          }}
+
           initial={{
             opacity:0,
-            scale:0.85,
+            scale:0.7,
           }}
 
           animate={{
@@ -261,69 +361,18 @@ export function SoulSpaceHero() {
           }}
 
           transition={{
-            delay:0.9,
-            duration:1,
+            duration:1.8,
+            delay:1.2,
           }}
 
-          className="my-14"
+          className="
+          mt-20
+          "
 
         >
 
           <SoulOrb3D />
 
-        </motion.div>
-
-
-
-
-
-
-
-        {/* Product Badge */}
-
-
-
-        <motion.div
-
-          initial={{
-            opacity:0,
-          }}
-
-          animate={{
-            opacity:1,
-          }}
-
-          transition={{
-            delay:1.2,
-          }}
-
-          className="
-          rounded-full
-          border
-          border-[#D6B25E]/20
-          bg-white/[0.03]
-          px-6
-          py-3
-          backdrop-blur-2xl
-          "
-
-        >
-
-          <span
-
-            className="
-            text-[10px]
-            uppercase
-            tracking-[0.45em]
-            text-[#D6B25E]
-            "
-
-          >
-
-            A product by EON AI
-
-          </span>
-
 
         </motion.div>
 
@@ -334,139 +383,25 @@ export function SoulSpaceHero() {
 
 
 
-        {/* Intelligence Card */}
-
-
-
 
         <motion.div
-
 
           initial={{
             opacity:0,
             y:30,
           }}
 
-
           animate={{
             opacity:1,
             y:0,
           }}
 
-
           transition={{
-            delay:1.4,
+            delay:2,
           }}
-
-
 
           className="
           mt-10
-          rounded-[32px]
-          border
-          border-white/10
-          bg-white/[0.03]
-          px-12
-          py-8
-          backdrop-blur-3xl
-          "
-
-        >
-
-
-
-          <p
-
-            className="
-            text-center
-            text-[10px]
-            uppercase
-            tracking-[0.45em]
-            text-[#D6B25E]
-            "
-
-          >
-
-            EON Intelligence
-
-          </p>
-
-
-
-
-
-          <h2
-
-            className="
-            mt-4
-            text-center
-            text-3xl
-            font-light
-            text-[#F4F1EA]
-            "
-
-          >
-
-            Personal Intelligence System
-
-          </h2>
-
-
-
-
-          <p
-
-            className="
-            mt-3
-            text-center
-            text-white/50
-            "
-
-          >
-
-            Understand yourself. Evolve consciously.
-
-          </p>
-
-
-
-        </motion.div>
-
-
-
-
-
-
-
-
-        {/* Actions */}
-
-
-
-
-
-        <motion.div
-
-
-          initial={{
-            opacity:0,
-            y:30,
-          }}
-
-
-          animate={{
-            opacity:1,
-            y:0,
-          }}
-
-
-          transition={{
-            delay:1.6,
-          }}
-
-
-          className="
-          mt-12
           flex
           flex-col
           items-center
@@ -478,8 +413,8 @@ export function SoulSpaceHero() {
 
 
 
-          <button
 
+          <button
 
             className="
             group
@@ -488,18 +423,16 @@ export function SoulSpaceHero() {
             gap-3
             rounded-full
             bg-[#D6B25E]
-            px-9
+            px-8
             py-4
-            font-medium
+            font-semibold
             text-black
             shadow-[0_0_60px_rgba(214,178,94,.35)]
-            transition-all
-            hover:scale-105
             "
 
           >
 
-            Begin Experience
+            Start Experience
 
 
             <ArrowRight
@@ -514,8 +447,8 @@ export function SoulSpaceHero() {
             />
 
 
-
           </button>
+
 
 
 
@@ -523,29 +456,25 @@ export function SoulSpaceHero() {
 
           <a
 
-
             href="#ecosystem"
-
 
             className="
             rounded-full
             border
             border-white/10
             bg-white/[0.03]
-            px-9
+            px-8
             py-4
             text-xs
             uppercase
             tracking-[0.3em]
-            text-white/60
-            transition-all
-            hover:border-[#D6B25E]/40
-            hover:text-white
+            text-white/70
+            backdrop-blur-xl
             "
 
           >
 
-            Explore EON Ecosystem
+            Explore Ecosystem
 
 
           </a>
@@ -553,7 +482,6 @@ export function SoulSpaceHero() {
 
 
 
-
         </motion.div>
 
 
@@ -562,57 +490,7 @@ export function SoulSpaceHero() {
 
 
 
-        {/* Keywords */}
-
-
-
-
-        <motion.div
-
-
-          initial={{
-            opacity:0,
-          }}
-
-
-          animate={{
-            opacity:1,
-          }}
-
-
-          transition={{
-            delay:1.9,
-          }}
-
-
-
-          className="
-          mt-20
-          flex
-          flex-wrap
-          justify-center
-          gap-8
-          text-[10px]
-          uppercase
-          tracking-[0.4em]
-          text-white/30
-          "
-
-        >
-
-          <span>Identity</span>
-          <span>Memory</span>
-          <span>Dreams</span>
-          <span>Patterns</span>
-          <span>Evolution</span>
-
-
-        </motion.div>
-
-
-
-
-      </div>
+      </motion.div>
 
 
 
