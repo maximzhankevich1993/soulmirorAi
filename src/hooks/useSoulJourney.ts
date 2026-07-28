@@ -2,87 +2,45 @@
 
 import { useEffect, useState } from "react";
 
-
-interface JourneyItem {
+export interface JourneyItem {
+  id: string;
   type: "soul" | "dream" | "tarot";
   title: string;
   description: string;
   date: string;
 }
 
-
 export function useSoulJourney() {
-
-  const [items, setItems] =
-    useState<JourneyItem[]>([]);
-
-
-  const [loading, setLoading] =
-    useState(true);
-
-
-  async function loadHistory() {
-
-    try {
-
-      setLoading(true);
-
-
-      const response =
-        await fetch(
-          "/api/history"
-        );
-
-
-      if (!response.ok) {
-        throw new Error(
-          "History loading failed"
-        );
-      }
-
-
-      const data =
-        await response.json();
-
-
-      setItems(
-        data.items || []
-      );
-
-
-    } catch(error){
-
-      console.error(
-        "JOURNEY ERROR:",
-        error
-      );
-
-
-      setItems([]);
-
-
-    } finally {
-
-      setLoading(false);
-
-    }
-
-  }
-
-
+  const [items, setItems] = useState<JourneyItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-
-    loadHistory();
-
+    loadJourney();
   }, []);
 
+  async function loadJourney() {
+    try {
+      setLoading(true);
 
+      const response = await fetch("/api/journey");
+
+      if (!response.ok) {
+        throw new Error("Failed to load journey");
+      }
+
+      const data = await response.json();
+
+      setItems(data);
+    } catch (error) {
+      console.error("Journey error:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return {
     items,
     loading,
-    refresh: loadHistory,
+    reload: loadJourney,
   };
-
 }
