@@ -6,14 +6,9 @@ import {
   Brain,
 } from "lucide-react";
 
-import {
-  motion,
-} from "framer-motion";
+import { useState } from "react";
 
-import {
-  useState,
-} from "react";
-
+import { motion } from "framer-motion";
 
 import {
   AIConsole,
@@ -21,373 +16,452 @@ import {
 
 
 import {
-  useDreamAnalysis,
-} from "@/hooks/useDreamAnalysis";
+  useSoulMemoryStore,
+} from "@/store/soul-memory-store";
 
 
+import {
+  useSoulOrbStore,
+} from "@/store/soul-orb-store";
 
-export function DreamConsole() {
 
+interface DreamResult {
 
-  const [dream,setDream] =
-    useState("");
+  symbol:string;
 
+  meaning:string;
 
+  emotion:string;
 
-  const {
-    analyzeDream,
-    loading,
-    result,
-  } =
-    useDreamAnalysis();
+  message:string;
 
+}
 
 
-  async function handleSubmit(){
 
+export function DreamConsole(){
 
-    if(!dream.trim())
-      return;
 
+const [text,setText] =
+useState("");
 
-    await analyzeDream(dream);
+const [loading,setLoading] =
+useState(false);
 
 
-    setDream("");
+const [result,setResult] =
+useState<DreamResult | null>(null);
 
 
-  }
 
+const setMemory =
+useSoulMemoryStore(
+(state)=>state.setMemory
+);
 
 
-  return (
 
-    <AIConsole
+const setOrbState =
+useSoulOrbStore(
+(state)=>state.setState
+);
 
 
-      icon={
 
-        <Moon
 
-          size={22}
 
-          className="
-          text-purple-300
-          "
+async function analyzeDream(){
 
-        />
 
-      }
+if(!text.trim())
+return;
 
 
 
-      eyebrow="EON Dream Intelligence"
+try{
 
 
+setLoading(true);
 
-      title="Decode subconscious patterns"
 
 
+const response =
+await fetch(
+"/api/dream-analysis",
+{
 
-      description="
-      AI interpretation of dream symbols,
-      emotional signals and hidden patterns.
-      "
+method:"POST",
 
+headers:{
+"Content-Type":
+"application/json",
+},
 
+body:JSON.stringify({
 
-      placeholder="
-      Describe your dream...
-      symbols, places, people,
-      emotions and experiences
-      "
+dream:text,
 
+}),
 
 
-      value={dream}
+}
 
+);
 
 
-      onChange={setDream}
 
 
 
-      onSubmit={handleSubmit}
+const data =
+await response.json();
 
 
 
-      loading={loading}
 
 
+if(!response.ok)
+throw new Error(
+data.error ||
+"Dream analysis failed"
+);
 
-      buttonText="Analyze Dream"
 
 
 
-      loadingText="Reading subconscious patterns..."
 
+setResult(data);
 
 
-      color="purple"
 
 
-      result={
 
-        result && (
+setMemory({
 
-          <motion.div
+insight:
+data.message ||
+data.meaning ||
+"",
 
-            initial={{
-              opacity:0,
-              y:25,
-            }}
+emotion:
+data.emotion ||
+"Dream",
 
-            animate={{
-              opacity:1,
-              y:0,
-            }}
+});
 
-            transition={{
-              duration:0.6,
-            }}
 
-            className="
-            space-y-7
-            rounded-[32px]
-            border
-            border-purple-400/20
-            bg-gradient-to-br
-            from-purple-500/10
-            via-white/[0.03]
-            to-[#D6B25E]/10
-            p-7
-            "
-          >
 
 
-            <div
-              className="
-              flex
-              items-center
-              gap-4
-              "
-            >
 
-              <div
-                className="
-                flex
-                h-11
-                w-11
-                items-center
-                justify-center
-                rounded-2xl
-                bg-purple-500/10
-                "
-              >
+setOrbState(
+"awakening"
+);
 
-                <Brain
-                  size={21}
-                  className="
-                  text-purple-300
-                  "
-                />
 
-              </div>
 
 
-              <div>
 
-                <p
-                  className="
-                  text-[10px]
-                  uppercase
-                  tracking-[0.4em]
-                  text-purple-300
-                  "
-                >
-                  Dream Intelligence Result
-                </p>
+setText("");
 
 
-                <p
-                  className="
-                  mt-1
-                  text-xs
-                  text-white/40
-                  "
-                >
-                  Powered by EON AI
-                </p>
 
-              </div>
+}
 
+catch(error){
 
-            </div>
 
+console.error(
+"Dream analysis error:",
+error
+);
 
 
-            <div>
+}
 
-              <p
-                className="
-                text-[11px]
-                uppercase
-                tracking-[0.35em]
-                text-white/40
-                "
-              >
-                Core Meaning
-              </p>
+finally{
 
+setLoading(false);
 
-              <h3
-                className="
-                mt-3
-                text-3xl
-                font-light
-                leading-relaxed
-                text-[#F4F1EA]
-                "
-              >
-                {result.summary}
-              </h3>
+}
 
-            </div>
 
-
+}
 
-            <div>
 
-              <p
-                className="
-                text-[11px]
-                uppercase
-                tracking-[0.35em]
-                text-white/40
-                "
-              >
-                Symbolic Patterns
-              </p>
-
-
-
-              <div
-                className="
-                mt-4
-                flex
-                flex-wrap
-                gap-3
-                "
-              >
 
-                {result.symbols?.map(
-                  (symbol,index)=>(
-                    
-                    <span
 
-                      key={index}
 
-                      className="
-                      rounded-full
-                      border
-                      border-purple-400/20
-                      bg-purple-500/10
-                      px-4
-                      py-2
-                      text-xs
-                      text-purple-100/80
-                      "
 
-                    >
-                      {symbol}
-                    </span>
 
-                  )
-                )}
+return(
 
-              </div>
 
-            </div>
 
+<AIConsole
 
-            <div>
 
-              <p
-                className="
-                text-[11px]
-                uppercase
-                tracking-[0.35em]
-                text-white/40
-                "
-              >
-                AI Interpretation
-              </p>
+icon={
 
+<Moon
 
-              <p
-                className="
-                mt-4
-                text-base
-                leading-8
-                text-white/70
-                "
-              >
-                {result.interpretation}
-              </p>
+size={22}
 
-            </div>
+className="
+text-[#8B5CF6]
+"
 
+/>
 
+}
 
-            <div
-              className="
-              border-t
-              border-white/10
-              pt-5
-              "
-            >
 
-              <div
-                className="
-                flex
-                items-center
-                gap-3
-                "
-              >
 
-                <Sparkles
-                  size={15}
-                  className="
-                  text-[#D6B25E]
-                  "
-                />
+eyebrow="Dream Intelligence"
 
 
-                <p
-                  className="
-                  text-[10px]
-                  uppercase
-                  tracking-[0.4em]
-                  text-white/30
-                  "
-                >
-                  EON Intelligence Engine • Dream Analysis System
-                </p>
+title="Decode your subconscious"
 
-              </div>
 
-            </div>
 
+placeholder="
+Describe your dream,
+symbols or visions...
+"
 
-          </motion.div>
 
-        )
 
-      }
+value={text}
 
 
-    />
 
-  );
+onChange={setText}
+
+
+
+onSubmit={analyzeDream}
+
+
+
+loading={loading}
+
+
+
+buttonText="Analyze Dream"
+
+
+
+loadingText="Reading subconscious..."
+
+
+
+
+color="purple"
+
+
+
+
+
+result={
+
+result && (
+
+
+<motion.div
+
+
+initial={{
+opacity:0,
+y:20,
+}}
+
+
+animate={{
+opacity:1,
+y:0,
+}}
+
+
+className="
+space-y-6
+rounded-[32px]
+border
+border-purple-400/20
+bg-purple-500/5
+p-7
+"
+
+>
+
+
+<div className="
+flex
+items-center
+gap-3
+">
+
+
+<div className="
+flex
+h-10
+w-10
+items-center
+justify-center
+rounded-2xl
+bg-purple-500/10
+">
+
+
+<Brain
+
+size={20}
+
+className="
+text-purple-300
+"
+
+/>
+
+
+</div>
+
+
+
+<div>
+
+
+<p className="
+text-[10px]
+uppercase
+tracking-[0.35em]
+text-purple-300
+">
+
+Dream Insight
+
+</p>
+
+
+<p className="
+text-xs
+text-white/40
+">
+
+EON Subconscious Engine
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div>
+
+
+<p className="
+text-[10px]
+uppercase
+tracking-[0.35em]
+text-white/40
+">
+
+Symbol
+
+</p>
+
+
+<h3 className="
+mt-3
+text-3xl
+font-light
+text-[#F4F1EA]
+">
+
+{result.symbol}
+
+</h3>
+
+
+</div>
+
+
+
+
+
+
+<div>
+
+
+<p className="
+text-[10px]
+uppercase
+tracking-[0.35em]
+text-white/40
+">
+
+Meaning
+
+</p>
+
+
+<p className="
+mt-3
+leading-8
+text-white/70
+">
+
+{result.meaning}
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+<div className="
+border-t
+border-white/10
+pt-5
+">
+
+
+<p className="
+text-[10px]
+uppercase
+tracking-[0.4em]
+text-white/30
+">
+
+Powered by EON Dream Intelligence
+
+</p>
+
+
+</div>
+
+
+
+</motion.div>
+
+
+)
+
+
+}
+
+
+/>
+
+);
+
 
 }
