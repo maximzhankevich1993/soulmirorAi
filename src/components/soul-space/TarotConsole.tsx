@@ -1,18 +1,18 @@
 "use client";
 
 import {
-  MoonStar,
   Sparkles,
+  Layers,
   Brain,
 } from "lucide-react";
 
 import {
-  motion,
-} from "framer-motion";
-
-import {
   useState,
 } from "react";
+
+import {
+  motion,
+} from "framer-motion";
 
 
 import {
@@ -20,368 +20,649 @@ import {
 } from "@/components/ui/AIConsole";
 
 
+import {
+  useSoulMemoryStore,
+} from "@/store/soul-memory-store";
+
+
+import {
+  useSoulOrbStore,
+} from "@/store/soul-orb-store";
+
+
+
+
 interface TarotResult {
-  card: string;
-  meaning: string;
-  guidance: string;
+
+  card:string;
+
+  archetype:string;
+
+  meaning:string;
+
+  guidance:string;
+
 }
 
 
-export function TarotConsole() {
 
 
-  const [loading,setLoading] =
-    useState(false);
+export function TarotConsole(){
 
 
-  const [result,setResult] =
-    useState<TarotResult | null>(null);
+const [question,setQuestion] =
+useState("");
 
 
 
-  async function drawCard(){
+const [loading,setLoading] =
+useState(false);
 
-    try {
 
-      setLoading(true);
 
+const [result,setResult] =
+useState<TarotResult | null>(null);
 
-      const response =
-        await fetch(
-          "/api/tarot",
-          {
-            method:"POST",
-          }
-        );
 
 
-      if(!response.ok){
 
-        throw new Error(
-          "Tarot failed"
-        );
 
-      }
+const setMemory =
+useSoulMemoryStore(
+(state)=>state.setMemory
+);
 
 
-      const data =
-        await response.json();
 
+const setOrbState =
+useSoulOrbStore(
+(state)=>state.setState
+);
 
-      setResult(data);
 
 
-    } catch(error){
 
 
-      console.error(
-        "TAROT ERROR",
-        error
-      );
 
 
-    } finally {
+async function analyzeTarot(){
 
 
-      setLoading(false);
+if(!question.trim())
+return;
 
 
-    }
 
-  }
+try{
 
 
+setLoading(true);
 
-  return (
 
-    <AIConsole
 
 
-      icon={
 
-        <MoonStar
+const response =
+await fetch(
+"/api/tarot",
+{
 
-          size={22}
+method:"POST",
 
-          className="
-          text-[#D6B25E]
-          "
+headers:{
 
-        />
+"Content-Type":
+"application/json",
 
-      }
+},
 
 
+body:JSON.stringify({
 
-      eyebrow="EON Symbolic Intelligence"
+question,
 
+}),
 
 
-      title="Explore archetypal symbols"
+}
 
+);
 
 
-      description="
-      Discover symbolic patterns
-      through AI-powered archetype analysis.
-      "
 
 
 
-      placeholder="
-      Your intuition is waiting...
-      "
 
+const data =
+await response.json();
 
 
-      value=""
 
 
-      onChange={()=>{}}
 
 
+if(!response.ok){
 
-      onSubmit={drawCard}
+throw new Error(
+data.error ||
+"Tarot analysis failed"
+);
 
+}
 
 
-      loading={loading}
 
 
 
-      buttonText="Reveal Symbol"
 
 
+setResult(data);
 
-      loadingText="Analyzing archetype..."
 
 
 
-      result={
 
-        result && (
 
-          <motion.div
 
-            initial={{
-              opacity:0,
-              y:25,
-            }}
+setMemory({
 
-            animate={{
-              opacity:1,
-              y:0,
-            }}
+insight:
+data.guidance ||
+data.meaning ||
+"",
 
-            transition={{
-              duration:0.6,
-            }}
 
-            className="
-            space-y-7
-            rounded-[32px]
-            border
-            border-[#D6B25E]/20
-            bg-gradient-to-br
-            from-[#D6B25E]/10
-            via-white/[0.03]
-            to-[#8B5CF6]/10
-            p-7
-            text-center
-            "
+emotion:
+"Symbolic Reflection",
 
-          >
 
+archetype:
+data.archetype ||
+"",
 
-            <div
-              className="
-              flex
-              flex-col
-              items-center
-              gap-3
-              "
-            >
+});
 
-              <div
-                className="
-                flex
-                h-12
-                w-12
-                items-center
-                justify-center
-                rounded-2xl
-                bg-[#D6B25E]/10
-                "
-              >
 
-                <Brain
-                  size={22}
-                  className="
-                  text-[#D6B25E]
-                  "
-                />
 
-              </div>
 
 
-              <p
-                className="
-                text-[10px]
-                uppercase
-                tracking-[0.4em]
-                text-[#D6B25E]
-                "
-              >
-                Symbolic Intelligence Result
-              </p>
+setOrbState(
+"focus"
+);
 
 
-              <p
-                className="
-                text-xs
-                text-white/40
-                "
-              >
-                Powered by EON AI
-              </p>
 
 
-            </div>
+setQuestion("");
 
 
 
-            <div>
 
-              <h3
-                className="
-                font-[family:var(--font-cormorant)]
-                text-5xl
-                font-light
-                text-[#F4F1EA]
-                "
-              >
-                {result.card}
-              </h3>
+}
 
-            </div>
 
 
+catch(error){
 
-            <div>
+console.error(
+"TAROT ERROR:",
+error
+);
 
-              <p
-                className="
-                text-[11px]
-                uppercase
-                tracking-[0.35em]
-                text-white/40
-                "
-              >
-                Symbol Meaning
-              </p>
 
+}
 
-              <p
-                className="
-                mt-4
-                leading-8
-                text-white/70
-                "
-              >
-                {result.meaning}
-              </p>
 
-            </div>
 
+finally{
 
 
-            <div
-              className="
-              rounded-2xl
-              border
-              border-white/10
-              bg-white/[0.03]
-              p-5
-              "
-            >
+setLoading(false);
 
-              <div
-                className="
-                flex
-                items-center
-                justify-center
-                gap-2
-                "
-              >
 
-                <Sparkles
-                  size={15}
-                  className="
-                  text-[#D6B25E]
-                  "
-                />
+}
 
 
-                <p
-                  className="
-                  text-[10px]
-                  uppercase
-                  tracking-[0.35em]
-                  text-white/40
-                  "
-                >
-                  Guidance
-                </p>
+}
 
-              </div>
 
 
-              <p
-                className="
-                mt-3
-                text-white/80
-                "
-              >
-                {result.guidance}
-              </p>
 
 
-            </div>
 
 
 
-            <div
-              className="
-              border-t
-              border-white/10
-              pt-5
-              "
-            >
 
-              <p
-                className="
-                text-[10px]
-                uppercase
-                tracking-[0.4em]
-                text-white/30
-                "
-              >
-                EON Intelligence Engine • Symbol Analysis System
-              </p>
+return(
 
 
-            </div>
 
+<AIConsole
 
-          </motion.div>
 
-        )
+icon={
 
-      }
+<Layers
 
+size={22}
 
-    />
+className="
+text-[#D6B25E]
+"
 
-  );
+/>
+
+}
+
+
+
+eyebrow="Symbolic Intelligence"
+
+
+
+title="Explore symbolic guidance"
+
+
+
+placeholder="
+Ask a question about your path,
+choices or future direction...
+"
+
+
+
+value={question}
+
+
+
+onChange={setQuestion}
+
+
+
+onSubmit={analyzeTarot}
+
+
+
+loading={loading}
+
+
+
+buttonText="Reveal Symbol"
+
+
+
+loadingText="Interpreting symbols..."
+
+
+
+color="gold"
+
+
+
+
+
+result={
+
+
+result && (
+
+
+<motion.div
+
+
+initial={{
+
+opacity:0,
+
+y:25,
+
+}}
+
+
+animate={{
+
+opacity:1,
+
+y:0,
+
+}}
+
+
+transition={{
+
+duration:0.6,
+
+}}
+
+
+
+className="
+space-y-6
+rounded-[32px]
+border
+border-[#D6B25E]/20
+bg-gradient-to-br
+from-[#D6B25E]/10
+via-white/[0.03]
+to-[#8B5CF6]/10
+p-7
+"
+
+>
+
+
+
+<div
+
+className="
+flex
+items-center
+gap-3
+"
+
+>
+
+
+<div
+
+className="
+flex
+h-10
+w-10
+items-center
+justify-center
+rounded-2xl
+bg-[#D6B25E]/10
+"
+
+>
+
+
+<Brain
+
+size={20}
+
+className="
+text-[#D6B25E]
+"
+
+/>
+
+
+</div>
+
+
+
+
+
+<div>
+
+
+<p
+
+className="
+text-[10px]
+uppercase
+tracking-[0.35em]
+text-[#D6B25E]
+"
+
+>
+
+Symbolic Result
+
+</p>
+
+
+
+<p
+
+className="
+text-xs
+text-white/40
+"
+
+>
+
+EON Archetype Engine
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div>
+
+
+<p
+
+className="
+text-[10px]
+uppercase
+tracking-[0.35em]
+text-white/40
+"
+
+>
+
+Selected Symbol
+
+</p>
+
+
+<h3
+
+className="
+mt-3
+text-4xl
+font-light
+text-[#F4F1EA]
+"
+
+>
+
+{result.card}
+
+</h3>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div>
+
+
+<p
+
+className="
+text-[10px]
+uppercase
+tracking-[0.35em]
+text-white/40
+"
+
+>
+
+Archetype
+
+</p>
+
+
+<p
+
+className="
+mt-3
+text-xl
+text-[#F4F1EA]
+"
+
+>
+
+{result.archetype}
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+<div>
+
+
+<p
+
+className="
+text-[10px]
+uppercase
+tracking-[0.35em]
+text-white/40
+"
+
+>
+
+Meaning
+
+</p>
+
+
+<p
+
+className="
+mt-3
+leading-8
+text-white/70
+"
+
+>
+
+{result.meaning}
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+<div>
+
+
+<p
+
+className="
+text-[10px]
+uppercase
+tracking-[0.35em]
+text-white/40
+"
+
+>
+
+Guidance
+
+</p>
+
+
+<p
+
+className="
+mt-3
+italic
+leading-8
+text-[#F4F1EA]
+"
+
+>
+
+{result.guidance}
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div
+
+className="
+border-t
+border-white/10
+pt-5
+"
+
+>
+
+
+<p
+
+className="
+text-[10px]
+uppercase
+tracking-[0.4em]
+text-white/30
+"
+
+>
+
+Powered by EON Symbolic Intelligence
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+</motion.div>
+
+
+)
+
+
+}
+
+
+/>
+
+
+);
+
+
 
 }
