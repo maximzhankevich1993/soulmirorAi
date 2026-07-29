@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+
 import { useSoulOrbStore } from "@/store/soul-orb-store";
 import { getSoulState } from "@/components/soul-space/SoulOrbAI";
 import { useSoulMemoryStore } from "@/store/soul-memory-store";
@@ -12,108 +13,76 @@ interface DreamResult {
   interpretation: string;
 }
 
-
 export function useDreamAnalysis() {
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<DreamResult | null>(null);
 
-  const [loading, setLoading] =
-    useState(false);
+  const setOrbState = useSoulOrbStore((state) => state.setState);
 
-  const [result, setResult] =
-    useState<DreamResult | null>(null);
+  const setOrbData = useSoulOrbStore((state) => state.setSoulData);
 
+  const setMemory = useSoulMemoryStore((state) => state.setMemory);
 
-  const setOrbState =
-    useSoulOrbStore(
-      (state) => state.setState
-    );
-  
-  const setMemory =
-  useSoulMemoryStore(
-    (state) => state.setMemory
-  );
-
-
-  async function analyzeDream(
-    dream: string
-  ) {
+  async function analyzeDream(dream: string) {
+    if (!dream.trim()) return null;
 
     try {
-
       setLoading(true);
 
-
-      const response =
-        await fetch(
-          "/api/dream-analysis",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type":
-                "application/json",
-            },
-            body: JSON.stringify({
-              dream,
-            }),
-          }
-        );
-
+      const response = await fetch("/api/dream-analysis", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          dream,
+        }),
+      });
 
       if (!response.ok) {
-        throw new Error(
-          "Dream analysis failed"
-        );
+        throw new Error("Dream analysis failed");
       }
 
+      const data = await response.json();
 
-      const data =
-        await response.json();
+      const dreamResult: DreamResult = {
+        summary: data.summary ?? "",
+        symbols: data.symbols ?? [],
+        emotion: data.emotion ?? "Calm",
+        interpretation: data.interpretation ?? "",
+      };
 
+      setResult(dreamResult);
 
-      setResult(data);
-
+      // Memory
       setMemory({
+        emotion: dreamResult.emotion,
+        insight: dreamResult.interpretation,
+      });
 
-  emotion:
-    data.emotion,
+      // Soul Orb Intelligence
+      setOrbData({
+        archetype: "Dream Walker",
+        emotion: dreamResult.emotion,
+        insight: dreamResult.interpretation,
+      });
 
-  insight:
-    data.interpretation,
-
-});
-
-
-      const soulState =
-        getSoulState(
-          data.emotion,
-          data.summary
-        );
-
-
-      setOrbState(
-        soulState
+      // Orb visual state
+      const newState = getSoulState(
+        dreamResult.emotion,
+        dreamResult.summary
       );
 
+      setOrbState(newState);
 
-      return data;
-
-
+      return dreamResult;
     } catch (error) {
-
-      console.error(
-        "DREAM ANALYSIS ERROR:",
-        error
-      );
-
+      console.error("DREAM ANALYSIS ERROR:", error);
       throw error;
-
     } finally {
-
       setLoading(false);
-
     }
-
   }
-
 
   return {
     analyzeDream,
