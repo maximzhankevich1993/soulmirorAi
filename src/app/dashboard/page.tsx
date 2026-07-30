@@ -301,7 +301,7 @@ export default function DashboardPage() {
 
   return (
 
-    <DashboardShell />
+    <DashboardShell usage={usage}/>
 
   );
 
