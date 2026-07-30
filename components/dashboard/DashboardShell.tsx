@@ -7,9 +7,30 @@ import { SoulOrbPanel } from "./SoulOrbPanel";
 import { IntelligenceModules } from "./IntelligenceModules";
 import { EvolutionTimeline } from "./EvolutionTimeline";
 import { PremiumPanel } from "./PremiumPanel";
+import { UsagePanel } from "./UsagePanel";
 
 
-export function DashboardShell() {
+interface Usage {
+
+  soulScan:number;
+
+  dream:number;
+
+  tarot:number;
+
+}
+
+
+
+export function DashboardShell({
+
+  usage,
+
+}:{
+
+  usage:Usage;
+
+}) {
 
 
   return (
@@ -29,7 +50,6 @@ export function DashboardShell() {
     >
 
 
-      {/* Background atmosphere */}
 
       <div
 
@@ -50,6 +70,8 @@ export function DashboardShell() {
 
 
 
+
+
       <div
 
         className="
@@ -67,11 +89,12 @@ export function DashboardShell() {
 
 
 
-        <motion.section
+
+        <motion.div
 
           initial={{
             opacity:0,
-            y:40,
+            y:30,
           }}
 
           animate={{
@@ -80,7 +103,7 @@ export function DashboardShell() {
           }}
 
           transition={{
-            duration:1,
+            duration:0.8,
           }}
 
           className="
@@ -91,60 +114,55 @@ export function DashboardShell() {
 
           <SoulOrbPanel />
 
-        </motion.section>
+        </motion.div>
 
 
 
 
 
-        <section
+        <div className="mt-20">
 
-          className="
-          mt-20
-          "
+          <UsagePanel
 
-        >
+            usage={usage}
+
+          />
+
+        </div>
+
+
+
+
+
+        <div className="mt-20">
 
           <IntelligenceModules />
 
-        </section>
+        </div>
 
 
 
 
 
-        <section
-
-          className="
-          mt-20
-          "
-
-        >
+        <div className="mt-20">
 
           <EvolutionTimeline />
 
-        </section>
+        </div>
 
 
 
 
 
-        <section
-
-          className="
-          mt-20
-          "
-
-        >
+        <div className="mt-20">
 
           <PremiumPanel />
 
-        </section>
+        </div>
 
 
 
       </div>
-
 
 
     </main>
