@@ -5,6 +5,7 @@ import "./globals.css";
 import { CursorGlow } from "@/components/effects/CursorGlow";
 import { CinematicOverlay } from "@/components/effects/cinematic-overlay";
 import { PageTransition } from "@/components/providers/page-transition";
+import { SmoothScroll } from "@/components/providers/smooth-scroll";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -127,10 +128,13 @@ export default function RootLayout({
         {/* Global cinematic lighting */}
         <CinematicOverlay />
 
-        {/* Global page transitions */}
-        <PageTransition>
-          {children}
-        </PageTransition>
+        {/* Global smooth scrolling */}
+        <SmoothScroll>
+          {/* Global page transitions */}
+          <PageTransition>
+            {children}
+          </PageTransition>
+        </SmoothScroll>
       </body>
     </html>
   );
