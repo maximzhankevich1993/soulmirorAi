@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { SectionTitle } from "@/components/ui/section-title";
 import { Button } from "@/components/ui/button";
+import { AILoading } from "@/components/ui/ai-loading";
 
 interface TarotResult {
   card: string;
@@ -42,119 +43,366 @@ export function TarotPreviewSection() {
         meaning: data.meaning ?? "No meaning provided",
         guidance: data.guidance ?? "Trust your intuition",
       });
+
     } catch (err: any) {
       console.error(err);
-      setError(err?.message || "Something went wrong");
+
+      setError(
+        err?.message || "Something went wrong"
+      );
+
     } finally {
       setLoading(false);
     }
   }
 
+
   return (
     <section
       id="tarot"
-      className="relative overflow-hidden py-24 md:py-32"
+      className="
+        relative
+        overflow-hidden
+        py-24
+        md:py-32
+      "
     >
+
+      {loading && (
+        <AILoading title="Tarot Reading" />
+      )}
+
+
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-1/2 h-[700px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#D6B25E]/10 blur-3xl" />
-        <div className="absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-[#8B5CF6]/10 blur-3xl" />
+
+        <div
+          className="
+            absolute
+            left-1/2
+            top-1/2
+            h-[700px]
+            w-[700px]
+            -translate-x-1/2
+            -translate-y-1/2
+            rounded-full
+            bg-[#D6B25E]/10
+            blur-3xl
+          "
+        />
+
+        <div
+          className="
+            absolute
+            right-0
+            top-0
+            h-[400px]
+            w-[400px]
+            rounded-full
+            bg-[#8B5CF6]/10
+            blur-3xl
+          "
+        />
+
       </div>
 
+
+
       <Container className="relative z-10">
+
         <SectionTitle
           eyebrow="Tarot Intelligence"
           title="The cards reveal what you already know"
           description="Draw a card and receive an AI-powered symbolic interpretation."
         />
 
-        <div className="mt-20 flex flex-col items-center gap-12">
+
+
+        <div
+          className="
+            mt-20
+            flex
+            flex-col
+            items-center
+            gap-12
+          "
+        >
+
+
           {/* CARD */}
+
           <motion.div
             animate={{
               y: [0, -10, 0],
               rotate: [-1, 1, -1],
             }}
+
             transition={{
               duration: 8,
               repeat: Infinity,
               ease: "easeInOut",
             }}
+
             className="relative"
           >
-            <div className="absolute inset-0 -z-10 rounded-[40px] bg-[#D6B25E]/20 blur-3xl" />
 
-            <div className="relative h-[420px] w-[260px] overflow-hidden rounded-[32px] border border-[#D6B25E]/20 bg-gradient-to-br from-[#09090B] via-white/[0.04] to-[#09090B] backdrop-blur-2xl">
-              <div className="absolute inset-4 rounded-[24px] border border-[#D6B25E]/20" />
+            <div
+              className="
+                absolute
+                inset-0
+                -z-10
+                rounded-[40px]
+                bg-[#D6B25E]/20
+                blur-3xl
+              "
+            />
 
-              <div className="flex h-full items-center justify-center">
+
+            <div
+              className="
+                relative
+                h-[420px]
+                w-[260px]
+                overflow-hidden
+                rounded-[32px]
+                border
+                border-[#D6B25E]/20
+                bg-gradient-to-br
+                from-[#09090B]
+                via-white/[0.04]
+                to-[#09090B]
+                backdrop-blur-2xl
+              "
+            >
+
+              <div
+                className="
+                  absolute
+                  inset-4
+                  rounded-[24px]
+                  border
+                  border-[#D6B25E]/20
+                "
+              />
+
+
+              <div
+                className="
+                  flex
+                  h-full
+                  items-center
+                  justify-center
+                "
+              >
+
                 <div className="text-center">
-                  <div className="text-7xl text-[#D6B25E]">☾</div>
 
-                  <p className="mt-8 font-[family:var(--font-cormorant)] text-3xl text-[#F4F1EA]">
+                  <div
+                    className="
+                      text-7xl
+                      text-[#D6B25E]
+                    "
+                  >
+                    ☾
+                  </div>
+
+
+                  <p
+                    className="
+                      mt-8
+                      font-[family:var(--font-cormorant)]
+                      text-3xl
+                      text-[#F4F1EA]
+                    "
+                  >
                     {result?.card ?? "SoulMirror"}
                   </p>
+
                 </div>
+
               </div>
+
             </div>
+
           </motion.div>
 
+
+
           {/* BUTTON */}
+
           <Button
             variant="primary"
             onClick={handleDrawCard}
             disabled={loading}
           >
-            {loading ? "Drawing Card..." : "Draw Your Card"}
+            {
+              loading
+                ? "Drawing Card..."
+                : "Draw Your Card"
+            }
           </Button>
 
+
+
           {/* ERROR */}
+
           {error && (
-            <p className="text-red-400/80 text-sm">{error}</p>
+            <p
+              className="
+                text-sm
+                text-red-400/80
+              "
+            >
+              {error}
+            </p>
           )}
 
+
+
+
           {/* RESULT */}
+
           <AnimatePresence>
-            {result && (
+
+            {result && !loading && (
+
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                className="w-full max-w-3xl rounded-3xl border border-[#D6B25E]/20 bg-white/[0.03] p-8 backdrop-blur-2xl"
+
+                initial={{
+                  opacity:0,
+                  y:30,
+                  scale:0.98,
+                  filter:"blur(12px)",
+                }}
+
+                animate={{
+                  opacity:1,
+                  y:0,
+                  scale:1,
+                  filter:"blur(0px)",
+                }}
+
+                exit={{
+                  opacity:0,
+                  scale:0.98,
+                }}
+
+                transition={{
+                  duration:0.8,
+                  ease:[0.22,1,0.36,1],
+                }}
+
+                className="
+                  w-full
+                  max-w-3xl
+                  rounded-3xl
+                  border
+                  border-[#D6B25E]/20
+                  bg-white/[0.03]
+                  p-8
+                  backdrop-blur-2xl
+                "
               >
+
+
                 <div className="mb-8">
-                  <p className="text-xs uppercase tracking-[0.35em] text-[#D6B25E]/70">
+
+                  <p
+                    className="
+                      text-xs
+                      uppercase
+                      tracking-[0.35em]
+                      text-[#D6B25E]/70
+                    "
+                  >
                     Card Drawn
                   </p>
 
-                  <h3 className="mt-2 font-[family:var(--font-cormorant)] text-4xl text-[#F4F1EA]">
+
+                  <h3
+                    className="
+                      mt-2
+                      font-[family:var(--font-cormorant)]
+                      text-4xl
+                      text-[#F4F1EA]
+                    "
+                  >
                     {result.card}
                   </h3>
+
                 </div>
 
+
+
+
                 <div className="mb-8">
-                  <p className="text-xs uppercase tracking-[0.35em] text-[#D6B25E]/70">
+
+                  <p
+                    className="
+                      text-xs
+                      uppercase
+                      tracking-[0.35em]
+                      text-[#D6B25E]/70
+                    "
+                  >
                     Meaning
                   </p>
 
-                  <div className="mt-4 whitespace-pre-line leading-8 text-[#F4F1EA]/80">
+
+                  <div
+                    className="
+                      mt-4
+                      whitespace-pre-line
+                      leading-8
+                      text-[#F4F1EA]/80
+                    "
+                  >
                     {result.meaning}
                   </div>
+
                 </div>
 
+
+
+
+
                 <div>
-                  <p className="text-xs uppercase tracking-[0.35em] text-[#D6B25E]/70">
+
+                  <p
+                    className="
+                      text-xs
+                      uppercase
+                      tracking-[0.35em]
+                      text-[#D6B25E]/70
+                    "
+                  >
                     Guidance
                   </p>
 
-                  <p className="mt-4 text-lg text-[#F4F1EA]">
+
+                  <p
+                    className="
+                      mt-4
+                      text-lg
+                      text-[#F4F1EA]
+                    "
+                  >
                     {result.guidance}
                   </p>
+
                 </div>
+
+
               </motion.div>
+
             )}
+
           </AnimatePresence>
+
+
         </div>
+
       </Container>
+
     </section>
   );
 }
