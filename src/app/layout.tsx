@@ -3,6 +3,7 @@ import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 
 import { CursorGlow } from "@/components/effects/CursorGlow";
+import { CinematicOverlay } from "@/components/effects/cinematic-overlay";
 import { PageTransition } from "@/components/providers/page-transition";
 
 const inter = Inter({
@@ -103,7 +104,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html
+      lang="en"
+      className="dark"
+      suppressHydrationWarning
+    >
       <body
         className={`
           ${inter.variable}
@@ -112,10 +117,17 @@ export default function RootLayout({
           text-[#F4F1EA]
           antialiased
           overflow-x-hidden
+          selection:bg-amber-300/30
+          selection:text-white
         `}
       >
+        {/* Ambient cursor glow */}
         <CursorGlow />
 
+        {/* Global cinematic lighting */}
+        <CinematicOverlay />
+
+        {/* Global page transitions */}
         <PageTransition>
           {children}
         </PageTransition>
