@@ -1,245 +1,204 @@
 @import "tailwindcss";
 
-
 :root {
-
   --background: #09090b;
   --foreground: #f4f1ea;
 
   --gold: #d6b25e;
   --purple: #8b5cf6;
-
 }
 
+/* =========================
+   Lenis
+========================= */
 
-
-html {
-
-  scroll-behavior: smooth;
-
-  background:
-    var(--background);
-
+html.lenis,
+html.lenis body {
+  height: auto;
 }
 
-
-
-body {
-
-  min-height:100vh;
-
-  background:
-
-    radial-gradient(
-      circle at 50% -10%,
-      rgba(214,178,94,0.12),
-      transparent 35%
-    ),
-
-    radial-gradient(
-      circle at 85% 40%,
-      rgba(139,92,246,0.08),
-      transparent 30%
-    ),
-
-    #09090b;
-
-
-  color:
-    var(--foreground);
-
-
-  -webkit-font-smoothing:
-    antialiased;
-
-
-  -moz-osx-font-smoothing:
-    grayscale;
-
-
-  text-rendering:
-    optimizeLegibility;
-
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
 }
 
+.lenis.lenis-smooth body {
+  overflow-x: hidden;
+}
 
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: auto;
+}
 
 /* =========================
    Base
 ========================= */
 
+html {
+  scroll-behavior: smooth;
+  background: var(--background);
+}
+
+body {
+  min-height: 100vh;
+
+  background:
+    radial-gradient(
+      circle at 50% -10%,
+      rgba(214, 178, 94, 0.12),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 85% 40%,
+      rgba(139, 92, 246, 0.08),
+      transparent 30%
+    ),
+    #09090b;
+
+  color: var(--foreground);
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+
+  overflow-x: hidden;
+}
+
+/* =========================
+   Global
+========================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
 * {
-
-  box-sizing:border-box;
-
-  -webkit-backface-visibility:hidden;
-
-  backface-visibility:hidden;
-
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
-
+img,
+svg,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+}
 
 canvas {
-
-  touch-action:none;
-
+  touch-action: none;
 }
-
-
 
 /* =========================
    Selection
 ========================= */
 
-
 ::selection {
-
-  background:
-    rgba(214,178,94,0.25);
-
-  color:
-    #f4f1ea;
-
+  background: rgba(214, 178, 94, 0.25);
+  color: #f4f1ea;
 }
-
-
 
 /* =========================
    Scrollbar
 ========================= */
 
-
 ::-webkit-scrollbar {
-
-  width:6px;
-
+  width: 6px;
 }
-
 
 ::-webkit-scrollbar-track {
-
-  background:
-    transparent;
-
+  background: transparent;
 }
-
 
 ::-webkit-scrollbar-thumb {
-
-  background:
-    rgba(214,178,94,0.25);
-
-  border-radius:
-    999px;
-
+  background: rgba(214, 178, 94, 0.25);
+  border-radius: 999px;
+  transition: background 0.3s ease;
 }
-
-
 
 ::-webkit-scrollbar-thumb:hover {
-
-  background:
-    rgba(214,178,94,0.45);
-
+  background: rgba(214, 178, 94, 0.45);
 }
 
+/* Firefox */
 
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(214, 178, 94, 0.35) transparent;
+}
 
 /* =========================
    Focus
 ========================= */
 
-
 :focus-visible {
-
-  outline:
-    1px solid rgba(214,178,94,0.5);
-
-  outline-offset:
-    3px;
-
+  outline: 1px solid rgba(214, 178, 94, 0.5);
+  outline-offset: 3px;
 }
-
-
 
 /* =========================
    Glass
 ========================= */
 
-
 .glass {
+  background: rgba(255, 255, 255, 0.03);
 
-  background:
-    rgba(255,255,255,0.03);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
 
-
-  backdrop-filter:
-    blur(30px);
-
-
-  -webkit-backdrop-filter:
-    blur(30px);
-
-
-  border:
-    1px solid rgba(255,255,255,0.08);
-
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
-
-
 
 /* =========================
    Luxury Glow
 ========================= */
 
-
 .gold-glow {
-
-  box-shadow:
-    0 0 60px rgba(214,178,94,0.18);
-
+  box-shadow: 0 0 60px rgba(214, 178, 94, 0.18);
 }
-
-
 
 .purple-glow {
-
-  box-shadow:
-    0 0 60px rgba(139,92,246,0.18);
-
+  box-shadow: 0 0 60px rgba(139, 92, 246, 0.18);
 }
-
-
 
 /* =========================
    Noise
 ========================= */
 
-
 .noise {
-
-  position:relative;
-
+  position: relative;
 }
 
-
 .noise::before {
+  content: "";
 
-  content:"";
+  position: absolute;
+  inset: 0;
 
-  position:absolute;
+  pointer-events: none;
 
-  inset:0;
+  opacity: 0.03;
 
-  pointer-events:none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.4'/%3E%3C/svg%3E");
+}
 
-  opacity:0.03;
+/* =========================
+   Performance
+========================= */
 
+.will-change-transform {
+  will-change: transform;
+}
 
-  background-image:url(
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.4'/%3E%3C/svg%3E"
-  );
+.will-change-opacity {
+  will-change: opacity;
+}
 
+.will-change-filter {
+  will-change: filter;
 }
