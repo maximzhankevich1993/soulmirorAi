@@ -3,14 +3,13 @@ import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 
 import { CursorGlow } from "@/components/effects/CursorGlow";
-
+import { PageTransition } from "@/components/providers/page-transition";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
-
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -25,21 +24,14 @@ const cormorant = Cormorant_Garamond({
   display: "swap",
 });
 
-
-
 export const metadata: Metadata = {
-
   title: {
-    default:
-      "SoulMirror AI — Explore Your Inner World",
-    template:
-      "%s | SoulMirror AI",
+    default: "SoulMirror AI — Explore Your Inner World",
+    template: "%s | SoulMirror AI",
   },
-
 
   description:
     "SoulMirror AI helps you explore emotions, dreams and personal patterns through AI-powered reflection, archetypes and symbolic analysis.",
-
 
   keywords: [
     "AI psychology",
@@ -50,159 +42,84 @@ export const metadata: Metadata = {
     "personal growth",
   ],
 
-
   authors: [
     {
       name: "SoulMirror AI",
     },
   ],
 
+  creator: "SoulMirror AI",
 
-  creator:
-    "SoulMirror AI",
-
-
-  metadataBase:
-    new URL(
-      "https://soulmirror.ai"
-    ),
-
+  metadataBase: new URL("https://soulmirror.ai"),
 
   openGraph: {
-
-    title:
-      "SoulMirror AI — Mirror Your Inner World",
-
+    title: "SoulMirror AI — Mirror Your Inner World",
 
     description:
       "Discover emotions, dreams and hidden patterns with AI-powered self reflection.",
 
+    url: "https://soulmirror.ai",
 
-    url:
-      "https://soulmirror.ai",
+    siteName: "SoulMirror AI",
 
+    type: "website",
 
-    siteName:
-      "SoulMirror AI",
-
-
-    type:
-      "website",
-
-
-    locale:
-      "en_US",
-
+    locale: "en_US",
 
     images: [
       {
-        url:
-          "/og-image.png",
-
-        width:
-          1200,
-
-        height:
-          630,
-
-        alt:
-          "SoulMirror AI",
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "SoulMirror AI",
       },
     ],
-
   },
-
 
   twitter: {
+    card: "summary_large_image",
 
-    card:
-      "summary_large_image",
+    title: "SoulMirror AI",
 
+    description: "Explore your inner world with AI.",
 
-    title:
-      "SoulMirror AI",
-
-
-    description:
-      "Explore your inner world with AI.",
-
-
-    images:
-      [
-        "/og-image.png",
-      ],
-
+    images: ["/og-image.png"],
   },
-
 
   icons: {
-
-    icon:
-      "/favicon.ico",
-
-    apple:
-      "/apple-touch-icon.png",
-
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
   },
-
 };
-
-
 
 export const viewport: Viewport = {
-
-  themeColor:
-    "#09090B",
-
-  colorScheme:
-    "dark",
-
+  themeColor: "#09090B",
+  colorScheme: "dark",
 };
 
-
-
 export default function RootLayout({
-
   children,
-
 }: Readonly<{
-
-  children:
-    React.ReactNode;
-
+  children: React.ReactNode;
 }>) {
-
-
   return (
-
-    <html
-      lang="en"
-      className="dark"
-    >
-
+    <html lang="en" className="dark">
       <body
-
         className={`
-        ${inter.variable}
-        ${cormorant.variable}
-        bg-[#09090B]
-        text-[#F4F1EA]
-        antialiased
+          ${inter.variable}
+          ${cormorant.variable}
+          bg-[#09090B]
+          text-[#F4F1EA]
+          antialiased
+          overflow-x-hidden
         `}
       >
-
-
         <CursorGlow />
 
-
-        {children}
-
-
+        <PageTransition>
+          {children}
+        </PageTransition>
       </body>
-
-
     </html>
-
   );
-
 }
