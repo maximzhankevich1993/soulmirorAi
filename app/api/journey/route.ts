@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
@@ -56,8 +57,16 @@ export async function GET() {
       }),
     ]);
 
+    const typedSoul: Prisma.SoulScanGetPayload<{}>[] = soul;
+
+    const typedDreams: Prisma.DreamAnalysisGetPayload<{}>[] =
+      dreams;
+
+    const typedTarot: Prisma.TarotReadingGetPayload<{}>[] =
+      tarot;
+
     const journey = [
-      ...soul.map((item) => ({
+      ...typedSoul.map((item) => ({
         id: item.id,
         type: "soul" as const,
         title: item.archetype || "Soul Scan",
@@ -66,7 +75,7 @@ export async function GET() {
         createdAt: item.createdAt,
       })),
 
-      ...dreams.map((item) => ({
+      ...typedDreams.map((item) => ({
         id: item.id,
         type: "dream" as const,
         title: "Dream Analysis",
@@ -77,7 +86,7 @@ export async function GET() {
         createdAt: item.createdAt,
       })),
 
-      ...tarot.map((item) => ({
+      ...typedTarot.map((item) => ({
         id: item.id,
         type: "tarot" as const,
         title: item.card || "Tarot Reading",
@@ -89,8 +98,8 @@ export async function GET() {
       })),
     ].sort(
       (a, b) =>
-        new Date(b.createdAt).getTime() -
-        new Date(a.createdAt).getTime()
+        b.createdAt.getTime() -
+        a.createdAt.getTime()
     );
 
     return NextResponse.json(
@@ -103,7 +112,7 @@ export async function GET() {
           month: "short",
           day: "numeric",
           year: "numeric",
-        }).format(new Date(item.createdAt)),
+        }).format(item.createdAt),
       }))
     );
   } catch (error) {
