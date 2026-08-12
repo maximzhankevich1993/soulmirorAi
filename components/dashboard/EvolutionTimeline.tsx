@@ -8,7 +8,7 @@ import {
   CreditCard,
 } from "lucide-react";
 
-import { useSoulJourney } from "@/hooks/useSoulJourney";
+import { useSoulJourney } from "../../src/hooks/useSoulJourney";
 
 import { GlassCard } from "@/components/ui/GlassCard";
 
@@ -34,8 +34,7 @@ export function EvolutionTimeline() {
     loading,
   } = useSoulJourney();
 
-  const journeyItems =
-    items as JourneyItem[];
+  const journeyItems = items as JourneyItem[];
 
   return (
     <section>
@@ -145,8 +144,7 @@ export function EvolutionTimeline() {
                   item: JourneyItem,
                   index: number
                 ) => {
-                  const Icon =
-                    icons[item.type];
+                  const Icon = icons[item.type];
 
                   return (
                     <motion.div
