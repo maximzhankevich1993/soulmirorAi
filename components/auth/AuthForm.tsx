@@ -3,27 +3,38 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 
-import { supabase } from "@/src/lib/supabaseClient";
+import { supabase } from "../../src/lib/supabaseClient";
 
 export function AuthForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const [loading, setLoading] = useState(false);
 
-  const [mode, setMode] = useState<"login" | "register">("login");
+  const [mode, setMode] = useState<"login" | "register">(
+    "login"
+  );
 
-  const [message, setMessage] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(
+    null
+  );
 
   async function handleAuth() {
     try {
       setLoading(true);
       setMessage(null);
 
+      if (!email.trim() || !password.trim()) {
+        setMessage("Please enter your email and password.");
+        return;
+      }
+
       if (mode === "login") {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
+        const { error } =
+          await supabase.auth.signInWithPassword({
+            email: email.trim(),
+            password,
+          });
 
         if (error) {
           throw error;
@@ -31,23 +42,27 @@ export function AuthForm() {
 
         setMessage("Welcome back to SoulMirror");
       } else {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-        });
+        const { error } =
+          await supabase.auth.signUp({
+            email: email.trim(),
+            password,
+          });
 
         if (error) {
           throw error;
         }
 
-        setMessage("Check your email to confirm account");
+        setMessage(
+          "Check your email to confirm your account."
+        );
       }
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        setMessage(error.message);
-      } else {
-        setMessage("Something went wrong");
-      }
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Authentication failed.";
+
+      setMessage(message);
     } finally {
       setLoading(false);
     }
@@ -59,8 +74,8 @@ export function AuthForm() {
         <input
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
           type="email"
+          placeholder="Email"
           autoComplete="email"
           className="
             w-full
@@ -84,7 +99,9 @@ export function AuthForm() {
           type="password"
           placeholder="Password"
           autoComplete={
-            mode === "login" ? "current-password" : "new-password"
+            mode === "login"
+              ? "current-password"
+              : "new-password"
           }
           className="
             w-full
@@ -123,6 +140,7 @@ export function AuthForm() {
           font-medium
           text-black
           transition
+          disabled:cursor-not-allowed
           disabled:opacity-50
         "
       >
@@ -136,11 +154,15 @@ export function AuthForm() {
       <div className="mt-6 text-center">
         <button
           type="button"
-          onClick={() =>
-            setMode((currentMode) =>
-              currentMode === "login" ? "register" : "login"
-            )
-          }
+          onClick={() => {
+            setMessage(null);
+
+            setMode(
+              mode === "login"
+                ? "register"
+                : "login"
+            );
+          }}
           className="
             text-sm
             text-white/50
