@@ -1,11 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Inter } from "next/font/google";
+import {
+  Cormorant_Garamond,
+  Inter,
+} from "next/font/google";
+
 import "./globals.css";
 
-import { CursorGlow } from "@/components/effects/CursorGlow";
-import { CinematicOverlay } from "@/components/effects/cinematic-overlay";
-import { PageTransition } from "@/components/providers/page-transition";
-import { SmoothScroll } from "@/components/providers/smooth-scroll";
+import { CinematicOverlay } from "../../../components/effects/cinematic-overlay";
+import { PageTransition } from "../../../components/providers/page-transition";
+import { SmoothScroll } from "../../../components/providers/smooth-scroll";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -83,7 +86,8 @@ export const metadata: Metadata = {
 
     title: "SoulMirror AI",
 
-    description: "Explore your inner world with AI.",
+    description:
+      "Explore your inner world with AI.",
 
     images: ["/og-image.png"],
   },
@@ -122,9 +126,6 @@ export default function RootLayout({
           selection:text-white
         `}
       >
-        {/* Ambient cursor glow */}
-        <CursorGlow />
-
         {/* Global cinematic lighting */}
         <CinematicOverlay />
 
