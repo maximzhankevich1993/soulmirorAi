@@ -1,10 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-import {
-  useJourneyStore,
-} from "@/store/journey-store";
+import { useCallback, useEffect, useState } from "react";
+import { useJourneyStore } from "@/store/journey-store";
 
 export interface JourneyItem {
   id: string;
@@ -15,69 +12,38 @@ export interface JourneyItem {
 }
 
 export function useSoulJourney() {
+  const items = useJourneyStore((state) => state.items);
+  const setItems = useJourneyStore((state) => state.setItems);
 
-  const items =
-    useJourneyStore(
-      (state) => state.items
-    );
+  const [loading, setLoading] = useState(true);
 
-  const setItems =
-    useJourneyStore(
-      (state) => state.setItems
-    );
-
-  const [loading, setLoading] =
-    useState(true);
-
-  useEffect(() => {
-
-    loadJourney();
-
-  }, []);
-
-  async function loadJourney() {
-
+  const loadJourney = useCallback(async () => {
     try {
-
       setLoading(true);
 
-      const response =
-        await fetch("/api/journey");
+      const response = await fetch("/api/journey");
 
       if (!response.ok) {
-        throw new Error(
-          "Failed to load journey"
-        );
+        throw new Error("Failed to load journey");
       }
 
-      const data =
-        await response.json();
+      const data: JourneyItem[] = await response.json();
 
       setItems(data);
-
     } catch (error) {
-
-      console.error(
-        "Journey error:",
-        error
-      );
-
+      console.error("Journey error:", error);
     } finally {
-
       setLoading(false);
-
     }
+  }, [setItems]);
 
-  }
+  useEffect(() => {
+    void loadJourney();
+  }, [loadJourney]);
 
   return {
-
     items,
-
     loading,
-
     reload: loadJourney,
-
   };
-
 }
