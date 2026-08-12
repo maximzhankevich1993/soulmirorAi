@@ -1,13 +1,5 @@
-import { AuthScreen } from "@/components/auth/AuthScreen";
+import { AuthScreen } from "../../components/auth/AuthScreen";
 
-
-export default function AuthPage(){
-
-
-  return (
-
-    <AuthScreen />
-
-  );
-
+export default function AuthPage() {
+  return <AuthScreen />;
 }
