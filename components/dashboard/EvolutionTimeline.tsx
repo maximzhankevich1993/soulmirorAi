@@ -10,7 +10,7 @@ import {
 
 import { useSoulJourney } from "../../src/hooks/useSoulJourney";
 
-import { GlassCard } from "@/components/ui/GlassCard";
+import { GlassCard } from "../ui/GlassCard";
 
 type JourneyType = "soul" | "dream" | "tarot";
 
