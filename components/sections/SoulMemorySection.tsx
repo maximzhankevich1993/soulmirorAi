@@ -1,23 +1,32 @@
 "use client";
 
 import { motion } from "framer-motion";
+
 import {
   Brain,
   Sparkles,
   Moon,
 } from "lucide-react";
 
-import { GlassCard } from "@/components/ui/GlassCard";
-import { GlowIcon } from "@/components/ui/GlowIcon";
-import { useSoulMemoryStore } from "@/store/soul-memory-store";
+import { GlassCard } from "../../src/components/ui/GlassCard";
+
+import { GlowIcon } from "../../src/components/ui/GlowIcon";
+
+import { useSoulMemoryStore } from "../../src/store/soul-memory-store";
+
+
 
 export function SoulMemorySection() {
-  const memory = useSoulMemoryStore((state) => ({
-    archetype: state.archetype,
-    emotion: state.emotion,
-    insight: state.insight,
-    shadow: state.shadow,
-  }));
+  const memory = useSoulMemoryStore(
+    (state) => ({
+      archetype: state.archetype,
+      emotion: state.emotion,
+      insight: state.insight,
+      shadow: state.shadow,
+    })
+  );
+
+
 
   return (
     <section
@@ -28,7 +37,6 @@ export function SoulMemorySection() {
         px-6
       "
     >
-      {/* Header */}
 
       <motion.div
         initial={{
@@ -47,6 +55,7 @@ export function SoulMemorySection() {
         }}
         className="text-center"
       >
+
         <p
           className="
             text-[11px]
@@ -57,6 +66,8 @@ export function SoulMemorySection() {
         >
           Soul Memory
         </p>
+
+
 
         <h2
           className="
@@ -72,6 +83,8 @@ export function SoulMemorySection() {
           your inner world
         </h2>
 
+
+
         <p
           className="
             mx-auto
@@ -83,9 +96,10 @@ export function SoulMemorySection() {
           Every reflection becomes part
           of your personal intelligence profile.
         </p>
+
       </motion.div>
 
-      {/* Memory Cards */}
+
 
       <div
         className="
@@ -95,13 +109,17 @@ export function SoulMemorySection() {
           md:grid-cols-3
         "
       >
+
         {/* Archetype */}
 
         <GlassCard>
           <div className="p-6">
+
             <GlowIcon>
               <Brain size={22} />
             </GlowIcon>
+
+
 
             <p
               className="
@@ -115,6 +133,8 @@ export function SoulMemorySection() {
               Archetype
             </p>
 
+
+
             <h3
               className="
                 mt-3
@@ -124,16 +144,22 @@ export function SoulMemorySection() {
             >
               {memory.archetype || "Unknown"}
             </h3>
+
           </div>
         </GlassCard>
+
+
 
         {/* Emotional State */}
 
         <GlassCard>
           <div className="p-6">
+
             <GlowIcon color="purple">
               <Sparkles size={22} />
             </GlowIcon>
+
+
 
             <p
               className="
@@ -147,6 +173,8 @@ export function SoulMemorySection() {
               Emotional State
             </p>
 
+
+
             <h3
               className="
                 mt-3
@@ -156,16 +184,22 @@ export function SoulMemorySection() {
             >
               {memory.emotion || "Calm"}
             </h3>
+
           </div>
         </GlassCard>
+
+
 
         {/* Shadow Pattern */}
 
         <GlassCard>
           <div className="p-6">
+
             <GlowIcon>
               <Moon size={22} />
             </GlowIcon>
+
+
 
             <p
               className="
@@ -179,6 +213,8 @@ export function SoulMemorySection() {
               Shadow Pattern
             </p>
 
+
+
             <h3
               className="
                 mt-3
@@ -190,15 +226,20 @@ export function SoulMemorySection() {
               {memory.shadow ||
                 "Hidden patterns will appear here"}
             </h3>
+
           </div>
         </GlassCard>
+
       </div>
+
+
 
       {/* Personal Insight */}
 
       {memory.insight && (
         <GlassCard className="mt-6">
           <div className="p-8">
+
             <p
               className="
                 text-xs
@@ -210,6 +251,8 @@ export function SoulMemorySection() {
               Personal Insight
             </p>
 
+
+
             <p
               className="
                 mt-4
@@ -219,9 +262,11 @@ export function SoulMemorySection() {
             >
               {memory.insight}
             </p>
+
           </div>
         </GlassCard>
       )}
+
     </section>
   );
 }
