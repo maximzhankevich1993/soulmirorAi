@@ -6,16 +6,14 @@ import {
   YANDEX_API_KEY,
   YANDEX_API_URL,
   YANDEX_FOLDER_ID,
-} from "@/lib/yandex";
+} from "../../../lib/yandex";
 
 import {
   checkAccess,
   increaseUsage,
 } from "@/lib/usage";
 
-import {
-  getUser,
-} from "@/lib/getUser";
+import { getUser } from "@/lib/getUser";
 
 export async function POST(req: Request) {
   try {
@@ -99,7 +97,6 @@ export async function POST(req: Request) {
         messages: [
           {
             role: "system",
-
             text: `
 You are Dream Interpreter AI.
 
@@ -169,6 +166,8 @@ No markdown.
         interpretation: result.interpretation,
       },
     });
+
+    // USAGE
 
     await increaseUsage(
       user.id,
