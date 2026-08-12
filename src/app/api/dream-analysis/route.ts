@@ -11,7 +11,7 @@ import {
 import {
   checkAccess,
   increaseUsage,
-} from "@/lib/usage";
+} from "../../../lib/usage";
 
 import { getUser } from "@/lib/getUser";
 
