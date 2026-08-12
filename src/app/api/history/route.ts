@@ -1,165 +1,110 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { getActor } from "@/lib/getActor";
 
+import { prisma } from "@/lib/prisma";
+import { createClient } from "@/lib/supabase/server";
 
 export async function GET() {
-
   try {
+    const supabase = await createClient();
 
-    const actor = await getActor();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-
-    if (actor.type !== "user") {
-
+    if (!user) {
       return NextResponse.json(
         {
-          items: [],
+          error: "Unauthorized",
+        },
+        {
+          status: 401,
         }
       );
-
     }
 
+    const userId = user.id;
 
-    const userId = actor.userId;
+    const [soulScans, dreamAnalyses, tarotReadings] =
+      await Promise.all([
+        prisma.soulScan.findMany({
+          where: {
+            userId,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+          take: 20,
+        }),
 
+        prisma.dreamAnalysis.findMany({
+          where: {
+            userId,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+          take: 20,
+        }),
 
+        prisma.tarotReading.findMany({
+          where: {
+            userId,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+          take: 20,
+        }),
+      ]);
 
-    const [
-      soulScans,
-      dreams,
-      tarot,
-    ] = await Promise.all([
-
-      prisma.soulScan.findMany({
-        where: {
-          userId,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-        take: 20,
-      }),
-
-
-      prisma.dreamAnalysis.findMany({
-        where: {
-          userId,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-        take: 20,
-      }),
-
-
-      prisma.tarotReading.findMany({
-        where: {
-          userId,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-        take: 20,
-      }),
-
-    ]);
-
-
-
-
-    const items = [
-
-      ...soulScans.map((item)=>({
-
-        type:
-          "soul" as const,
-
-        title:
-          item.archetype ||
-          "Soul Scan",
-
+    const history = [
+      ...soulScans.map((item) => ({
+        id: item.id,
+        type: "soul-scan" as const,
+        title: item.archetype || "Soul Scan",
         description:
-          item.insight ||
-          item.reflection ||
-          "",
-
-        date:
-          item.createdAt,
-
+          item.insight || "Soul analysis completed.",
+        date: item.createdAt,
       })),
 
-
-      ...dreams.map((item)=>({
-
-        type:
-          "dream" as const,
-
-        title:
-          "Dream Analysis",
-
+      ...dreamAnalyses.map((item) => ({
+        id: item.id,
+        type: "dream-analysis" as const,
+        title: "Dream Analysis",
         description:
-          item.summary,
-
-        date:
-          item.createdAt,
-
+          item.interpretation ||
+          item.summary ||
+          "Dream analysis completed.",
+        date: item.createdAt,
       })),
 
-
-      ...tarot.map((item)=>({
-
-        type:
-          "tarot" as const,
-
-        title:
-          item.card,
-
+      ...tarotReadings.map((item) => ({
+        id: item.id,
+        type: "tarot" as const,
+        title: item.card || "Tarot Reading",
         description:
-          item.meaning,
-
-        date:
-          item.createdAt,
-
+          item.guidance ||
+          item.meaning ||
+          "Tarot reading completed.",
+        date: item.createdAt,
       })),
-
-
-    ];
-
-
-
-    items.sort(
-      (a,b)=>
-        b.date.getTime()
-        -
-        a.date.getTime()
+    ].sort(
+      (a, b) =>
+        new Date(b.date).getTime() -
+        new Date(a.date).getTime()
     );
 
-
-
-    return NextResponse.json({
-      items,
-    });
-
-
-
-  } catch(error){
-
-    console.error(
-      "HISTORY ERROR:",
-      error
-    );
-
+    return NextResponse.json(history);
+  } catch (error) {
+    console.error("HISTORY API ERROR:", error);
 
     return NextResponse.json(
       {
-        items: [],
+        error: "Server error",
       },
       {
-        status:500,
+        status: 500,
       }
     );
-
   }
-
 }
