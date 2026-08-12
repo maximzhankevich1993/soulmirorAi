@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import { Prisma } from "@prisma/client";
 
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/src/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
 
 export async function GET() {
@@ -57,16 +56,8 @@ export async function GET() {
       }),
     ]);
 
-    const typedSoul: Prisma.SoulScanGetPayload<{}>[] = soul;
-
-    const typedDreams: Prisma.DreamAnalysisGetPayload<{}>[] =
-      dreams;
-
-    const typedTarot: Prisma.TarotReadingGetPayload<{}>[] =
-      tarot;
-
     const journey = [
-      ...typedSoul.map((item) => ({
+      ...soul.map((item) => ({
         id: item.id,
         type: "soul" as const,
         title: item.archetype || "Soul Scan",
@@ -75,7 +66,7 @@ export async function GET() {
         createdAt: item.createdAt,
       })),
 
-      ...typedDreams.map((item) => ({
+      ...dreams.map((item) => ({
         id: item.id,
         type: "dream" as const,
         title: "Dream Analysis",
@@ -86,7 +77,7 @@ export async function GET() {
         createdAt: item.createdAt,
       })),
 
-      ...typedTarot.map((item) => ({
+      ...tarot.map((item) => ({
         id: item.id,
         type: "tarot" as const,
         title: item.card || "Tarot Reading",
