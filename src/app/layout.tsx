@@ -6,9 +6,9 @@ import {
 
 import "./globals.css";
 
-import { CinematicOverlay } from "../../../components/effects/cinematic-overlay";
-import { PageTransition } from "../../../components/providers/page-transition";
-import { SmoothScroll } from "../../../components/providers/smooth-scroll";
+import { CinematicOverlay } from "../components/effects/cinematic-overlay";
+import { PageTransition } from "../components/providers/page-transition";
+import { SmoothScroll } from "../components/providers/smooth-scroll";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -126,12 +126,9 @@ export default function RootLayout({
           selection:text-white
         `}
       >
-        {/* Global cinematic lighting */}
         <CinematicOverlay />
 
-        {/* Global smooth scrolling */}
         <SmoothScroll>
-          {/* Global page transitions */}
           <PageTransition>
             {children}
           </PageTransition>
