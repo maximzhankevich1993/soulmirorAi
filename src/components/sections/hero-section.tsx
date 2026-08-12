@@ -41,6 +41,8 @@ export function HeroSection() {
         "
       />
 
+      {/* Hero Content */}
+
       <div
         className="
           mx-auto
@@ -53,20 +55,12 @@ export function HeroSection() {
           lg:items-center
         "
       >
-        {/* LEFT SIDE */}
+        {/* LEFT */}
 
         <motion.div
-          initial={{
-            opacity: 0,
-            y: 30,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            duration: 0.8,
-          }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
           className="relative z-10"
         >
           <EonBrandBadge />
@@ -176,17 +170,11 @@ export function HeroSection() {
           </div>
         </motion.div>
 
-        {/* RIGHT SIDE */}
+        {/* RIGHT */}
 
         <motion.div
-          initial={{
-            opacity: 0,
-            scale: 0.9,
-          }}
-          animate={{
-            opacity: 1,
-            scale: 1,
-          }}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
           transition={{
             duration: 1,
             delay: 0.2,
@@ -212,17 +200,9 @@ export function HeroSection() {
       {/* FEATURES */}
 
       <motion.div
-        initial={{
-          opacity: 0,
-          y: 30,
-        }}
-        whileInView={{
-          opacity: 1,
-          y: 0,
-        }}
-        viewport={{
-          once: true,
-        }}
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
         transition={{
           duration: 0.8,
           delay: 0.2,
@@ -316,4 +296,54 @@ export function HeroSection() {
             Decode your subconscious
           </h3>
 
-          <p className="mt-4 leading-7 text-white/50
+          <p className="mt-4 leading-7 text-white/50">
+            Transform dreams into meaningful insights
+            with AI.
+          </p>
+        </div>
+
+        {/* Evolution */}
+
+        <div
+          className="
+            rounded-[32px]
+            border
+            border-white/10
+            bg-white/[0.03]
+            p-8
+            backdrop-blur-2xl
+            transition-all
+            duration-300
+            hover:-translate-y-2
+            hover:border-[#D6B25E]/30
+          "
+        >
+          <Sparkles
+            className="mb-6 text-[#D6B25E]"
+            size={28}
+          />
+
+          <p
+            className="
+              text-xs
+              uppercase
+              tracking-[0.35em]
+              text-[#D6B25E]
+            "
+          >
+            Evolution
+          </p>
+
+          <h3 className="mt-4 text-2xl text-[#F4F1EA]">
+            Track your growth
+          </h3>
+
+          <p className="mt-4 leading-7 text-white/50">
+            Build awareness of your personal evolution
+            over time.
+          </p>
+        </div>
+      </motion.div>
+    </section>
+  );
+}
