@@ -12,7 +12,7 @@ export function CinematicLoader() {
       className="
         fixed
         inset-0
-        z-[9999]
+        z-[99999]
         flex
         items-center
         justify-center
@@ -21,22 +21,14 @@ export function CinematicLoader() {
         text-[#F4F1EA]
       "
     >
-      {/* Background atmosphere */}
-      <motion.div
-        className="absolute inset-0"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{
-          duration: 1.8,
-          ease: [0.22, 1, 0.36, 1],
-        }}
-      >
+      {/* Background */}
+      <div className="absolute inset-0">
         <LoaderGlow />
         <LoaderParticles />
-      </motion.div>
+      </div>
 
-      {/* Main composition */}
-      <motion.div
+      {/* Main content */}
+      <div
         className="
           relative
           z-10
@@ -44,34 +36,21 @@ export function CinematicLoader() {
           flex-col
           items-center
         "
-        initial={{
-          opacity: 0,
-          scale: 0.94,
-          filter: "blur(14px)",
-        }}
-        animate={{
-          opacity: 1,
-          scale: 1,
-          filter: "blur(0px)",
-        }}
-        transition={{
-          duration: 1.6,
-          ease: [0.22, 1, 0.36, 1],
-        }}
       >
         {/* Orb */}
         <motion.div
           initial={{
             opacity: 0,
-            scale: 0.78,
+            scale: 0.75,
+            filter: "blur(12px)",
           }}
           animate={{
             opacity: 1,
             scale: 1,
+            filter: "blur(0px)",
           }}
           transition={{
-            delay: 0.2,
-            duration: 1.5,
+            duration: 1.6,
             ease: [0.22, 1, 0.36, 1],
           }}
         >
@@ -80,7 +59,7 @@ export function CinematicLoader() {
 
         {/* Brand */}
         <motion.div
-          className="mt-14 text-center"
+          className="mt-12 text-center"
           initial={{
             opacity: 0,
             y: 24,
@@ -92,35 +71,29 @@ export function CinematicLoader() {
             filter: "blur(0px)",
           }}
           transition={{
-            delay: 0.8,
-            duration: 1.3,
+            delay: 0.65,
+            duration: 1.4,
             ease: [0.22, 1, 0.36, 1],
           }}
         >
-          <motion.p
+          <p
             className="
               text-[9px]
               uppercase
-              tracking-[0.55em]
+              tracking-[0.65em]
               text-[#D6B25E]
             "
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{
-              delay: 1,
-              duration: 1,
-            }}
           >
             EON AI
-          </motion.p>
+          </p>
 
           <h1
             className="
-              mt-5
+              mt-4
               font-[family:var(--font-cormorant)]
               text-5xl
               font-light
-              tracking-wide
+              tracking-[0.04em]
               text-[#F4F1EA]
               sm:text-6xl
             "
@@ -133,15 +106,14 @@ export function CinematicLoader() {
               mt-5
               text-[9px]
               uppercase
-              tracking-[0.4em]
+              tracking-[0.45em]
               text-white/35
             "
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{
-              delay: 1.3,
+              delay: 1.15,
               duration: 1.2,
-              ease: "easeOut",
             }}
           >
             Reflect · Understand · Evolve
@@ -160,7 +132,7 @@ export function CinematicLoader() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{
-            delay: 1.5,
+            delay: 1.25,
             duration: 0.8,
           }}
         >
@@ -169,18 +141,18 @@ export function CinematicLoader() {
               h-full
               w-full
               origin-left
-              bg-[#D6B25E]/50
+              bg-[#D6B25E]/60
             "
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{
-              delay: 1.6,
-              duration: 1.5,
+              delay: 1.35,
+              duration: 1.8,
               ease: [0.22, 1, 0.36, 1],
             }}
           />
         </motion.div>
-      </motion.div>
+      </div>
 
       {/* Footer */}
       <motion.div
@@ -193,10 +165,10 @@ export function CinematicLoader() {
           text-white/20
         "
         initial={{ opacity: 0 }}
-        animate={{ opacity: 0.4 }}
+        animate={{ opacity: 0.45 }}
         transition={{
-          delay: 1.5,
-          duration: 1.2,
+          delay: 1.3,
+          duration: 1.5,
         }}
       >
         Personal Intelligence · EON AI
