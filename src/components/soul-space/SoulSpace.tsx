@@ -1,4 +1,10 @@
+
 "use client";
+
+import { useEffect, useState } from "react";
+
+import { OnboardingRitual } from "@/components/onboarding/OnboardingRitual";
+import { EonEcosystemSection } from "../../../components/sections/eon-ecosystem-section";
 
 import { AmbientBackground } from "./AmbientBackground";
 import { SoulSpaceHero } from "./SoulSpaceHero";
@@ -11,102 +17,72 @@ import { DreamConsole } from "./DreamConsole";
 import { TarotConsole } from "./TarotConsole";
 import { SoulJourneyTimeline } from "./SoulJourneyTimeline";
 import { SoulMemoryLoader } from "./SoulMemoryLoader";
-import { useState, useEffect } from "react";
-import { OnboardingRitual } from "@/components/onboarding/OnboardingRitual";
 import { SoulDashboard } from "./SoulDashboard";
 import { DailyReflection } from "./DailyReflection";
 import { GlobalParticles } from "./GlobalParticles";
-import { EonEcosystemSection } from "@/components/sections/eon-ecosystem-section";
 
 export function SoulSpace() {
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
-const [showOnboarding, setShowOnboarding] =
-  useState(false);
+  useEffect(() => {
+    const seen = localStorage.getItem("soulmirror-onboarding");
 
-useEffect(() => {
+    if (!seen) {
+      setShowOnboarding(true);
+    }
+  }, []);
 
-  const seen =
-    localStorage.getItem(
-      "soulmirror-onboarding"
-    );
-
-  if (!seen) {
-    setShowOnboarding(true);
-  }
-
-}, []);
+  const handleOnboardingContinue = () => {
+    localStorage.setItem("soulmirror-onboarding", "true");
+    setShowOnboarding(false);
+  };
 
   return (
-
     <>
+      {showOnboarding && (
+        <OnboardingRitual onContinue={handleOnboardingContinue} />
+      )}
 
-{showOnboarding && (
+      <main>
+        <CursorAtmosphere />
 
-  <OnboardingRitual
+        <GlobalParticles />
 
-    onContinue={() => {
+        <AmbientBackground />
 
-      localStorage.setItem(
-        "soulmirror-onboarding",
-        "true"
-      );
+        <SoulMemoryLoader />
 
-      setShowOnboarding(false);
+        <SoulSpaceHero />
 
-    }}
+        <EonEcosystemSection />
 
-  />
+        <SoulDashboard />
 
-)}
+        <DailyReflection />
 
-     <main>
+        <section id="features">
+          <SoulScanConsole />
+        </section>
 
-<CursorAtmosphere />
+        <section id="dreams">
+          <DreamConsole />
 
-<GlobalParticles />
+          <TarotConsole />
+        </section>
 
-<AmbientBackground />
+        <section id="journal">
+          <SoulProfile />
 
-  <SoulMemoryLoader />
+          <SoulJourneyTimeline />
 
-  <SoulSpaceHero />
+          <LatestInsight />
+        </section>
 
-  <EonEcosystemSection />
-
-  <SoulDashboard />
-
-  <DailyReflection />
-
-
-  <section id="features">
-    <SoulScanConsole />
-  </section>
-
-
-  <section id="dreams">
-    <DreamConsole />
-
-    <TarotConsole />
-  </section>
-
-
-  <section id="journal">
-    <SoulProfile />
-
-    <SoulJourneyTimeline />
-
-    <LatestInsight />
-  </section>
-
-
-  <section id="pricing">
-    <PremiumCard />
-  </section>
-
-
-</main>
-
+        <section id="pricing">
+          <PremiumCard />
+        </section>
+      </main>
     </>
-
   );
 }
+
