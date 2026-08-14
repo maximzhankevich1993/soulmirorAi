@@ -71,3 +71,13 @@ export const glowPulse: Variants = {
     },
   },
 };
+
+/**
+ * Cinematic transition
+ *
+ * Shared transition for premium cinematic UI elements.
+ */
+export const cinematicTransition = {
+  duration: 0.8,
+  ease: [0.22, 1, 0.36, 1],
+};
