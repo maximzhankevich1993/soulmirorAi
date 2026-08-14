@@ -4,102 +4,78 @@ import { motion } from "framer-motion";
 
 export function CinematicLoader() {
   return (
-    <div className="fixed inset-0 z-[99999] flex items-center justify-center overflow-hidden bg-[#050505]">
-      {/* Ambient glow */}
+    <motion.div
+      initial={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{
+        duration: 1.4,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      className="
+        fixed
+        inset-0
+        z-[99999]
+        flex
+        items-center
+        justify-center
+        overflow-hidden
+        bg-[#050505]
+      "
+    >
+      {/* Ambient Glow */}
+
       <motion.div
-        className="absolute h-[420px] w-[420px] rounded-full bg-[#D6B25E]/10 blur-[120px]"
         animate={{
-          scale: [1, 1.18, 1],
-          opacity: [0.25, 0.5, 0.25],
+          scale: [1, 1.12, 1],
+          opacity: [0.08, 0.18, 0.08],
         }}
         transition={{
-          duration: 5,
+          duration: 7,
           repeat: Infinity,
           ease: "easeInOut",
         }}
+        className="
+          absolute
+          h-[520px]
+          w-[520px]
+          rounded-full
+          bg-[#D6B25E]
+          blur-[180px]
+        "
       />
 
-      {/* Main content */}
-      <div className="relative z-10 flex flex-col items-center">
-        {/* Orb */}
-        <motion.div
-          className="relative flex h-32 w-32 items-center justify-center"
+      {/* Secondary subtle glow */}
+
+      <motion.div
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.02, 0.08, 0.02],
+        }}
+        transition={{
+          duration: 9,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="
+          absolute
+          h-[700px]
+          w-[700px]
+          rounded-full
+          bg-[#8B5CF6]
+          blur-[220px]
+        "
+      />
+
+      {/* Main Content */}
+
+      <div className="relative z-10 text-center">
+
+        {/* EON AI */}
+
+        <motion.p
           initial={{
             opacity: 0,
-            scale: 0.7,
-          }}
-          animate={{
-            opacity: 1,
-            scale: 1,
-          }}
-          transition={{
-            duration: 1.4,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-        >
-          {/* Outer ring */}
-          <motion.div
-            className="absolute inset-0 rounded-full border border-[#D6B25E]/30"
-            animate={{
-              scale: [1, 1.08, 1],
-              rotate: [0, 360],
-            }}
-            transition={{
-              scale: {
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut",
-              },
-              rotate: {
-                duration: 18,
-                repeat: Infinity,
-                ease: "linear",
-              },
-            }}
-          />
-
-          {/* Second ring */}
-          <motion.div
-            className="absolute h-24 w-24 rounded-full border border-[#D6B25E]/20"
-            animate={{
-              rotate: [360, 0],
-              scale: [1, 0.92, 1],
-            }}
-            transition={{
-              rotate: {
-                duration: 12,
-                repeat: Infinity,
-                ease: "linear",
-              },
-              scale: {
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut",
-              },
-            }}
-          />
-
-          {/* Core */}
-          <motion.div
-            className="h-12 w-12 rounded-full bg-gradient-to-br from-[#F4F1EA] via-[#D6B25E] to-[#8B5CF6] shadow-[0_0_70px_rgba(214,178,94,0.6)]"
-            animate={{
-              scale: [1, 1.12, 1],
-              opacity: [0.85, 1, 0.85],
-            }}
-            transition={{
-              duration: 2.8,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        </motion.div>
-
-        {/* Branding */}
-        <motion.div
-          className="mt-14 text-center"
-          initial={{
-            opacity: 0,
-            y: 20,
+            y: 12,
             filter: "blur(8px)",
           }}
           animate={{
@@ -108,59 +84,133 @@ export function CinematicLoader() {
             filter: "blur(0px)",
           }}
           transition={{
-            delay: 0.6,
             duration: 1.2,
             ease: [0.22, 1, 0.36, 1],
           }}
+          className="
+            text-[10px]
+            uppercase
+            tracking-[0.65em]
+            text-[#D6B25E]
+          "
         >
-          <p className="text-[10px] uppercase tracking-[0.6em] text-[#D6B25E]">
-            EON AI
-          </p>
+          EON AI
+        </motion.p>
 
-          <h1 className="mt-4 text-5xl font-light tracking-[0.08em] text-[#F4F1EA]">
-            SoulMirror
-          </h1>
+        {/* SoulMirror */}
 
-          <p className="mt-5 text-[10px] uppercase tracking-[0.45em] text-white/35">
-            Reflect · Understand · Evolve
-          </p>
-        </motion.div>
-
-        {/* Progress */}
-        <motion.div
-          className="mt-12 h-px w-28 overflow-hidden bg-white/10"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{
-            delay: 1,
-            duration: 0.8,
+        <motion.h1
+          initial={{
+            opacity: 0,
+            y: 25,
+            filter: "blur(14px)",
+            letterSpacing: "0.35em",
           }}
+          animate={{
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+            letterSpacing: "0.08em",
+          }}
+          transition={{
+            delay: 0.35,
+            duration: 1.5,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+          className="
+            mt-5
+            text-[54px]
+            font-light
+            text-[#F4F1EA]
+            md:text-[76px]
+          "
         >
-          <motion.div
-            className="h-full origin-left bg-[#D6B25E]/70"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{
-              delay: 1,
-              duration: 2.5,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-          />
-        </motion.div>
+          SoulMirror
+        </motion.h1>
+
+        {/* Golden Line */}
+
+        <motion.div
+          initial={{
+            width: 0,
+            opacity: 0,
+          }}
+          animate={{
+            width: 120,
+            opacity: 1,
+          }}
+          transition={{
+            delay: 1.25,
+            duration: 1,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+          className="
+            mx-auto
+            mt-8
+            h-px
+            bg-gradient-to-r
+            from-transparent
+            via-[#D6B25E]
+            to-transparent
+          "
+        />
+
+        {/* Tagline */}
+
+        <motion.p
+          initial={{
+            opacity: 0,
+            y: 12,
+            filter: "blur(6px)",
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+          }}
+          transition={{
+            delay: 1.55,
+            duration: 1.1,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+          className="
+            mt-8
+            text-[10px]
+            uppercase
+            tracking-[0.42em]
+            text-white/40
+          "
+        >
+          Reflect · Understand · Evolve
+        </motion.p>
+
       </div>
 
-      {/* Footer */}
+      {/* Bottom Brand */}
+
       <motion.p
-        className="absolute bottom-10 text-[8px] uppercase tracking-[0.5em] text-white/20"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.5 }}
+        initial={{
+          opacity: 0,
+        }}
+        animate={{
+          opacity: 0.35,
+        }}
         transition={{
-          delay: 1.2,
+          delay: 2,
           duration: 1,
         }}
+        className="
+          absolute
+          bottom-10
+          text-[8px]
+          uppercase
+          tracking-[0.5em]
+          text-white/25
+        "
       >
         Personal Intelligence · EON AI
       </motion.p>
-    </div>
+
+    </motion.div>
   );
 }
