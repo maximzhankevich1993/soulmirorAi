@@ -26,46 +26,62 @@ export async function checkAccess(
 ): Promise<AccessResult> {
   const actor = await getActor();
 
+  // -------------------------
+  // Guest user
+  // -------------------------
+
   if (actor.type === "guest") {
-  const session = await prisma.guestSession.findUnique({
-    where: {
-      guestId: actor.guestId,
-    },
-  });
+    const session =
+      await prisma.guestSession.findUnique({
+        where: {
+          guestId: actor.guestId,
+        },
+      });
 
-  const used = session?.[type] ?? 0;
+    const used =
+      session?.[type] ?? 0;
 
-  if (used >= FREE_LIMIT) {
+    if (used >= FREE_LIMIT) {
+      return {
+        allowed: false,
+        guest: true,
+        plan: "free",
+        remaining: 0,
+        reason: "FREE_LIMIT_REACHED",
+      };
+    }
+
     return {
-      allowed: false,
+      allowed: true,
       guest: true,
       plan: "free",
-      remaining: 0,
-      reason: "FREE_LIMIT_REACHED",
+      remaining: FREE_LIMIT - used,
     };
   }
-
-  return {
-    allowed: true,
-    guest: true,
-    plan: "free",
-    remaining: FREE_LIMIT - used,
-  };
-}
 
   // -------------------------
   // Registered user
   // -------------------------
 
-  const dbUser = await prisma.user.findUnique({
-  where: {
-    id: actor.userId,
-  },
-});
+  const dbUser =
+    await prisma.user.findUnique({
+      where: {
+        id: actor.userId,
+      },
+      include: {
+        plan: true,
+      },
+    });
 
   const plan =
-    (dbUser?.plan as "free" | "day" | "pro") ??
-    "free";
+    (dbUser?.plan?.plan as
+      | "free"
+      | "day"
+      | "pro") ?? "free";
+
+  // -------------------------
+  // Paid plans
+  // -------------------------
 
   if (plan !== "free") {
     return {
@@ -77,18 +93,28 @@ export async function checkAccess(
     };
   }
 
+  // -------------------------
+  // Free plan
+  // -------------------------
+
   const today = new Date();
 
-  today.setHours(0, 0, 0, 0);
+  today.setHours(
+    0,
+    0,
+    0,
+    0
+  );
 
-  const usage = await prisma.userUsage.findUnique({
-    where: {
-      userId_date: {
-        userId: actor.userId,
-        date: today,
+  const usage =
+    await prisma.userUsage.findUnique({
+      where: {
+        userId_date: {
+          userId: actor.userId,
+          date: today,
+        },
       },
-    },
-  });
+    });
 
   const used =
     usage?.[type] ?? 0;
@@ -119,7 +145,12 @@ export async function increaseUsage(
 ) {
   const today = new Date();
 
-  today.setHours(0, 0, 0, 0);
+  today.setHours(
+    0,
+    0,
+    0,
+    0
+  );
 
   await prisma.userUsage.upsert({
     where: {
@@ -128,18 +159,31 @@ export async function increaseUsage(
         date: today,
       },
     },
+
     update: {
       [type]: {
         increment: 1,
       },
     },
+
     create: {
       userId,
       date: today,
 
-      soulScan: type === "soulScan" ? 1 : 0,
-      dream: type === "dream" ? 1 : 0,
-      tarot: type === "tarot" ? 1 : 0,
+      soulScan:
+        type === "soulScan"
+          ? 1
+          : 0,
+
+      dream:
+        type === "dream"
+          ? 1
+          : 0,
+
+      tarot:
+        type === "tarot"
+          ? 1
+          : 0,
     },
   });
 }
