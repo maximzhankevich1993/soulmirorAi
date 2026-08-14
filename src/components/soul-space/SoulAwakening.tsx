@@ -21,39 +21,12 @@ export function SoulAwakening({
       setLoading(false);
     }, LOADING_TIME);
 
-    return () => {
-      window.clearTimeout(timer);
-    };
+    return () => clearTimeout(timer);
   }, []);
 
   return (
-    <div className="min-h-screen">
-      <AnimatePresence mode="wait">
-        {loading && (
-          <motion.div
-            key="cinematic-loader"
-            className="fixed inset-0 z-[99999]"
-            initial={{ opacity: 1 }}
-            animate={{ opacity: 1 }}
-            exit={{
-              opacity: 0,
-              scale: 1.01,
-              filter: "blur(4px)",
-            }}
-            transition={{
-              duration: 1.2,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-          >
-            <CinematicLoader />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
+    <div className="relative min-h-screen">
       <motion.div
-        initial={{
-          opacity: 0,
-        }}
         animate={{
           opacity: loading ? 0 : 1,
         }}
@@ -64,6 +37,26 @@ export function SoulAwakening({
       >
         {children}
       </motion.div>
+
+      <AnimatePresence>
+        {loading && (
+          <motion.div
+            key="cinematic-loader"
+            className="fixed inset-0 z-[99999]"
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
+            exit={{
+              opacity: 0,
+            }}
+            transition={{
+              duration: 1.2,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          >
+            <CinematicLoader />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
