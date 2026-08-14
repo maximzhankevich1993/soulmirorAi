@@ -1,6 +1,6 @@
 "use client";
 
-import { Variants } from "framer-motion";
+import { Transition, Variants } from "framer-motion";
 
 /**
  * Base fade + lift animation
@@ -77,7 +77,7 @@ export const glowPulse: Variants = {
  *
  * Shared transition for premium cinematic UI elements.
  */
-export const cinematicTransition = {
+export const cinematicTransition: Transition = {
   duration: 0.8,
   ease: [0.22, 1, 0.36, 1],
 };
