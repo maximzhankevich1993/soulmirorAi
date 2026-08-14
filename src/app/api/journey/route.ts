@@ -11,15 +11,15 @@ export async function GET() {
       data: { user },
     } = await supabase.auth.getUser();
 
+    /*
+     * Guest users are allowed to enter SoulMirror.
+     *
+     * They simply don't have a persistent journey yet.
+     * Returning an empty array keeps the UI clean and
+     * avoids treating a normal guest state as an error.
+     */
     if (!user) {
-      return NextResponse.json(
-        {
-          error: "Unauthorized",
-        },
-        {
-          status: 401,
-        }
-      );
+      return NextResponse.json([]);
     }
 
     const userId = user.id;
