@@ -8,7 +8,7 @@ import { LoaderOrb } from "./LoaderOrb";
 
 export function CinematicLoader() {
   return (
-    <motion.main
+    <main
       className="
         fixed
         inset-0
@@ -20,39 +20,22 @@ export function CinematicLoader() {
         bg-[#050505]
         text-[#F4F1EA]
       "
-      initial={{
-        opacity: 1,
-      }}
-      animate={{
-        opacity: 1,
-      }}
-      exit={{
-        opacity: 0,
-      }}
-      transition={{
-        duration: 1.2,
-        ease: [0.22, 1, 0.36, 1],
-      }}
     >
       {/* Background atmosphere */}
       <motion.div
         className="absolute inset-0"
-        initial={{
-          opacity: 0,
-        }}
-        animate={{
-          opacity: 1,
-        }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{
           duration: 1.8,
-          ease: "easeOut",
+          ease: [0.22, 1, 0.36, 1],
         }}
       >
         <LoaderGlow />
         <LoaderParticles />
       </motion.div>
 
-      {/* Main cinematic composition */}
+      {/* Main composition */}
       <motion.div
         className="
           relative
@@ -63,8 +46,8 @@ export function CinematicLoader() {
         "
         initial={{
           opacity: 0,
-          scale: 0.96,
-          filter: "blur(12px)",
+          scale: 0.94,
+          filter: "blur(14px)",
         }}
         animate={{
           opacity: 1,
@@ -72,7 +55,7 @@ export function CinematicLoader() {
           filter: "blur(0px)",
         }}
         transition={{
-          duration: 1.8,
+          duration: 1.6,
           ease: [0.22, 1, 0.36, 1],
         }}
       >
@@ -80,16 +63,14 @@ export function CinematicLoader() {
         <motion.div
           initial={{
             opacity: 0,
-            scale: 0.82,
-            filter: "blur(10px)",
+            scale: 0.78,
           }}
           animate={{
             opacity: 1,
             scale: 1,
-            filter: "blur(0px)",
           }}
           transition={{
-            delay: 0.25,
+            delay: 0.2,
             duration: 1.5,
             ease: [0.22, 1, 0.36, 1],
           }}
@@ -102,8 +83,8 @@ export function CinematicLoader() {
           className="mt-14 text-center"
           initial={{
             opacity: 0,
-            y: 20,
-            filter: "blur(8px)",
+            y: 24,
+            filter: "blur(10px)",
           }}
           animate={{
             opacity: 1,
@@ -111,12 +92,11 @@ export function CinematicLoader() {
             filter: "blur(0px)",
           }}
           transition={{
-            delay: 0.85,
-            duration: 1.25,
+            delay: 0.8,
+            duration: 1.3,
             ease: [0.22, 1, 0.36, 1],
           }}
         >
-          {/* EON AI */}
           <motion.p
             className="
               text-[9px]
@@ -124,12 +104,8 @@ export function CinematicLoader() {
               tracking-[0.55em]
               text-[#D6B25E]
             "
-            initial={{
-              opacity: 0,
-            }}
-            animate={{
-              opacity: 1,
-            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{
               delay: 1,
               duration: 1,
@@ -138,7 +114,6 @@ export function CinematicLoader() {
             EON AI
           </motion.p>
 
-          {/* SoulMirror */}
           <h1
             className="
               mt-5
@@ -153,7 +128,6 @@ export function CinematicLoader() {
             SoulMirror
           </h1>
 
-          {/* Tagline */}
           <motion.p
             className="
               mt-5
@@ -162,15 +136,11 @@ export function CinematicLoader() {
               tracking-[0.4em]
               text-white/35
             "
-            initial={{
-              opacity: 0,
-            }}
-            animate={{
-              opacity: 1,
-            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{
-              delay: 1.35,
-              duration: 1.1,
+              delay: 1.3,
+              duration: 1.2,
               ease: "easeOut",
             }}
           >
@@ -178,7 +148,7 @@ export function CinematicLoader() {
           </motion.p>
         </motion.div>
 
-        {/* Progress line */}
+        {/* Progress */}
         <motion.div
           className="
             mt-12
@@ -187,14 +157,10 @@ export function CinematicLoader() {
             overflow-hidden
             bg-white/[0.08]
           "
-          initial={{
-            opacity: 0,
-          }}
-          animate={{
-            opacity: 1,
-          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{
-            delay: 1.55,
+            delay: 1.5,
             duration: 0.8,
           }}
         >
@@ -205,15 +171,11 @@ export function CinematicLoader() {
               origin-left
               bg-[#D6B25E]/50
             "
-            initial={{
-              scaleX: 0,
-            }}
-            animate={{
-              scaleX: 1,
-            }}
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
             transition={{
-              delay: 1.65,
-              duration: 1.4,
+              delay: 1.6,
+              duration: 1.5,
               ease: [0.22, 1, 0.36, 1],
             }}
           />
@@ -230,30 +192,25 @@ export function CinematicLoader() {
           tracking-[0.45em]
           text-white/20
         "
-        initial={{
-          opacity: 0,
-        }}
-        animate={{
-          opacity: [0, 0.4, 0.4],
-        }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.4 }}
         transition={{
-          delay: 1.4,
-          duration: 1.4,
-          ease: "easeOut",
+          delay: 1.5,
+          duration: 1.2,
         }}
       >
         Personal Intelligence · EON AI
       </motion.div>
 
-      {/* Soft vignette */}
+      {/* Vignette */}
       <div
         className="
           pointer-events-none
           absolute
           inset-0
-          bg-[radial-gradient(circle_at_center,transparent_20%,rgba(0,0,0,0.45)_100%)]
+          bg-[radial-gradient(circle_at_center,transparent_20%,rgba(0,0,0,0.5)_100%)]
         "
       />
-    </motion.main>
+    </main>
   );
 }
