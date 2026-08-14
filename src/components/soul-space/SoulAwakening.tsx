@@ -1,7 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
-
 interface SoulAwakeningProps {
   children: React.ReactNode;
 }
@@ -9,20 +7,5 @@ interface SoulAwakeningProps {
 export function SoulAwakening({
   children,
 }: SoulAwakeningProps) {
-  return (
-    <motion.div
-      initial={{
-        opacity: 0,
-      }}
-      animate={{
-        opacity: 1,
-      }}
-      transition={{
-        duration: 1.2,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-    >
-      {children}
-    </motion.div>
-  );
+  return <>{children}</>;
 }
