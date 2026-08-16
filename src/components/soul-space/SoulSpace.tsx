@@ -87,6 +87,8 @@ export function SoulSpace() {
         className={`
           relative
           min-h-screen
+          overflow-hidden
+          bg-[#050505]
           transition-[filter,transform,opacity]
           duration-1000
           ease-[cubic-bezier(0.16,1,0.3,1)]
@@ -97,16 +99,32 @@ export function SoulSpace() {
           }
         `}
       >
-        <CursorAtmosphere />
+        {/* =================================================
+            01 — GLOBAL BACKGROUND
+        ================================================== */}
+
+        <AmbientBackground />
+
+        {/* =================================================
+            02 — GLOBAL PARTICLES
+        ================================================== */}
 
         <GlobalParticles />
 
-        <AmbientBackground />
+        {/* =================================================
+            03 — CURSOR ATMOSPHERE
+        ================================================== */}
+
+        <CursorAtmosphere />
+
+        {/* =================================================
+            04 — MEMORY / LOADING ATMOSPHERE
+        ================================================== */}
 
         <SoulMemoryLoader />
 
         {/* =================================================
-            HERO
+            05 — HERO
         ================================================== */}
 
         <SoulSpaceHero
@@ -114,7 +132,7 @@ export function SoulSpace() {
         />
 
         {/* =================================================
-            ECOSYSTEM
+            06 — EON ECOSYSTEM
         ================================================== */}
 
         <CinematicSection>
@@ -124,7 +142,7 @@ export function SoulSpace() {
         </CinematicSection>
 
         {/* =================================================
-            DASHBOARD
+            07 — SOUL DASHBOARD
         ================================================== */}
 
         <CinematicSection>
@@ -132,7 +150,7 @@ export function SoulSpace() {
         </CinematicSection>
 
         {/* =================================================
-            DAILY REFLECTION
+            08 — DAILY REFLECTION
         ================================================== */}
 
         <CinematicSection>
@@ -140,7 +158,7 @@ export function SoulSpace() {
         </CinematicSection>
 
         {/* =================================================
-            SOUL SCAN
+            09 — SOUL SCAN
         ================================================== */}
 
         <CinematicSection>
@@ -150,7 +168,7 @@ export function SoulSpace() {
         </CinematicSection>
 
         {/* =================================================
-            DREAMS
+            10 — DREAMS + TAROT
         ================================================== */}
 
         <CinematicSection>
@@ -162,7 +180,7 @@ export function SoulSpace() {
         </CinematicSection>
 
         {/* =================================================
-            JOURNAL
+            11 — JOURNAL
         ================================================== */}
 
         <CinematicSection>
@@ -176,7 +194,7 @@ export function SoulSpace() {
         </CinematicSection>
 
         {/* =================================================
-            PRICING
+            12 — PRICING
         ================================================== */}
 
         <CinematicSection>
@@ -187,7 +205,7 @@ export function SoulSpace() {
       </main>
 
       {/* =====================================================
-          AUTH CINEMATIC TRANSITION
+          AUTH CINEMATIC EXPERIENCE
       ====================================================== */}
 
       <AnimatePresence mode="wait">
@@ -221,12 +239,20 @@ export function SoulSpace() {
               bg-[#050505]
             "
           >
-            {/* DARK TRANSITION */}
+            {/* =================================================
+                AUTH BACKDROP
+            ================================================== */}
 
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              initial={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+              }}
+              exit={{
+                opacity: 0,
+              }}
               transition={{
                 duration: 1.2,
                 ease: "easeOut",
@@ -239,7 +265,9 @@ export function SoulSpace() {
               "
             />
 
-            {/* GOLD ATMOSPHERE */}
+            {/* =================================================
+                GOLD ATMOSPHERE
+            ================================================== */}
 
             <motion.div
               initial={{
@@ -273,7 +301,9 @@ export function SoulSpace() {
               "
             />
 
-            {/* SECONDARY LIGHT */}
+            {/* =================================================
+                SECONDARY LIGHT
+            ================================================== */}
 
             <motion.div
               initial={{
@@ -308,7 +338,9 @@ export function SoulSpace() {
               "
             />
 
-            {/* AUTH SCREEN */}
+            {/* =================================================
+                AUTH SCREEN
+            ================================================== */}
 
             <motion.div
               initial={{
@@ -343,7 +375,9 @@ export function SoulSpace() {
               <AuthScreen mode={authMode} />
             </motion.div>
 
-            {/* CLOSE */}
+            {/* =================================================
+                CLOSE
+            ================================================== */}
 
             <motion.button
               type="button"
