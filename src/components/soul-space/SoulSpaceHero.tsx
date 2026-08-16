@@ -33,19 +33,14 @@ export function SoulSpaceHero({
     };
   }, []);
 
-  const {
-    scrollYProgress,
-  } = useScroll({
-    target: ref,
-    offset: [
-      "start start",
-      "end start",
-    ],
-  });
-
   /*
-   * HERO MOVEMENT
+   * SCROLL ANIMATION
    */
+
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
 
   const heroY = useTransform(
     scrollYProgress,
@@ -68,7 +63,7 @@ export function SoulSpaceHero({
   const heroBlur = useTransform(
     scrollYProgress,
     [0, 0.7, 1],
-    [0, 0, 8]
+    ["blur(0px)", "blur(0px)", "blur(8px)"]
   );
 
   return (
@@ -140,7 +135,7 @@ export function SoulSpaceHero({
       />
 
       {/* =====================================================
-          AUTH ACTIONS
+          SIGN IN / SIGN UP
       ====================================================== */}
 
       <motion.div
@@ -175,8 +170,6 @@ export function SoulSpaceHero({
           md:top-10
         "
       >
-        {/* SIGN IN */}
-
         <button
           type="button"
           onClick={onOpenAuth}
@@ -203,8 +196,6 @@ export function SoulSpaceHero({
         >
           Sign In
         </button>
-
-        {/* SIGN UP */}
 
         <button
           type="button"
@@ -239,7 +230,7 @@ export function SoulSpaceHero({
       </motion.div>
 
       {/* =====================================================
-          HERO
+          HERO CONTENT
       ====================================================== */}
 
       <motion.div
@@ -247,9 +238,7 @@ export function SoulSpaceHero({
           y: heroY,
           scale: heroScale,
           opacity: heroOpacity,
-          filter: heroBlur.to(
-            (value) => `blur(${value}px)`
-          ),
+          filter: heroBlur,
         }}
         className="
           relative
@@ -313,78 +302,48 @@ export function SoulSpaceHero({
             lg:text-[128px]
           "
         >
-          {letters.map(
-            (letter, index) => (
-              <motion.span
-                key={`${letter}-${index}`}
-                initial={{
-                  opacity: 0,
-                  x:
-                    index % 2 === 0
-                      ? -140
-                      : 140,
-                  y:
-                    index % 3 === 0
-                      ? -60
-                      : 60,
-                  scale: 0.7,
-                  rotate:
-                    index % 2 === 0
-                      ? -8
-                      : 8,
-                  filter:
-                    "blur(18px)",
-                }}
-                animate={
-                  started
-                    ? {
-                        opacity: 1,
-                        x: 0,
-                        y: 0,
-                        scale: 1,
-                        rotate: 0,
-                        filter:
-                          "blur(0px)",
-                      }
-                    : {
-                        opacity: 0,
-                        x:
-                          index % 2 === 0
-                            ? -140
-                            : 140,
-                        y:
-                          index % 3 === 0
-                            ? -60
-                            : 60,
-                        scale: 0.7,
-                        rotate:
-                          index % 2 === 0
-                            ? -8
-                            : 8,
-                        filter:
-                          "blur(18px)",
-                      }
-                }
-                transition={{
-                  delay:
-                    0.25 +
-                    index * 0.11,
-                  duration: 1.25,
-                  ease: [
-                    0.16,
-                    1,
-                    0.3,
-                    1,
-                  ],
-                }}
-                className="
-                  inline-block
-                "
-              >
-                {letter}
-              </motion.span>
-            )
-          )}
+          {letters.map((letter, index) => (
+            <motion.span
+              key={`${letter}-${index}`}
+              initial={{
+                opacity: 0,
+                x: index % 2 === 0 ? -140 : 140,
+                y: index % 3 === 0 ? -60 : 60,
+                scale: 0.7,
+                rotate: index % 2 === 0 ? -8 : 8,
+                filter: "blur(18px)",
+              }}
+              animate={
+                started
+                  ? {
+                      opacity: 1,
+                      x: 0,
+                      y: 0,
+                      scale: 1,
+                      rotate: 0,
+                      filter: "blur(0px)",
+                    }
+                  : {
+                      opacity: 0,
+                      x: index % 2 === 0 ? -140 : 140,
+                      y: index % 3 === 0 ? -60 : 60,
+                      scale: 0.7,
+                      rotate: index % 2 === 0 ? -8 : 8,
+                      filter: "blur(18px)",
+                    }
+              }
+              transition={{
+                delay: 0.25 + index * 0.11,
+                duration: 1.25,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="
+                inline-block
+              "
+            >
+              {letter}
+            </motion.span>
+          ))}
         </h1>
 
         {/* =================================================
@@ -403,12 +362,7 @@ export function SoulSpaceHero({
           transition={{
             delay: 1.55,
             duration: 1,
-            ease: [
-              0.22,
-              1,
-              0.36,
-              1,
-            ],
+            ease: [0.22, 1, 0.36, 1],
           }}
           className="
             mt-8
@@ -478,12 +432,10 @@ export function SoulSpaceHero({
             md:text-lg
           "
         >
-          Your personal intelligence
-          mirror.
+          Your personal intelligence mirror.
           <br />
-          AI designed to understand
-          identity, dreams,
-          archetypes and evolution.
+          AI designed to understand identity,
+          dreams, archetypes and evolution.
         </motion.p>
 
         {/* =================================================
@@ -558,7 +510,7 @@ export function SoulSpaceHero({
             />
           </button>
 
-          {/* EXPLORE */}
+          {/* EXPLORE ECOSYSTEM */}
 
           <a
             href="#ecosystem"
