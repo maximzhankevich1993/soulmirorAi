@@ -6,6 +6,7 @@ import {
   Heart,
   Moon,
   Sparkles,
+  ArrowRight,
 } from "lucide-react";
 
 import { motion } from "framer-motion";
@@ -31,65 +32,98 @@ export function SoulDashboard() {
     (state) => state.shadow
   );
 
-  const hasArchetype =
-    Boolean(archetype && archetype.trim());
+  /*
+   * =====================================================
+   * FIRST-TIME STATE
+   * =====================================================
+   *
+   * Если пользователь ещё не проходил Soul Scan,
+   * вместо пустых значений показываем аккуратное
+   * состояние профиля.
+   */
 
-  const hasEmotion =
-    Boolean(emotion && emotion.trim());
+  const hasSoulProfile =
+    Boolean(
+      archetype ||
+      emotion ||
+      insight ||
+      shadow
+    );
 
-  const hasInsight =
-    Boolean(insight && insight.trim());
-
-  const hasShadow =
-    Boolean(shadow && shadow.trim());
+  /*
+   * =====================================================
+   * CARDS
+   * =====================================================
+   */
 
   const cards = [
     {
       title: "Core Archetype",
-      value: hasArchetype
-        ? archetype
-        : "Not discovered yet",
-      subtitle: hasArchetype
-        ? "Soul Identity"
-        : "Complete your first Soul Scan",
+
+      value:
+        archetype ||
+        "Not yet discovered",
+
+      subtitle:
+        archetype
+          ? "Soul Identity"
+          : "Complete your first Soul Scan",
+
       icon: Brain,
-      active: hasArchetype,
+
+      discovered: Boolean(archetype),
     },
 
     {
       title: "Current Emotion",
-      value: hasEmotion
-        ? emotion
-        : "Awaiting reflection",
-      subtitle: hasEmotion
-        ? "Live Analysis"
-        : "Your emotional state will appear here",
+
+      value:
+        emotion ||
+        "Awaiting reflection",
+
+      subtitle:
+        emotion
+          ? "Live Analysis"
+          : "Your emotional state will appear here",
+
       icon: Heart,
-      active: hasEmotion,
+
+      discovered: Boolean(emotion),
     },
 
     {
       title: "Shadow Pattern",
-      value: hasShadow
-        ? shadow
-        : "Not revealed yet",
-      subtitle: hasShadow
-        ? "Inner Reflection"
-        : "Discovered through deeper analysis",
+
+      value:
+        shadow ||
+        "Not yet explored",
+
+      subtitle:
+        shadow
+          ? "Inner Reflection"
+          : "Discover deeper patterns through analysis",
+
       icon: Moon,
-      active: hasShadow,
+
+      discovered: Boolean(shadow),
     },
 
     {
       title: "Soul Evolution",
-      value: hasInsight
-        ? "Growing"
-        : "Beginning",
-      subtitle: hasInsight
-        ? "AI Memory"
-        : "Your journey starts with the first insight",
+
+      value:
+        insight
+          ? "Growing"
+          : "Beginning",
+
+      subtitle:
+        insight
+          ? "AI Memory"
+          : "Your journey starts here",
+
       icon: Sparkles,
-      active: hasInsight,
+
+      discovered: Boolean(insight),
     },
   ];
 
@@ -104,28 +138,28 @@ export function SoulDashboard() {
         px-6
       "
     >
-      {/* =====================================================
-          SECTION ATMOSPHERE
-      ====================================================== */}
+      {/* =================================================
+          AMBIENT GLOW
+      ================================================== */}
 
       <div
         className="
           pointer-events-none
           absolute
           left-1/2
-          top-20
-          h-[500px]
+          top-0
+          h-[420px]
           w-[700px]
           -translate-x-1/2
           rounded-full
-          bg-[#D6B25E]/[0.035]
-          blur-[180px]
+          bg-[#D6B25E]/[0.025]
+          blur-[160px]
         "
       />
 
-      {/* =====================================================
+      {/* =================================================
           HEADER
-      ====================================================== */}
+      ================================================== */}
 
       <motion.div
         initial={{
@@ -141,12 +175,11 @@ export function SoulDashboard() {
           amount: 0.2,
         }}
         transition={{
-          duration: 0.9,
+          duration: 0.8,
           ease: [0.16, 1, 0.3, 1],
         }}
         className="
           relative
-          z-10
           mb-14
           text-center
         "
@@ -191,14 +224,13 @@ export function SoulDashboard() {
         </p>
       </motion.div>
 
-      {/* =====================================================
-          CARDS
-      ====================================================== */}
+      {/* =================================================
+          PROFILE CARDS
+      ================================================== */}
 
       <div
         className="
           relative
-          z-10
           grid
           gap-6
           md:grid-cols-2
@@ -221,44 +253,37 @@ export function SoulDashboard() {
               }}
               viewport={{
                 once: true,
-                amount: 0.15,
+                amount: 0.2,
               }}
               transition={{
                 delay: index * 0.1,
                 duration: 0.7,
                 ease: [0.16, 1, 0.3, 1],
               }}
+              whileHover={{
+                y: -7,
+              }}
+              className="
+                h-full
+              "
             >
               <GlassCard
                 className="
                   group
                   relative
-                  min-h-[250px]
+                  h-full
+                  min-h-[270px]
                   overflow-hidden
                   p-7
                   transition-all
-                  duration-700
-                  ease-[cubic-bezier(0.16,1,0.3,1)]
-                  hover:-translate-y-2
-                  hover:border-[#D6B25E]/25
-                  hover:bg-white/[0.055]
-                  hover:shadow-[0_20px_80px_rgba(214,178,94,0.08)]
+                  duration-500
+                  hover:border-[#D6B25E]/20
+                  hover:bg-white/[0.045]
                 "
               >
-                {/* CARD GLOW */}
+                {/* Card glow */}
 
-                <motion.div
-                  initial={{
-                    opacity: 0.25,
-                    scale: 0.8,
-                  }}
-                  whileHover={{
-                    opacity: 0.7,
-                    scale: 1.15,
-                  }}
-                  transition={{
-                    duration: 0.8,
-                  }}
+                <div
                   className="
                     pointer-events-none
                     absolute
@@ -267,56 +292,51 @@ export function SoulDashboard() {
                     h-40
                     w-40
                     rounded-full
-                    bg-[#D6B25E]/10
-                    blur-[60px]
+                    bg-[#D6B25E]/5
+                    blur-3xl
+                    transition-all
+                    duration-700
+                    group-hover:bg-[#D6B25E]/10
+                    group-hover:scale-125
                   "
                 />
 
-                {/* TOP LINE */}
+                {/* Bottom glow */}
 
                 <div
                   className="
                     pointer-events-none
                     absolute
-                    inset-x-8
-                    top-0
-                    h-px
-                    bg-gradient-to-r
-                    from-transparent
-                    via-[#D6B25E]/20
-                    to-transparent
+                    -bottom-20
+                    left-1/2
+                    h-32
+                    w-32
+                    -translate-x-1/2
+                    rounded-full
+                    bg-[#D6B25E]/[0.025]
+                    blur-3xl
+                    transition-all
+                    duration-700
+                    group-hover:bg-[#D6B25E]/[0.06]
                   "
                 />
 
                 <div className="relative z-10">
-                  {/* ICON */}
+                  {/* Icon */}
 
-                  <motion.div
-                    whileHover={{
-                      scale: 1.08,
-                      rotate: 2,
-                    }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 260,
-                      damping: 18,
-                    }}
-                    className="inline-flex"
-                  >
-                    <GlowIcon>
-                      <Icon
-                        size={22}
-                        className="
-                          text-[#D6B25E]
-                          transition-all
-                          duration-500
-                          group-hover:drop-shadow-[0_0_12px_rgba(214,178,94,0.45)]
-                        "
-                      />
-                    </GlowIcon>
-                  </motion.div>
+                  <GlowIcon>
+                    <Icon
+                      size={22}
+                      className="
+                        text-[#D6B25E]
+                        transition-transform
+                        duration-500
+                        group-hover:scale-110
+                      "
+                    />
+                  </GlowIcon>
 
-                  {/* TITLE */}
+                  {/* Title */}
 
                   <p
                     className="
@@ -330,48 +350,55 @@ export function SoulDashboard() {
                     {card.title}
                   </p>
 
-                  {/* VALUE */}
+                  {/* Value */}
 
-                  <motion.h3
-                    layout
+                  <h3
                     className={`
                       mt-3
                       line-clamp-2
+                      min-h-[64px]
                       text-2xl
                       font-light
                       leading-tight
                       ${
-                        card.active
+                        card.discovered
                           ? "text-[#F4F1EA]"
-                          : "text-white/55"
+                          : "text-white/45"
                       }
                     `}
                   >
                     {card.value}
-                  </motion.h3>
+                  </h3>
 
-                  {/* SUBTITLE */}
+                  {/* Subtitle */}
 
                   <p
                     className="
-                      mt-4
+                      mt-3
+                      min-h-[40px]
                       text-sm
-                      leading-6
-                      text-white/35
+                      leading-5
+                      text-white/40
                     "
                   >
                     {card.subtitle}
                   </p>
 
-                  {/* STATUS */}
+                  {/* First-time indicator */}
 
-                  {!card.active && (
+                  {!card.discovered && (
                     <div
                       className="
-                        mt-6
-                        flex
+                        mt-5
+                        inline-flex
                         items-center
                         gap-2
+                        rounded-full
+                        border
+                        border-white/[0.07]
+                        bg-white/[0.025]
+                        px-3
+                        py-1.5
                       "
                     >
                       <span
@@ -379,7 +406,7 @@ export function SoulDashboard() {
                           h-1.5
                           w-1.5
                           rounded-full
-                          bg-[#D6B25E]/40
+                          bg-[#D6B25E]/50
                         "
                       />
 
@@ -387,12 +414,40 @@ export function SoulDashboard() {
                         className="
                           text-[9px]
                           uppercase
-                          tracking-[0.3em]
-                          text-white/25
+                          tracking-[0.25em]
+                          text-white/30
                         "
                       >
-                        Awaiting data
+                        Awaiting discovery
                       </span>
+                    </div>
+                  )}
+
+                  {/* Discovered indicator */}
+
+                  {card.discovered && (
+                    <div
+                      className="
+                        mt-5
+                        flex
+                        items-center
+                        gap-2
+                        text-[9px]
+                        uppercase
+                        tracking-[0.25em]
+                        text-[#D6B25E]/60
+                      "
+                    >
+                      <span
+                        className="
+                          h-1.5
+                          w-1.5
+                          rounded-full
+                          bg-[#D6B25E]
+                        "
+                      />
+
+                      Active
                     </div>
                   )}
                 </div>
@@ -402,29 +457,110 @@ export function SoulDashboard() {
         })}
       </div>
 
-      {/* =====================================================
-          FOOTER STATUS
-      ====================================================== */}
+      {/* =================================================
+          FIRST TIME MESSAGE
+      ================================================== */}
+
+      {!hasSoulProfile && (
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 20,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+          }}
+          transition={{
+            delay: 0.6,
+            duration: 0.8,
+          }}
+          className="
+            relative
+            mt-10
+            flex
+            justify-center
+          "
+        >
+          <div
+            className="
+              flex
+              max-w-xl
+              flex-col
+              items-center
+              rounded-[28px]
+              border
+              border-[#D6B25E]/10
+              bg-white/[0.02]
+              px-7
+              py-6
+              text-center
+              backdrop-blur-xl
+              sm:flex-row
+              sm:text-left
+            "
+          >
+            <div className="flex-1">
+              <p
+                className="
+                  text-[10px]
+                  uppercase
+                  tracking-[0.35em]
+                  text-[#D6B25E]/70
+                "
+              >
+                Your journey begins here
+              </p>
+
+              <p
+                className="
+                  mt-2
+                  text-sm
+                  leading-6
+                  text-white/45
+                "
+              >
+                Complete your first Soul Scan to
+                begin building your personal profile.
+              </p>
+            </div>
+
+            <ArrowRight
+              size={18}
+              className="
+                mt-4
+                shrink-0
+                text-[#D6B25E]/50
+                sm:ml-6
+                sm:mt-0
+              "
+            />
+          </div>
+        </motion.div>
+      )}
+
+      {/* =================================================
+          ENGINE LABEL
+      ================================================== */}
 
       <motion.div
         initial={{
           opacity: 0,
-          y: 15,
         }}
         whileInView={{
           opacity: 1,
-          y: 0,
         }}
         viewport={{
           once: true,
         }}
         transition={{
-          delay: 0.5,
+          delay: 0.8,
           duration: 0.8,
         }}
         className="
-          relative
-          z-10
           mt-12
           flex
           justify-center
@@ -432,9 +568,6 @@ export function SoulDashboard() {
       >
         <div
           className="
-            flex
-            items-center
-            gap-3
             rounded-full
             border
             border-[#D6B25E]/10
@@ -444,22 +577,12 @@ export function SoulDashboard() {
             backdrop-blur-xl
           "
         >
-          <span
-            className="
-              h-1.5
-              w-1.5
-              animate-pulse
-              rounded-full
-              bg-[#D6B25E]/60
-            "
-          />
-
           <p
             className="
               text-[10px]
               uppercase
               tracking-[0.4em]
-              text-white/35
+              text-white/40
             "
           >
             Powered by EON Intelligence Engine
