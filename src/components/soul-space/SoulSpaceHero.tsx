@@ -1,20 +1,41 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import {
+  motion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
+
 import { ArrowRight } from "lucide-react";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const letters = "SoulMirror".split("");
 
 export function SoulSpaceHero() {
   const ref = useRef<HTMLDivElement>(null);
 
+  const [started, setStarted] = useState(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setStarted(true);
+    }, 100);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, []);
+
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
   });
 
-  const y = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  const y = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [0, -100]
+  );
 
   const opacity = useTransform(
     scrollYProgress,
@@ -36,9 +57,16 @@ export function SoulSpaceHero() {
         py-24
       "
     >
-      {/* Background */}
+      {/* Ambient background */}
 
-      <div
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{
+          opacity: started ? 1 : 0,
+        }}
+        transition={{
+          duration: 2,
+        }}
         className="
           pointer-events-none
           absolute
@@ -55,7 +83,10 @@ export function SoulSpaceHero() {
       />
 
       <motion.div
-        style={{ y, opacity }}
+        style={{
+          y,
+          opacity,
+        }}
         className="
           relative
           z-10
@@ -70,11 +101,20 @@ export function SoulSpaceHero() {
         {/* EON AI */}
 
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{
+            opacity: 0,
+            y: 20,
+            filter: "blur(10px)",
+          }}
+          animate={{
+            opacity: started ? 1 : 0,
+            y: started ? 0 : 20,
+            filter: started
+              ? "blur(0px)"
+              : "blur(10px)",
+          }}
           transition={{
             duration: 1,
-            delay: 0.2,
             ease: [0.22, 1, 0.36, 1],
           }}
           className="
@@ -87,7 +127,7 @@ export function SoulSpaceHero() {
           EON AI
         </motion.p>
 
-        {/* SoulMirror */}
+        {/* SOULMIRROR */}
 
         <h1
           className="
@@ -110,22 +150,36 @@ export function SoulSpaceHero() {
               key={`${letter}-${index}`}
               initial={{
                 opacity: 0,
-                x: index % 2 === 0 ? -70 : 70,
-                y: index % 3 === 0 ? -25 : 25,
-                scale: 0.85,
-                filter: "blur(10px)",
+                x: index % 2 === 0 ? -140 : 140,
+                y: index % 3 === 0 ? -60 : 60,
+                scale: 0.7,
+                rotate: index % 2 === 0 ? -8 : 8,
+                filter: "blur(18px)",
               }}
-              animate={{
-                opacity: 1,
-                x: 0,
-                y: 0,
-                scale: 1,
-                filter: "blur(0px)",
-              }}
+              animate={
+                started
+                  ? {
+                      opacity: 1,
+                      x: 0,
+                      y: 0,
+                      scale: 1,
+                      rotate: 0,
+                      filter: "blur(0px)",
+                    }
+                  : {
+                      opacity: 0,
+                      x: index % 2 === 0 ? -140 : 140,
+                      y: index % 3 === 0 ? -60 : 60,
+                      scale: 0.7,
+                      rotate:
+                        index % 2 === 0 ? -8 : 8,
+                      filter: "blur(18px)",
+                    }
+              }
               transition={{
-                duration: 1,
-                delay: 0.4 + index * 0.08,
-                ease: [0.22, 1, 0.36, 1],
+                delay: 0.25 + index * 0.11,
+                duration: 1.25,
+                ease: [0.16, 1, 0.3, 1],
               }}
               className="inline-block"
             >
@@ -134,7 +188,7 @@ export function SoulSpaceHero() {
           ))}
         </h1>
 
-        {/* Line */}
+        {/* GOLD LINE */}
 
         <motion.div
           initial={{
@@ -142,12 +196,12 @@ export function SoulSpaceHero() {
             scaleX: 0,
           }}
           animate={{
-            opacity: 1,
-            scaleX: 1,
+            opacity: started ? 1 : 0,
+            scaleX: started ? 1 : 0,
           }}
           transition={{
+            delay: 1.55,
             duration: 1,
-            delay: 1.5,
             ease: [0.22, 1, 0.36, 1],
           }}
           className="
@@ -155,18 +209,27 @@ export function SoulSpaceHero() {
             h-px
             w-[120px]
             origin-center
-            bg-[#D6B25E]/60
+            bg-gradient-to-r
+            from-transparent
+            via-[#D6B25E]/70
+            to-transparent
           "
         />
 
-        {/* Tagline */}
+        {/* TAGLINE */}
 
         <motion.p
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{
+            opacity: 0,
+            y: 15,
+          }}
+          animate={{
+            opacity: started ? 1 : 0,
+            y: started ? 0 : 15,
+          }}
           transition={{
-            duration: 0.9,
             delay: 1.8,
+            duration: 1,
           }}
           className="
             mt-7
@@ -179,14 +242,20 @@ export function SoulSpaceHero() {
           Reflect · Understand · Evolve
         </motion.p>
 
-        {/* Description */}
+        {/* DESCRIPTION */}
 
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{
+            opacity: 0,
+            y: 20,
+          }}
+          animate={{
+            opacity: started ? 1 : 0,
+            y: started ? 0 : 20,
+          }}
           transition={{
-            duration: 1,
             delay: 2.05,
+            duration: 1,
           }}
           className="
             mt-8
@@ -203,14 +272,20 @@ export function SoulSpaceHero() {
           dreams, archetypes and evolution.
         </motion.p>
 
-        {/* Buttons */}
+        {/* BUTTONS */}
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{
+            opacity: 0,
+            y: 20,
+          }}
+          animate={{
+            opacity: started ? 1 : 0,
+            y: started ? 0 : 20,
+          }}
           transition={{
-            duration: 1,
             delay: 2.35,
+            duration: 1,
           }}
           className="
             mt-12
