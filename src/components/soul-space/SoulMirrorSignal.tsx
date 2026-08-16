@@ -4,53 +4,46 @@ import { motion } from "framer-motion";
 
 const lines = [
   {
-    width: "32%",
     top: "18%",
-    left: "8%",
-    rotate: -2,
-    delay: 0,
-    duration: 5.5,
-  },
-  {
-    width: "46%",
-    top: "30%",
-    left: "2%",
-    rotate: 1,
-    delay: 0.8,
-    duration: 6.5,
-  },
-  {
-    width: "58%",
-    top: "43%",
-    left: "0%",
-    rotate: -1,
-    delay: 1.6,
-    duration: 7,
-    main: true,
-  },
-  {
+    left: "-5%",
     width: "42%",
-    top: "56%",
-    left: "7%",
-    rotate: 2,
-    delay: 2.3,
-    duration: 6,
+    rotate: "-2deg",
+    delay: 0,
   },
   {
-    width: "30%",
+    top: "31%",
+    left: "3%",
+    width: "48%",
+    rotate: "1deg",
+    delay: 0.8,
+  },
+  {
+    top: "44%",
+    left: "-8%",
+    width: "56%",
+    rotate: "-1deg",
+    delay: 1.6,
+  },
+  {
+    top: "57%",
+    left: "4%",
+    width: "45%",
+    rotate: "2deg",
+    delay: 2.4,
+  },
+  {
     top: "70%",
-    left: "14%",
-    rotate: -1,
-    delay: 3,
-    duration: 7.5,
+    left: "-4%",
+    width: "40%",
+    rotate: "-2deg",
+    delay: 3.2,
   },
   {
-    width: "38%",
     top: "82%",
-    left: "5%",
-    rotate: 1,
+    left: "8%",
+    width: "36%",
+    rotate: "1deg",
     delay: 1.2,
-    duration: 6.8,
   },
 ];
 
@@ -65,169 +58,187 @@ export function SoulMirrorSignal() {
         overflow-hidden
       "
     >
-      {/* Central atmospheric glow */}
+      {/* LEFT SIGNALS */}
+
+      {lines.map((line, index) => (
+        <motion.div
+          key={`left-${index}`}
+          className="
+            absolute
+            h-px
+          "
+          style={{
+            top: line.top,
+            left: line.left,
+            width: line.width,
+            rotate: line.rotate,
+          }}
+          initial={{
+            opacity: 0,
+            scaleX: 0.8,
+          }}
+          animate={{
+            opacity: [0.25, 0.65, 0.3, 0.55, 0.25],
+            scaleX: [0.95, 1, 0.97, 1, 0.95],
+          }}
+          transition={{
+            delay: line.delay,
+            duration: 5,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        >
+          {/* Main golden line */}
+
+          <div
+            className="
+              h-px
+              w-full
+              bg-gradient-to-r
+              from-transparent
+              via-[#D6B25E]
+              to-transparent
+            "
+            style={{
+              boxShadow:
+                "0 0 8px rgba(214,178,94,0.35)",
+            }}
+          />
+
+          {/* Angular break */}
+
+          <div
+            className="
+              absolute
+              left-[30%]
+              top-[-3px]
+              h-[7px]
+              w-px
+              rotate-[35deg]
+              bg-[#D6B25E]
+            "
+            style={{
+              boxShadow:
+                "0 0 7px rgba(214,178,94,0.35)",
+            }}
+          />
+
+          <div
+            className="
+              absolute
+              left-[68%]
+              top-[-3px]
+              h-[7px]
+              w-px
+              rotate-[-35deg]
+              bg-[#D6B25E]/70
+            "
+          />
+        </motion.div>
+      ))}
+
+      {/* RIGHT SIGNALS */}
+
+      {lines.map((line, index) => (
+        <motion.div
+          key={`right-${index}`}
+          className="
+            absolute
+            h-px
+          "
+          style={{
+            top: line.top,
+            right: line.left,
+            width: line.width,
+            rotate: line.rotate,
+          }}
+          initial={{
+            opacity: 0,
+            scaleX: 0.8,
+          }}
+          animate={{
+            opacity: [0.2, 0.55, 0.25, 0.5, 0.2],
+            scaleX: [0.95, 1, 0.97, 1, 0.95],
+          }}
+          transition={{
+            delay: line.delay + 0.6,
+            duration: 5.5,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        >
+          {/* Main line */}
+
+          <div
+            className="
+              h-px
+              w-full
+              bg-gradient-to-r
+              from-transparent
+              via-[#D6B25E]
+              to-transparent
+            "
+            style={{
+              boxShadow:
+                "0 0 8px rgba(214,178,94,0.3)",
+            }}
+          />
+
+          {/* Angular breaks */}
+
+          <div
+            className="
+              absolute
+              left-[30%]
+              top-[-3px]
+              h-[7px]
+              w-px
+              rotate-[-35deg]
+              bg-[#D6B25E]
+            "
+          />
+
+          <div
+            className="
+              absolute
+              left-[68%]
+              top-[-3px]
+              h-[7px]
+              w-px
+              rotate-[35deg]
+              bg-[#D6B25E]/70
+            "
+          />
+        </motion.div>
+      ))}
+
+      {/* CENTRAL GOLDEN PULSE */}
+
       <motion.div
         className="
           absolute
           left-1/2
           top-1/2
-          h-[420px]
-          w-[420px]
-          -translate-x-1/2
-          -translate-y-1/2
-          rounded-full
-          bg-[#D6B25E]/[0.035]
-          blur-[120px]
-        "
-        animate={{
-          opacity: [0.35, 0.7, 0.35],
-          scale: [0.95, 1.05, 0.95],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
-
-      {/* Signal lines */}
-      <div className="absolute inset-0">
-        {lines.map((line, index) => (
-          <motion.div
-            key={index}
-            className="absolute"
-            style={{
-              top: line.top,
-              left: line.left,
-              width: line.width,
-              rotate: line.rotate,
-            }}
-            initial={{
-              opacity: 0,
-              x: -20,
-            }}
-            animate={{
-              opacity: [0.05, 0.22, 0.08, 0.18, 0.05],
-              x: [-10, 0, 8, 0, -10],
-            }}
-            transition={{
-              delay: line.delay,
-              duration: line.duration,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          >
-            {/* Main line */}
-            <div
-              className="
-                relative
-                h-px
-                w-full
-                bg-gradient-to-r
-                from-transparent
-                via-[#D6B25E]/25
-                to-transparent
-              "
-            >
-              {/* Moving golden pulse */}
-              <motion.div
-                className="
-                  absolute
-                  left-0
-                  top-1/2
-                  h-px
-                  -translate-y-1/2
-                  bg-[#D6B25E]
-                "
-                animate={{
-                  left: ["0%", "35%", "75%", "100%"],
-                  width: ["0%", "12%", "18%", "0%"],
-                  opacity: [0, 0.15, 0.45, 0],
-                  boxShadow: [
-                    "0 0 0px rgba(214,178,94,0)",
-                    "0 0 5px rgba(214,178,94,.12)",
-                    "0 0 12px rgba(214,178,94,.3)",
-                    "0 0 0px rgba(214,178,94,0)",
-                  ],
-                }}
-                transition={{
-                  delay: line.delay + 0.8,
-                  duration: line.duration * 1.4,
-                  repeat: Infinity,
-                  repeatDelay: 1.5,
-                  ease: "easeInOut",
-                }}
-              />
-            </div>
-
-            {/* Broken / angular segment */}
-            <motion.div
-              className="
-                absolute
-                left-[32%]
-                top-[-3px]
-                h-[7px]
-                w-[1px]
-                rotate-[28deg]
-                bg-[#D6B25E]/20
-              "
-              animate={{
-                opacity: [0.08, 0.35, 0.08],
-              }}
-              transition={{
-                delay: line.delay + 1,
-                duration: line.duration,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
-
-            {/* Second angular segment */}
-            <motion.div
-              className="
-                absolute
-                left-[67%]
-                top-[-3px]
-                h-[7px]
-                w-[1px]
-                rotate-[-28deg]
-                bg-[#D6B25E]/15
-              "
-              animate={{
-                opacity: [0.05, 0.25, 0.05],
-              }}
-              transition={{
-                delay: line.delay + 1.7,
-                duration: line.duration + 1,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
-          </motion.div>
-        ))}
-      </div>
-
-      {/* Very subtle horizontal scan */}
-      <motion.div
-        className="
-          absolute
-          left-0
-          top-1/2
           h-px
-          w-full
+          w-[70%]
+          -translate-x-1/2
           bg-gradient-to-r
           from-transparent
-          via-[#D6B25E]/[0.06]
+          via-[#D6B25E]/70
           to-transparent
         "
         animate={{
-          opacity: [0, 0.5, 0],
-          scaleX: [0.7, 1, 0.7],
+          opacity: [0.2, 0.6, 0.2],
+          scaleX: [0.9, 1, 0.9],
         }}
         transition={{
-          duration: 9,
+          duration: 4,
           repeat: Infinity,
           ease: "easeInOut",
+        }}
+        style={{
+          boxShadow:
+            "0 0 12px rgba(214,178,94,0.3)",
         }}
       />
     </div>
