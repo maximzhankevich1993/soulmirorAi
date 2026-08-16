@@ -1,4 +1,3 @@
-
 "use client";
 
 import {
@@ -16,7 +15,7 @@ import {
 } from "react";
 
 interface SoulSpaceHeroProps {
-  onOpenAuth?: () => void;
+  onOpenAuth?: (mode: "login" | "register") => void;
 }
 
 const letters = "SoulMirror".split("");
@@ -39,9 +38,9 @@ export function SoulSpaceHero({
   }, []);
 
   /*
-   * =========================
-   * HERO SCROLL ANIMATION
-   * =========================
+   * =====================================================
+   * HERO SCROLL
+   * =====================================================
    */
 
   const { scrollYProgress } = useScroll({
@@ -78,14 +77,15 @@ export function SoulSpaceHero({
   );
 
   /*
-   * =========================
+   * =====================================================
    * START EXPERIENCE
-   * =========================
+   * =====================================================
    */
 
   const handleStartExperience = () => {
-    const target =
-      document.getElementById("features");
+    const target = document.getElementById(
+      "features"
+    );
 
     if (!target) return;
 
@@ -96,9 +96,9 @@ export function SoulSpaceHero({
   };
 
   /*
-   * =========================
+   * =====================================================
    * ECOSYSTEM
-   * =========================
+   * =====================================================
    */
 
   const handleExploreEcosystem = (
@@ -106,8 +106,9 @@ export function SoulSpaceHero({
   ) => {
     event.preventDefault();
 
-    const target =
-      document.getElementById("ecosystem");
+    const target = document.getElementById(
+      "ecosystem"
+    );
 
     if (!target) return;
 
@@ -115,6 +116,20 @@ export function SoulSpaceHero({
       behavior: "smooth",
       block: "start",
     });
+  };
+
+  /*
+   * =====================================================
+   * AUTH
+   * =====================================================
+   */
+
+  const handleSignIn = () => {
+    onOpenAuth?.("login");
+  };
+
+  const handleSignUp = () => {
+    onOpenAuth?.("register");
   };
 
   return (
@@ -132,19 +147,21 @@ export function SoulSpaceHero({
       "
     >
       {/* =====================================================
-          AMBIENT BACKGROUND
+          AMBIENT LIGHT
       ====================================================== */}
 
       <motion.div
         initial={{
           opacity: 0,
+          scale: 0.8,
         }}
         animate={{
           opacity: started ? 1 : 0,
+          scale: started ? 1 : 0.8,
         }}
         transition={{
           duration: 2,
-          ease: "easeOut",
+          ease: [0.16, 1, 0.3, 1],
         }}
         className="
           pointer-events-none
@@ -164,13 +181,16 @@ export function SoulSpaceHero({
       <motion.div
         initial={{
           opacity: 0,
+          scale: 0.7,
         }}
         animate={{
           opacity: started ? 1 : 0,
+          scale: started ? 1 : 0.7,
         }}
         transition={{
-          delay: 0.4,
+          delay: 0.35,
           duration: 2,
+          ease: [0.16, 1, 0.3, 1],
         }}
         className="
           pointer-events-none
@@ -186,26 +206,28 @@ export function SoulSpaceHero({
       />
 
       {/* =====================================================
-          AUTH ACTIONS
+          AUTH BUTTONS
       ====================================================== */}
 
       <motion.div
         initial={{
           opacity: 0,
-          y: -20,
-          filter: "blur(10px)",
+          y: -30,
+          x: 20,
+          filter: "blur(12px)",
         }}
         animate={{
           opacity: started ? 1 : 0,
-          y: started ? 0 : -20,
+          y: started ? 0 : -30,
+          x: started ? 0 : 20,
           filter: started
             ? "blur(0px)"
-            : "blur(10px)",
+            : "blur(12px)",
         }}
         transition={{
           delay: 0.65,
-          duration: 1.1,
-          ease: [0.22, 1, 0.36, 1],
+          duration: 1.2,
+          ease: [0.16, 1, 0.3, 1],
         }}
         className="
           absolute
@@ -223,9 +245,16 @@ export function SoulSpaceHero({
       >
         {/* SIGN IN */}
 
-        <button
+        <motion.button
           type="button"
-          onClick={onOpenAuth}
+          onClick={handleSignIn}
+          whileHover={{
+            y: -2,
+            scale: 1.025,
+          }}
+          whileTap={{
+            scale: 0.96,
+          }}
           className="
             cursor-pointer
             rounded-full
@@ -241,21 +270,26 @@ export function SoulSpaceHero({
             backdrop-blur-xl
             transition-all
             duration-500
-            hover:-translate-y-0.5
             hover:border-white/[0.2]
             hover:bg-white/[0.06]
             hover:text-white
-            active:scale-95
           "
         >
           Sign In
-        </button>
+        </motion.button>
 
         {/* SIGN UP */}
 
-        <button
+        <motion.button
           type="button"
-          onClick={onOpenAuth}
+          onClick={handleSignUp}
+          whileHover={{
+            y: -2,
+            scale: 1.025,
+          }}
+          whileTap={{
+            scale: 0.96,
+          }}
           className="
             cursor-pointer
             rounded-full
@@ -272,20 +306,18 @@ export function SoulSpaceHero({
             shadow-[0_8px_30px_rgba(0,0,0,0.18)]
             transition-all
             duration-500
-            hover:-translate-y-0.5
             hover:border-white/[0.28]
             hover:bg-white/[0.09]
             hover:text-white
-            hover:shadow-[0_12px_40px_rgba(255,255,255,0.05)]
-            active:scale-95
+            hover:shadow-[0_15px_50px_rgba(255,255,255,0.06)]
           "
         >
           Sign Up
-        </button>
+        </motion.button>
       </motion.div>
 
       {/* =====================================================
-          HERO CONTENT
+          HERO
       ====================================================== */}
 
       <motion.div
@@ -313,12 +345,14 @@ export function SoulSpaceHero({
         <motion.p
           initial={{
             opacity: 0,
-            y: 20,
+            y: 25,
+            x: -20,
             filter: "blur(10px)",
           }}
           animate={{
             opacity: started ? 1 : 0,
-            y: started ? 0 : 20,
+            y: started ? 0 : 25,
+            x: started ? 0 : -20,
             filter: started
               ? "blur(0px)"
               : "blur(10px)",
@@ -402,8 +436,7 @@ export function SoulSpaceHero({
                         index % 2 === 0
                           ? -8
                           : 8,
-                      filter:
-                        "blur(18px)",
+                      filter: "blur(18px)",
                     }
               }
               transition={{
@@ -418,9 +451,7 @@ export function SoulSpaceHero({
                   1,
                 ],
               }}
-              className="
-                inline-block
-              "
+              className="inline-block"
             >
               {letter}
             </motion.span>
@@ -428,7 +459,7 @@ export function SoulSpaceHero({
         </h1>
 
         {/* =================================================
-            GOLDEN LINE
+            GOLD LINE
         ================================================== */}
 
         <motion.div
@@ -443,12 +474,7 @@ export function SoulSpaceHero({
           transition={{
             delay: 1.55,
             duration: 1,
-            ease: [
-              0.22,
-              1,
-              0.36,
-              1,
-            ],
+            ease: [0.22, 1, 0.36, 1],
           }}
           className="
             mt-8
@@ -478,7 +504,6 @@ export function SoulSpaceHero({
           transition={{
             delay: 1.8,
             duration: 1,
-            ease: "easeOut",
           }}
           className="
             mt-7
@@ -507,7 +532,6 @@ export function SoulSpaceHero({
           transition={{
             delay: 2.05,
             duration: 1,
-            ease: "easeOut",
           }}
           className="
             mt-8
@@ -544,12 +568,7 @@ export function SoulSpaceHero({
           transition={{
             delay: 2.35,
             duration: 1.1,
-            ease: [
-              0.22,
-              1,
-              0.36,
-              1,
-            ],
+            ease: [0.22, 1, 0.36, 1],
           }}
           className="
             mt-12
@@ -560,13 +579,18 @@ export function SoulSpaceHero({
             sm:flex-row
           "
         >
-          {/* =================================================
-              START EXPERIENCE → SOUL SCAN
-          ================================================== */}
+          {/* START EXPERIENCE */}
 
-          <button
+          <motion.button
             type="button"
             onClick={handleStartExperience}
+            whileHover={{
+              y: -3,
+              scale: 1.025,
+            }}
+            whileTap={{
+              scale: 0.97,
+            }}
             className="
               group
               flex
@@ -586,12 +610,9 @@ export function SoulSpaceHero({
               shadow-[0_10px_40px_rgba(0,0,0,0.25)]
               transition-all
               duration-500
-              hover:-translate-y-0.5
               hover:border-white/[0.3]
               hover:bg-white/[0.11]
               hover:shadow-[0_15px_60px_rgba(255,255,255,0.08)]
-              active:translate-y-0
-              active:scale-[0.97]
             "
           >
             Start Experience
@@ -605,17 +626,21 @@ export function SoulSpaceHero({
                 group-hover:translate-x-1
               "
             />
-          </button>
+          </motion.button>
 
-          {/* =================================================
-              EXPLORE ECOSYSTEM
-          ================================================== */}
+          {/* EXPLORE */}
 
-          <a
+          <motion.a
             href="#ecosystem"
             onClick={
               handleExploreEcosystem
             }
+            whileHover={{
+              y: -3,
+            }}
+            whileTap={{
+              scale: 0.97,
+            }}
             className="
               cursor-pointer
               rounded-full
@@ -630,19 +655,17 @@ export function SoulSpaceHero({
               text-white/45
               transition-all
               duration-500
-              hover:-translate-y-0.5
               hover:border-white/[0.18]
               hover:bg-white/[0.035]
               hover:text-white/80
-              active:scale-[0.97]
             "
           >
             Explore Ecosystem
-          </a>
+          </motion.a>
         </motion.div>
 
         {/* =================================================
-            SUBTLE SCROLL INDICATOR
+            SCROLL INDICATOR
         ================================================== */}
 
         <motion.div
@@ -706,4 +729,3 @@ export function SoulSpaceHero({
     </section>
   );
 }
-
