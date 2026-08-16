@@ -1,4 +1,4 @@
-```tsx
+
 "use client";
 
 import {
@@ -469,4 +469,4 @@ export function SoulDashboard() {
     </section>
   );
 }
-```
+
