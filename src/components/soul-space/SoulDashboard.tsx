@@ -1,3 +1,4 @@
+```tsx
 "use client";
 
 import {
@@ -30,30 +31,65 @@ export function SoulDashboard() {
     (state) => state.shadow
   );
 
+  const hasArchetype =
+    Boolean(archetype && archetype.trim());
+
+  const hasEmotion =
+    Boolean(emotion && emotion.trim());
+
+  const hasInsight =
+    Boolean(insight && insight.trim());
+
+  const hasShadow =
+    Boolean(shadow && shadow.trim());
+
   const cards = [
     {
       title: "Core Archetype",
-      value: archetype || "Unknown",
-      subtitle: "Soul Identity",
+      value: hasArchetype
+        ? archetype
+        : "Not discovered yet",
+      subtitle: hasArchetype
+        ? "Soul Identity"
+        : "Complete your first Soul Scan",
       icon: Brain,
+      active: hasArchetype,
     },
+
     {
       title: "Current Emotion",
-      value: emotion || "Balanced",
-      subtitle: "Live Analysis",
+      value: hasEmotion
+        ? emotion
+        : "Awaiting reflection",
+      subtitle: hasEmotion
+        ? "Live Analysis"
+        : "Your emotional state will appear here",
       icon: Heart,
+      active: hasEmotion,
     },
+
     {
       title: "Shadow Pattern",
-      value: shadow || "Hidden",
-      subtitle: "Inner Reflection",
+      value: hasShadow
+        ? shadow
+        : "Not revealed yet",
+      subtitle: hasShadow
+        ? "Inner Reflection"
+        : "Discovered through deeper analysis",
       icon: Moon,
+      active: hasShadow,
     },
+
     {
       title: "Soul Evolution",
-      value: insight ? "Growing" : "Beginning",
-      subtitle: "AI Memory",
+      value: hasInsight
+        ? "Growing"
+        : "Beginning",
+      subtitle: hasInsight
+        ? "AI Memory"
+        : "Your journey starts with the first insight",
       icon: Sparkles,
+      active: hasInsight,
     },
   ];
 
@@ -68,6 +104,29 @@ export function SoulDashboard() {
         px-6
       "
     >
+      {/* =====================================================
+          SECTION ATMOSPHERE
+      ====================================================== */}
+
+      <div
+        className="
+          pointer-events-none
+          absolute
+          left-1/2
+          top-20
+          h-[500px]
+          w-[700px]
+          -translate-x-1/2
+          rounded-full
+          bg-[#D6B25E]/[0.035]
+          blur-[180px]
+        "
+      />
+
+      {/* =====================================================
+          HEADER
+      ====================================================== */}
+
       <motion.div
         initial={{
           opacity: 0,
@@ -79,11 +138,18 @@ export function SoulDashboard() {
         }}
         viewport={{
           once: true,
+          amount: 0.2,
         }}
         transition={{
-          duration: 0.8,
+          duration: 0.9,
+          ease: [0.16, 1, 0.3, 1],
         }}
-        className="mb-14 text-center"
+        className="
+          relative
+          z-10
+          mb-14
+          text-center
+        "
       >
         <p
           className="
@@ -102,7 +168,9 @@ export function SoulDashboard() {
             font-[family:var(--font-cormorant)]
             text-5xl
             font-light
+            leading-tight
             text-[#F4F1EA]
+            md:text-6xl
           "
         >
           Your Inner Profile
@@ -123,8 +191,14 @@ export function SoulDashboard() {
         </p>
       </motion.div>
 
+      {/* =====================================================
+          CARDS
+      ====================================================== */}
+
       <div
         className="
+          relative
+          z-10
           grid
           gap-6
           md:grid-cols-2
@@ -139,7 +213,7 @@ export function SoulDashboard() {
               key={card.title}
               initial={{
                 opacity: 0,
-                y: 25,
+                y: 35,
               }}
               whileInView={{
                 opacity: 1,
@@ -147,98 +221,220 @@ export function SoulDashboard() {
               }}
               viewport={{
                 once: true,
+                amount: 0.15,
               }}
               transition={{
                 delay: index * 0.1,
-                duration: 0.6,
+                duration: 0.7,
+                ease: [0.16, 1, 0.3, 1],
               }}
             >
               <GlassCard
                 className="
                   group
                   relative
+                  min-h-[250px]
                   overflow-hidden
                   p-7
                   transition-all
-                  duration-500
+                  duration-700
+                  ease-[cubic-bezier(0.16,1,0.3,1)]
                   hover:-translate-y-2
-                  hover:border-[#D6B25E]/20
+                  hover:border-[#D6B25E]/25
+                  hover:bg-white/[0.055]
+                  hover:shadow-[0_20px_80px_rgba(214,178,94,0.08)]
                 "
               >
+                {/* CARD GLOW */}
+
+                <motion.div
+                  initial={{
+                    opacity: 0.25,
+                    scale: 0.8,
+                  }}
+                  whileHover={{
+                    opacity: 0.7,
+                    scale: 1.15,
+                  }}
+                  transition={{
+                    duration: 0.8,
+                  }}
+                  className="
+                    pointer-events-none
+                    absolute
+                    -right-16
+                    -top-16
+                    h-40
+                    w-40
+                    rounded-full
+                    bg-[#D6B25E]/10
+                    blur-[60px]
+                  "
+                />
+
+                {/* TOP LINE */}
+
                 <div
                   className="
                     pointer-events-none
                     absolute
-                    -right-10
-                    -top-10
-                    h-32
-                    w-32
-                    rounded-full
-                    bg-[#D6B25E]/5
-                    blur-3xl
+                    inset-x-8
+                    top-0
+                    h-px
+                    bg-gradient-to-r
+                    from-transparent
+                    via-[#D6B25E]/20
+                    to-transparent
                   "
                 />
 
-                <GlowIcon>
-                  <Icon
-                    size={22}
-                    className="text-[#D6B25E]"
-                  />
-                </GlowIcon>
+                <div className="relative z-10">
+                  {/* ICON */}
 
-                <p
-                  className="
-                    mt-6
-                    text-[11px]
-                    uppercase
-                    tracking-[0.35em]
-                    text-white/40
-                  "
-                >
-                  {card.title}
-                </p>
+                  <motion.div
+                    whileHover={{
+                      scale: 1.08,
+                      rotate: 2,
+                    }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 260,
+                      damping: 18,
+                    }}
+                    className="inline-flex"
+                  >
+                    <GlowIcon>
+                      <Icon
+                        size={22}
+                        className="
+                          text-[#D6B25E]
+                          transition-all
+                          duration-500
+                          group-hover:drop-shadow-[0_0_12px_rgba(214,178,94,0.45)]
+                        "
+                      />
+                    </GlowIcon>
+                  </motion.div>
 
-                <h3
-                  className="
-                    mt-3
-                    line-clamp-2
-                    text-2xl
-                    font-light
-                    text-[#F4F1EA]
-                  "
-                >
-                  {card.value}
-                </h3>
+                  {/* TITLE */}
 
-                <p
-                  className="
-                    mt-3
-                    text-sm
-                    text-white/40
-                  "
-                >
-                  {card.subtitle}
-                </p>
+                  <p
+                    className="
+                      mt-6
+                      text-[11px]
+                      uppercase
+                      tracking-[0.35em]
+                      text-white/40
+                    "
+                  >
+                    {card.title}
+                  </p>
+
+                  {/* VALUE */}
+
+                  <motion.h3
+                    layout
+                    className={`
+                      mt-3
+                      line-clamp-2
+                      text-2xl
+                      font-light
+                      leading-tight
+                      ${
+                        card.active
+                          ? "text-[#F4F1EA]"
+                          : "text-white/55"
+                      }
+                    `}
+                  >
+                    {card.value}
+                  </motion.h3>
+
+                  {/* SUBTITLE */}
+
+                  <p
+                    className="
+                      mt-4
+                      text-sm
+                      leading-6
+                      text-white/35
+                    "
+                  >
+                    {card.subtitle}
+                  </p>
+
+                  {/* STATUS */}
+
+                  {!card.active && (
+                    <div
+                      className="
+                        mt-6
+                        flex
+                        items-center
+                        gap-2
+                      "
+                    >
+                      <span
+                        className="
+                          h-1.5
+                          w-1.5
+                          rounded-full
+                          bg-[#D6B25E]/40
+                        "
+                      />
+
+                      <span
+                        className="
+                          text-[9px]
+                          uppercase
+                          tracking-[0.3em]
+                          text-white/25
+                        "
+                      >
+                        Awaiting data
+                      </span>
+                    </div>
+                  )}
+                </div>
               </GlassCard>
             </motion.div>
           );
         })}
       </div>
 
+      {/* =====================================================
+          FOOTER STATUS
+      ====================================================== */}
+
       <motion.div
         initial={{
           opacity: 0,
+          y: 15,
         }}
         whileInView={{
           opacity: 1,
+          y: 0,
+        }}
+        viewport={{
+          once: true,
         }}
         transition={{
           delay: 0.5,
+          duration: 0.8,
         }}
-        className="mt-12 flex justify-center"
+        className="
+          relative
+          z-10
+          mt-12
+          flex
+          justify-center
+        "
       >
         <div
           className="
+            flex
+            items-center
+            gap-3
             rounded-full
             border
             border-[#D6B25E]/10
@@ -248,12 +444,22 @@ export function SoulDashboard() {
             backdrop-blur-xl
           "
         >
+          <span
+            className="
+              h-1.5
+              w-1.5
+              animate-pulse
+              rounded-full
+              bg-[#D6B25E]/60
+            "
+          />
+
           <p
             className="
               text-[10px]
               uppercase
               tracking-[0.4em]
-              text-white/40
+              text-white/35
             "
           >
             Powered by EON Intelligence Engine
@@ -263,3 +469,4 @@ export function SoulDashboard() {
     </section>
   );
 }
+```
