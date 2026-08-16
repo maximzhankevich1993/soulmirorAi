@@ -63,7 +63,7 @@ current?.name === product.name ? null : product
 const handleSoulMirrorOpen = () => {
 setSelectedProduct(null);
 
-```
+
 setTimeout(() => {
   document
     .getElementById("features")
@@ -72,7 +72,7 @@ setTimeout(() => {
       block: "start",
     });
 }, 150);
-```
+
 
 };
 
@@ -91,7 +91,7 @@ return ( <section
 ATMOSPHERE
 ====================================================== */}
 
-```
+
   <div
     className="
       pointer-events-none
