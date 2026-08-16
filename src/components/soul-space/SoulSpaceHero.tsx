@@ -14,18 +14,22 @@ const title = "SoulMirror";
 const letterVariants = {
   hidden: {
     opacity: 0,
-    y: 35,
-    filter: "blur(12px)",
-    scale: 0.96,
+    y: 40,
+    x: 0,
+    scale: 0.94,
+    filter: "blur(14px)",
   },
+
   visible: (index: number) => ({
     opacity: 1,
     y: 0,
-    filter: "blur(0px)",
+    x: 0,
     scale: 1,
+    filter: "blur(0px)",
+
     transition: {
-      delay: 0.35 + index * 0.055,
-      duration: 1.05,
+      delay: 0.35 + index * 0.075,
+      duration: 1.1,
       ease: [0.22, 1, 0.36, 1],
     },
   }),
@@ -39,15 +43,15 @@ export function SoulSpaceHero() {
     offset: ["start start", "end start"],
   });
 
-  const contentY = useTransform(
+  const heroY = useTransform(
     scrollYProgress,
     [0, 1],
-    [0, -100]
+    [0, -120]
   );
 
-  const opacity = useTransform(
+  const heroOpacity = useTransform(
     scrollYProgress,
-    [0, 0.8],
+    [0, 0.75],
     [1, 0]
   );
 
@@ -56,28 +60,32 @@ export function SoulSpaceHero() {
       ref={ref}
       className="
         relative
+        flex
         min-h-screen
+        items-center
+        justify-center
         overflow-hidden
         px-6
-        pt-40
+        pt-24
+        pb-24
       "
     >
-      {/* =================================
+      {/* =====================================================
           CINEMATIC ATMOSPHERE
-      ================================= */}
+      ====================================================== */}
 
       <div
         className="
           pointer-events-none
           absolute
           left-1/2
-          top-[-120px]
-          h-[650px]
+          top-[-180px]
+          h-[700px]
           w-[1000px]
           -translate-x-1/2
           rounded-full
-          bg-[#D6B25E]/[0.035]
-          blur-[180px]
+          bg-[#D6B25E]/[0.025]
+          blur-[200px]
         "
       />
 
@@ -86,36 +94,70 @@ export function SoulSpaceHero() {
           pointer-events-none
           absolute
           left-1/2
-          top-[35%]
+          top-[30%]
           h-[500px]
           w-[900px]
           -translate-x-1/2
           rounded-full
           bg-white/[0.012]
-          blur-[160px]
+          blur-[180px]
         "
       />
 
-      {/* =================================
-          HERO
-      ================================= */}
+      {/* very subtle center glow */}
+
+      <motion.div
+        initial={{
+          opacity: 0,
+          scale: 0.7,
+        }}
+        animate={{
+          opacity: 1,
+          scale: 1,
+        }}
+        transition={{
+          duration: 3,
+          ease: [0.22, 1, 0.36, 1],
+        }}
+        className="
+          pointer-events-none
+          absolute
+          left-1/2
+          top-1/2
+          h-[260px]
+          w-[700px]
+          -translate-x-1/2
+          -translate-y-1/2
+          rounded-full
+          bg-white/[0.008]
+          blur-[120px]
+        "
+      />
+
+      {/* =====================================================
+          HERO CONTENT
+      ====================================================== */}
 
       <motion.div
         style={{
-          y: contentY,
-          opacity,
+          y: heroY,
+          opacity: heroOpacity,
         }}
         className="
           relative
           z-10
           mx-auto
           flex
+          w-full
           max-w-7xl
           flex-col
           items-center
+          text-center
         "
       >
-        {/* EON AI */}
+        {/* =================================================
+            EON AI
+        ================================================= */}
 
         <motion.p
           initial={{
@@ -136,15 +178,16 @@ export function SoulSpaceHero() {
             text-[10px]
             uppercase
             tracking-[0.65em]
-            text-[#D6B25E]
+            text-[#D6B25E]/80
           "
         >
           EON AI
         </motion.p>
 
-        {/* =================================
-            SOULMIRROR LETTER ANIMATION
-        ================================= */}
+        {/* =================================================
+            SOULMIRROR
+            LETTER-BY-LETTER REVEAL
+        ================================================== */}
 
         <motion.h1
           aria-label="SoulMirror"
@@ -152,15 +195,14 @@ export function SoulSpaceHero() {
             mt-8
             flex
             whitespace-nowrap
-            text-center
             font-[family:var(--font-cormorant)]
-            text-[58px]
+            text-[56px]
             font-light
             leading-none
             tracking-[0.025em]
             text-[#F4F1EA]
-            sm:text-[78px]
-            md:text-[105px]
+            sm:text-[76px]
+            md:text-[104px]
             lg:text-[128px]
           "
         >
@@ -178,9 +220,9 @@ export function SoulSpaceHero() {
           ))}
         </motion.h1>
 
-        {/* =================================
+        {/* =================================================
             GOLDEN LINE
-        ================================= */}
+        ================================================== */}
 
         <motion.div
           initial={{
@@ -192,7 +234,7 @@ export function SoulSpaceHero() {
             opacity: 1,
           }}
           transition={{
-            delay: 1.15,
+            delay: 1.35,
             duration: 1.2,
             ease: [0.22, 1, 0.36, 1],
           }}
@@ -203,14 +245,14 @@ export function SoulSpaceHero() {
             origin-center
             bg-gradient-to-r
             from-transparent
-            via-[#D6B25E]
+            via-[#D6B25E]/70
             to-transparent
           "
         />
 
-        {/* =================================
+        {/* =================================================
             TAGLINE
-        ================================= */}
+        ================================================== */}
 
         <motion.p
           initial={{
@@ -224,7 +266,7 @@ export function SoulSpaceHero() {
             filter: "blur(0px)",
           }}
           transition={{
-            delay: 1.45,
+            delay: 1.65,
             duration: 1,
             ease: [0.22, 1, 0.36, 1],
           }}
@@ -239,15 +281,15 @@ export function SoulSpaceHero() {
           Reflect · Understand · Evolve
         </motion.p>
 
-        {/* =================================
+        {/* =================================================
             DESCRIPTION
-        ================================= */}
+        ================================================== */}
 
         <motion.p
           initial={{
             opacity: 0,
             y: 18,
-            filter: "blur(6px)",
+            filter: "blur(7px)",
           }}
           animate={{
             opacity: 1,
@@ -255,8 +297,8 @@ export function SoulSpaceHero() {
             filter: "blur(0px)",
           }}
           transition={{
-            delay: 1.7,
-            duration: 1,
+            delay: 1.9,
+            duration: 1.1,
             ease: [0.22, 1, 0.36, 1],
           }}
           className="
@@ -265,7 +307,7 @@ export function SoulSpaceHero() {
             text-center
             text-base
             leading-8
-            text-white/50
+            text-white/45
             md:text-lg
           "
         >
@@ -275,15 +317,15 @@ export function SoulSpaceHero() {
           dreams, archetypes and evolution.
         </motion.p>
 
-        {/* =================================
-            ACTIONS
-        ================================= */}
+        {/* =================================================
+            BUTTONS
+        ================================================== */}
 
         <motion.div
           initial={{
             opacity: 0,
-            y: 22,
-            filter: "blur(6px)",
+            y: 20,
+            filter: "blur(7px)",
           }}
           animate={{
             opacity: 1,
@@ -291,7 +333,7 @@ export function SoulSpaceHero() {
             filter: "blur(0px)",
           }}
           transition={{
-            delay: 2.05,
+            delay: 2.25,
             duration: 1,
             ease: [0.22, 1, 0.36, 1],
           }}
@@ -300,11 +342,11 @@ export function SoulSpaceHero() {
             flex
             flex-col
             items-center
-            gap-4
+            gap-3
             sm:flex-row
           "
         >
-          {/* Primary */}
+          {/* PRIMARY */}
 
           <button
             type="button"
@@ -315,32 +357,38 @@ export function SoulSpaceHero() {
               items-center
               gap-3
               rounded-full
-              bg-[#D6B25E]
-              px-8
-              py-4
+              border
+              border-white/[0.14]
+              bg-white/[0.055]
+              px-7
+              py-3.5
+              text-sm
               font-medium
-              text-black
-              shadow-[0_0_50px_rgba(214,178,94,.2)]
+              text-white
+              backdrop-blur-2xl
+              shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]
               transition-all
-              duration-300
-              hover:scale-[1.03]
-              hover:shadow-[0_0_70px_rgba(214,178,94,.35)]
-              active:scale-[0.98]
+              duration-500
+              hover:border-white/[0.28]
+              hover:bg-white/[0.09]
+              hover:shadow-[0_0_45px_rgba(255,255,255,0.08)]
+              active:scale-[0.97]
             "
           >
-            Start Experience
+            <span>Start Experience</span>
 
             <ArrowRight
-              size={18}
+              size={16}
+              strokeWidth={1.5}
               className="
                 transition-transform
-                duration-300
+                duration-500
                 group-hover:translate-x-1
               "
             />
           </button>
 
-          {/* Secondary */}
+          {/* SECONDARY */}
 
           <a
             href="#ecosystem"
@@ -348,21 +396,20 @@ export function SoulSpaceHero() {
               cursor-pointer
               rounded-full
               border
-              border-white/10
-              bg-white/[0.025]
-              px-8
-              py-4
-              text-xs
+              border-white/[0.08]
+              bg-transparent
+              px-7
+              py-3.5
+              text-[10px]
               uppercase
               tracking-[0.3em]
-              text-white/65
-              backdrop-blur-xl
+              text-white/45
               transition-all
-              duration-300
-              hover:border-white/20
-              hover:bg-white/[0.06]
-              hover:text-white
-              active:scale-[0.98]
+              duration-500
+              hover:border-white/[0.18]
+              hover:bg-white/[0.035]
+              hover:text-white/80
+              active:scale-[0.97]
             "
           >
             Explore Ecosystem
