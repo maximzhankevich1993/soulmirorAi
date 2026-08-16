@@ -16,7 +16,7 @@ export function CinematicSection({
     <motion.section
       initial={{
         opacity: 0,
-        y: 40,
+        y: 50,
       }}
       whileInView={{
         opacity: 1,
@@ -24,7 +24,7 @@ export function CinematicSection({
       }}
       viewport={{
         once: true,
-        amount: 0.15,
+        amount: 0.08,
       }}
       transition={{
         duration: 1.2,
@@ -36,7 +36,11 @@ export function CinematicSection({
         overflow-hidden
       "
     >
+      {/* ATMOSPHERE OF THIS SECTION */}
+
       <SoulSectionAtmosphere />
+
+      {/* CONTENT */}
 
       <div className="relative z-10">
         {children}
