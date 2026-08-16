@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -25,7 +26,9 @@ export function AuthForm() {
       setMessage(null);
 
       if (!email.trim() || !password.trim()) {
-        setMessage("Please enter your email and password.");
+        setMessage(
+          "Please enter your email and password."
+        );
         return;
       }
 
@@ -40,7 +43,9 @@ export function AuthForm() {
           throw error;
         }
 
-        setMessage("Welcome back to SoulMirror");
+        setMessage(
+          "Welcome back to SoulMirror"
+        );
       } else {
         const { error } =
           await supabase.auth.signUp({
@@ -57,137 +62,381 @@ export function AuthForm() {
         );
       }
     } catch (error: unknown) {
-      const message =
+      const errorMessage =
         error instanceof Error
           ? error.message
           : "Authentication failed.";
 
-      setMessage(message);
+      setMessage(errorMessage);
     } finally {
       setLoading(false);
     }
   }
 
-  return (
-    <div>
-      <div className="space-y-4">
-        <input
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          type="email"
-          placeholder="Email"
-          autoComplete="email"
-          className="
-            w-full
-            rounded-2xl
-            border
-            border-white/10
-            bg-black/30
-            px-5
-            py-4
-            text-sm
-            text-[#F4F1EA]
-            outline-none
-            placeholder:text-white/30
-            focus:border-[#D6B25E]/50
-          "
-        />
+  const isLogin = mode === "login";
 
-        <input
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          type="password"
-          placeholder="Password"
-          autoComplete={
-            mode === "login"
-              ? "current-password"
-              : "new-password"
-          }
+  return (
+    <motion.div
+      initial={{
+        opacity: 0,
+        y: 20,
+        filter: "blur(10px)",
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+        filter: "blur(0px)",
+      }}
+      transition={{
+        delay: 1.7,
+        duration: 1,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      className="w-full"
+    >
+      {/* =========================================
+          FORM TITLE
+      ========================================== */}
+
+      <motion.div
+        initial={{
+          opacity: 0,
+          y: 10,
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+        }}
+        transition={{
+          delay: 1.9,
+          duration: 0.8,
+        }}
+        className="mb-8 text-center"
+      >
+        <p
           className="
-            w-full
-            rounded-2xl
-            border
-            border-white/10
-            bg-black/30
-            px-5
-            py-4
-            text-sm
-            text-[#F4F1EA]
-            outline-none
-            placeholder:text-white/30
-            focus:border-[#D6B25E]/50
+            text-[10px]
+            uppercase
+            tracking-[0.45em]
+            text-white/35
           "
-        />
+        >
+          {isLogin
+            ? "Return to your inner world"
+            : "Begin your journey"}
+        </p>
+      </motion.div>
+
+      {/* =========================================
+          INPUTS
+      ========================================== */}
+
+      <div className="space-y-3">
+        {/* EMAIL */}
+
+        <motion.div
+          initial={{
+            opacity: 0,
+            x: -15,
+          }}
+          animate={{
+            opacity: 1,
+            x: 0,
+          }}
+          transition={{
+            delay: 2,
+            duration: 0.7,
+          }}
+          className="relative"
+        >
+          <input
+            value={email}
+            onChange={(e) =>
+              setEmail(e.target.value)
+            }
+            type="email"
+            placeholder="Email"
+            autoComplete="email"
+            className="
+              peer
+              h-14
+              w-full
+              cursor-text
+              rounded-2xl
+              border
+              border-white/[0.08]
+              bg-white/[0.025]
+              px-5
+              text-sm
+              text-[#F4F1EA]
+              outline-none
+              backdrop-blur-xl
+              transition-all
+              duration-500
+              placeholder:text-white/25
+              hover:border-white/[0.14]
+              hover:bg-white/[0.04]
+              focus:border-white/[0.22]
+              focus:bg-white/[0.05]
+              focus:shadow-[0_0_35px_rgba(255,255,255,0.035)]
+            "
+          />
+
+          <div
+            className="
+              pointer-events-none
+              absolute
+              bottom-0
+              left-5
+              right-5
+              h-px
+              origin-left
+              scale-x-0
+              bg-gradient-to-r
+              from-transparent
+              via-white/30
+              to-transparent
+              transition-transform
+              duration-500
+              peer-focus:scale-x-100
+            "
+          />
+        </motion.div>
+
+        {/* PASSWORD */}
+
+        <motion.div
+          initial={{
+            opacity: 0,
+            x: 15,
+          }}
+          animate={{
+            opacity: 1,
+            x: 0,
+          }}
+          transition={{
+            delay: 2.1,
+            duration: 0.7,
+          }}
+          className="relative"
+        >
+          <input
+            value={password}
+            onChange={(e) =>
+              setPassword(e.target.value)
+            }
+            type="password"
+            placeholder="Password"
+            autoComplete={
+              isLogin
+                ? "current-password"
+                : "new-password"
+            }
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleAuth();
+              }
+            }}
+            className="
+              peer
+              h-14
+              w-full
+              cursor-text
+              rounded-2xl
+              border
+              border-white/[0.08]
+              bg-white/[0.025]
+              px-5
+              text-sm
+              text-[#F4F1EA]
+              outline-none
+              backdrop-blur-xl
+              transition-all
+              duration-500
+              placeholder:text-white/25
+              hover:border-white/[0.14]
+              hover:bg-white/[0.04]
+              focus:border-white/[0.22]
+              focus:bg-white/[0.05]
+              focus:shadow-[0_0_35px_rgba(255,255,255,0.035)]
+            "
+          />
+
+          <div
+            className="
+              pointer-events-none
+              absolute
+              bottom-0
+              left-5
+              right-5
+              h-px
+              origin-left
+              scale-x-0
+              bg-gradient-to-r
+              from-transparent
+              via-white/30
+              to-transparent
+              transition-transform
+              duration-500
+              peer-focus:scale-x-100
+            "
+          />
+        </motion.div>
       </div>
+
+      {/* =========================================
+          MAIN ACTION
+      ========================================== */}
 
       <motion.button
         type="button"
         whileHover={{
-          scale: 1.02,
+          y: -2,
         }}
         whileTap={{
           scale: 0.98,
         }}
         disabled={loading}
         onClick={handleAuth}
+        initial={{
+          opacity: 0,
+          y: 15,
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+        }}
+        transition={{
+          delay: 2.3,
+          duration: 0.8,
+        }}
         className="
+          group
+          relative
           mt-6
+          flex
+          h-14
           w-full
+          cursor-pointer
+          items-center
+          justify-center
+          overflow-hidden
           rounded-2xl
-          bg-[#D6B25E]
-          py-4
+          border
+          border-white/[0.14]
+          bg-white/[0.07]
           text-sm
           font-medium
-          text-black
-          transition
+          text-white
+          backdrop-blur-2xl
+          shadow-[0_10px_40px_rgba(0,0,0,0.25)]
+          transition-all
+          duration-500
+          hover:border-white/[0.28]
+          hover:bg-white/[0.11]
+          hover:shadow-[0_15px_55px_rgba(255,255,255,0.06)]
           disabled:cursor-not-allowed
-          disabled:opacity-50
+          disabled:opacity-40
         "
       >
-        {loading
-          ? "Entering..."
-          : mode === "login"
-            ? "Enter SoulMirror"
-            : "Create Intelligence"}
+        {/* Hover light */}
+
+        <span
+          className="
+            pointer-events-none
+            absolute
+            inset-0
+            -translate-x-full
+            bg-gradient-to-r
+            from-transparent
+            via-white/[0.07]
+            to-transparent
+            transition-transform
+            duration-1000
+            group-hover:translate-x-full
+          "
+        />
+
+        <span className="relative z-10">
+          {loading
+            ? "Entering..."
+            : isLogin
+              ? "Enter SoulMirror"
+              : "Create Intelligence"}
+        </span>
       </motion.button>
 
-      <div className="mt-6 text-center">
+      {/* =========================================
+          MODE SWITCH
+      ========================================== */}
+
+      <motion.div
+        initial={{
+          opacity: 0,
+        }}
+        animate={{
+          opacity: 1,
+        }}
+        transition={{
+          delay: 2.5,
+          duration: 0.8,
+        }}
+        className="mt-7 text-center"
+      >
         <button
           type="button"
           onClick={() => {
             setMessage(null);
 
             setMode(
-              mode === "login"
+              isLogin
                 ? "register"
                 : "login"
             );
           }}
           className="
-            text-sm
-            text-white/50
-            transition
-            hover:text-[#D6B25E]
+            cursor-pointer
+            text-[11px]
+            uppercase
+            tracking-[0.28em]
+            text-white/35
+            transition-all
+            duration-500
+            hover:text-white/80
           "
         >
-          {mode === "login"
+          {isLogin
             ? "Create new account"
-            : "Already have account?"}
+            : "Already have an account?"}
         </button>
-      </div>
+      </motion.div>
+
+      {/* =========================================
+          MESSAGE
+      ========================================== */}
 
       {message && (
-        <p
+        <motion.p
+          initial={{
+            opacity: 0,
+            y: 8,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
           className="
-            mt-5
+            mt-6
             text-center
             text-xs
-            text-white/50
+            leading-6
+            text-white/45
           "
         >
           {message}
-        </p>
+        </motion.p>
       )}
-    </div>
+    </motion.div>
   );
 }
+
