@@ -1,6 +1,7 @@
+
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   Brain,
   Sparkles,
@@ -10,8 +11,7 @@ import {
   ArrowRight,
   type LucideIcon,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface EcosystemProduct {
   name: string;
@@ -19,6 +19,7 @@ interface EcosystemProduct {
   description: string;
   icon: LucideIcon;
   active: boolean;
+  expandedDescription?: string;
 }
 
 const products: EcosystemProduct[] = [
@@ -34,7 +35,9 @@ const products: EcosystemProduct[] = [
     name: "Memora",
     category: "AI Memory System",
     description:
-      "A personal AI memory layer that remembers your experiences, knowledge and meaningful moments.",
+      "A personal AI memory layer that remembers your experiences and knowledge.",
+    expandedDescription:
+      "Memora is designed to become a persistent layer of personal intelligence. It remembers the moments, knowledge and experiences that shape you, creating a continuous memory foundation for your future AI interactions.",
     icon: Clock,
     active: false,
   },
@@ -42,7 +45,9 @@ const products: EcosystemProduct[] = [
     name: "Future Self",
     category: "Identity Simulation",
     description:
-      "Explore possible versions of yourself through AI-powered scenarios, decisions and future identities.",
+      "Explore possible versions of yourself through AI-powered scenarios.",
+    expandedDescription:
+      "Future Self explores possible versions of who you could become. Through AI-powered scenarios, reflections and simulations, the system will allow you to explore different paths, decisions and identities before they become reality.",
     icon: Sparkles,
     active: false,
   },
@@ -50,277 +55,280 @@ const products: EcosystemProduct[] = [
     name: "Parallel",
     category: "AI Universe",
     description:
-      "A new generation of interactive AI worlds where imagination, identity and artificial intelligence become one experience.",
+      "A new generation of interactive AI worlds and experiences.",
+    expandedDescription:
+      "Parallel is an upcoming AI universe built around interactive worlds, characters and experiences. It will explore a new way of interacting with artificial intelligence through immersive environments and evolving digital realities.",
     icon: Globe2,
     active: false,
   },
 ];
 
-export function EonEcosystemSection() {
-  const router = useRouter();
+interface EonEcosystemSectionProps {
+  onOpenSoulScan?: () => void;
+}
 
-  const [selectedProduct, setSelectedProduct] =
-    useState<EcosystemProduct | null>(null);
-
-  /*
-   * Prevent background scrolling while modal is open.
-   */
-
-  useEffect(() => {
-    if (!selectedProduct) return;
-
-    const previousOverflow = document.body.style.overflow;
-
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [selectedProduct]);
+export function EonEcosystemSection({
+  onOpenSoulScan,
+}: EonEcosystemSectionProps) {
+  const [expandedProduct, setExpandedProduct] = useState<string | null>(null);
 
   const handleProductClick = (product: EcosystemProduct) => {
     /*
-     * SoulMirror opens the actual Soul Space.
+     * SoulMirror is the only currently active product.
+     * Open the existing Soul Scan instead of opening
+     * another overlay/page.
      */
-
     if (product.active) {
-      router.push("/soul-space");
+      if (onOpenSoulScan) {
+        onOpenSoulScan();
+      } else {
+        const target = document.getElementById("features");
+
+        target?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+
       return;
     }
 
     /*
-     * Other products open the cinematic preview.
+     * Other products simply expand inside the ecosystem.
      */
-
-    setSelectedProduct(product);
+    setExpandedProduct((current) =>
+      current === product.name ? null : product.name,
+    );
   };
 
   return (
-    <>
-      <section
-        id="ecosystem"
+    <section
+      id="ecosystem"
+      className="
+        relative
+        mx-auto
+        mt-32
+        w-full
+        max-w-7xl
+        px-6
+        pb-20
+      "
+    >
+      {/* =====================================================
+          AMBIENT GLOW
+      ====================================================== */}
+
+      <div
+        className="
+          pointer-events-none
+          absolute
+          left-1/2
+          top-0
+          h-[500px]
+          w-[500px]
+          -translate-x-1/2
+          rounded-full
+          bg-[#D6B25E]/5
+          blur-[160px]
+        "
+      />
+
+      {/* =====================================================
+          HEADER
+      ====================================================== */}
+
+      <motion.div
+        initial={{
+          opacity: 0,
+          y: 40,
+        }}
+        whileInView={{
+          opacity: 1,
+          y: 0,
+        }}
+        viewport={{
+          once: true,
+          amount: 0.2,
+        }}
+        transition={{
+          duration: 0.8,
+          ease: [0.16, 1, 0.3, 1],
+        }}
         className="
           relative
-          mx-auto
-          mt-32
-          w-full
-          max-w-7xl
-          px-6
+          text-center
         "
       >
-        {/* =====================================================
-            AMBIENT GLOW
-        ====================================================== */}
-
-        <motion.div
-          animate={{
-            opacity: [0.25, 0.45, 0.25],
-            scale: [1, 1.08, 1],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
+        <p
           className="
-            pointer-events-none
-            absolute
-            left-1/2
-            top-0
-            h-[500px]
-            w-[500px]
-            -translate-x-1/2
-            rounded-full
-            bg-[#D6B25E]/5
-            blur-[160px]
-          "
-        />
-
-        {/* =====================================================
-            HEADER
-        ====================================================== */}
-
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 40,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          viewport={{
-            once: true,
-            amount: 0.2,
-          }}
-          transition={{
-            duration: 0.9,
-            ease: [0.16, 1, 0.3, 1],
-          }}
-          className="
-            relative
-            text-center
+            text-xs
+            uppercase
+            tracking-[0.45em]
+            text-[#D6B25E]
           "
         >
-          <p
-            className="
-              text-xs
-              uppercase
-              tracking-[0.45em]
-              text-[#D6B25E]
-            "
-          >
-            EON AI Ecosystem
-          </p>
+          EON AI Ecosystem
+        </p>
 
-          <h2
-            className="
-              mt-6
-              font-[family:var(--font-cormorant)]
-              text-5xl
-              leading-tight
-              text-[#F4F1EA]
-              md:text-6xl
-            "
-          >
-            Intelligence beyond
-            <br />
-            a single experience.
-          </h2>
-
-          <p
-            className="
-              mx-auto
-              mt-6
-              max-w-2xl
-              text-lg
-              leading-8
-              text-white/50
-            "
-          >
-            SoulMirror is the first product created by EON AI.
-            <br />
-            A growing ecosystem of AI systems designed to understand identity,
-            memory and human evolution.
-          </p>
-        </motion.div>
-
-        {/* =====================================================
-            PRODUCTS
-        ====================================================== */}
-
-        <div
+        <h2
           className="
-            relative
-            mt-16
-            grid
-            gap-5
-            md:grid-cols-2
-            xl:grid-cols-4
+            mt-6
+            font-[family:var(--font-cormorant)]
+            text-5xl
+            leading-tight
+            text-[#F4F1EA]
+            md:text-6xl
           "
         >
-          {products.map((product, index) => {
-            const Icon = product.icon;
+          Intelligence beyond
+          <br />
+          a single experience.
+        </h2>
 
-            return (
-              <motion.button
-                type="button"
-                key={product.name}
-                initial={{
-                  opacity: 0,
-                  y: 35,
-                }}
-                whileInView={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                viewport={{
-                  once: true,
-                  amount: 0.15,
-                }}
-                transition={{
-                  delay: index * 0.1,
-                  duration: 0.8,
-                  ease: [0.16, 1, 0.3, 1],
-                }}
+        <p
+          className="
+            mx-auto
+            mt-6
+            max-w-2xl
+            text-lg
+            leading-8
+            text-white/50
+          "
+        >
+          SoulMirror is the first product created by EON AI.
+          <br />
+          A growing ecosystem of AI systems designed to understand identity,
+          memory and human evolution.
+        </p>
+      </motion.div>
+
+      {/* =====================================================
+          PRODUCTS
+      ====================================================== */}
+
+      <div
+        className="
+          relative
+          mt-16
+          grid
+          gap-5
+          md:grid-cols-2
+          xl:grid-cols-4
+        "
+      >
+        {products.map((product, index) => {
+          const Icon = product.icon;
+          const isExpanded = expandedProduct === product.name;
+
+          return (
+            <motion.div
+              key={product.name}
+              initial={{
+                opacity: 0,
+                y: 30,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              viewport={{
+                once: true,
+                amount: 0.15,
+              }}
+              transition={{
+                delay: index * 0.1,
+                duration: 0.7,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              layout
+              className="relative"
+            >
+              <motion.div
+                layout
+                onClick={() => handleProductClick(product)}
                 whileHover={{
-                  y: -10,
-                  scale: 1.015,
+                  y: -8,
                 }}
                 whileTap={{
-                  scale: 0.98,
+                  scale: 0.985,
                 }}
-                onClick={() => handleProductClick(product)}
-                className="
+                transition={{
+                  duration: 0.35,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className={`
                   group
                   relative
                   cursor-pointer
                   overflow-hidden
                   rounded-[32px]
                   border
-                  border-white/[0.08]
-                  bg-white/[0.025]
                   p-7
-                  text-left
                   backdrop-blur-2xl
                   transition-all
-                  duration-700
-                  hover:border-[#D6B25E]/35
-                  hover:bg-white/[0.045]
-                  hover:shadow-[0_25px_80px_rgba(214,178,94,0.12)]
-                  focus:outline-none
-                  focus:ring-1
-                  focus:ring-[#D6B25E]/40
-                "
+                  duration-500
+
+                  ${
+                    isExpanded
+                      ? `
+                        border-[#D6B25E]/40
+                        bg-gradient-to-br
+                        from-[#D6B25E]/10
+                        via-white/[0.04]
+                        to-white/[0.02]
+                        shadow-[0_25px_80px_rgba(214,178,94,0.10)]
+                      `
+                      : `
+                        border-white/10
+                        bg-white/[0.025]
+
+                        hover:border-[#D6B25E]/35
+                        hover:bg-white/[0.045]
+                        hover:shadow-[0_25px_80px_rgba(214,178,94,0.08)]
+                      `
+                  }
+                `}
               >
                 {/* =================================================
                     HOVER GOLD LIGHT
-                ================================================== */}
-
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    scale: 0.7,
-                  }}
-                  whileHover={{
-                    opacity: 1,
-                    scale: 1,
-                  }}
-                  transition={{
-                    duration: 0.7,
-                  }}
-                  className="
-                    pointer-events-none
-                    absolute
-                    -right-20
-                    -top-20
-                    h-56
-                    w-56
-                    rounded-full
-                    bg-[#D6B25E]/10
-                    blur-[70px]
-                  "
-                />
-
-                {/* =================================================
-                    TOP LINE
                 ================================================== */}
 
                 <div
                   className="
                     pointer-events-none
                     absolute
-                    left-7
-                    right-7
+                    -right-24
+                    -top-24
+                    h-48
+                    w-48
+                    rounded-full
+                    bg-[#D6B25E]/0
+                    blur-[70px]
+                    transition-all
+                    duration-700
+                    group-hover:bg-[#D6B25E]/15
+                  "
+                />
+
+                {/* =================================================
+                    TOP SHINE
+                ================================================== */}
+
+                <div
+                  className="
+                    pointer-events-none
+                    absolute
+                    inset-x-8
                     top-0
                     h-px
                     bg-gradient-to-r
                     from-transparent
-                    via-white/10
+                    via-white/20
                     to-transparent
-                    transition-all
-                    duration-700
-                    group-hover:via-[#D6B25E]/60
+                    opacity-0
+                    transition-opacity
+                    duration-500
+                    group-hover:opacity-100
                   "
                 />
 
@@ -328,7 +336,10 @@ export function EonEcosystemSection() {
                     ICON
                 ================================================== */}
 
-                <div
+                <motion.div
+                  animate={{
+                    scale: isExpanded ? 1.05 : 1,
+                  }}
                   className="
                     relative
                     flex
@@ -338,27 +349,25 @@ export function EonEcosystemSection() {
                     justify-center
                     rounded-2xl
                     border
-                    border-white/[0.07]
-                    bg-white/[0.035]
+                    border-[#D6B25E]/10
+                    bg-[#D6B25E]/10
                     transition-all
-                    duration-700
+                    duration-500
                     group-hover:border-[#D6B25E]/30
-                    group-hover:bg-[#D6B25E]/10
-                    group-hover:shadow-[0_0_35px_rgba(214,178,94,0.15)]
+                    group-hover:bg-[#D6B25E]/15
                   "
                 >
                   <Icon
-                    size={22}
+                    size={24}
                     strokeWidth={1.5}
                     className="
-                      text-white/60
-                      transition-all
-                      duration-700
+                      text-[#D6B25E]
+                      transition-transform
+                      duration-500
                       group-hover:scale-110
-                      group-hover:text-[#D6B25E]
                     "
                   />
-                </div>
+                </motion.div>
 
                 {/* =================================================
                     CATEGORY
@@ -368,13 +377,10 @@ export function EonEcosystemSection() {
                   className="
                     relative
                     mt-6
-                    text-[10px]
+                    text-xs
                     uppercase
                     tracking-[0.3em]
-                    text-white/35
-                    transition-colors
-                    duration-500
-                    group-hover:text-[#D6B25E]/80
+                    text-[#D6B25E]
                   "
                 >
                   {product.category}
@@ -389,7 +395,6 @@ export function EonEcosystemSection() {
                     relative
                     mt-3
                     text-2xl
-                    font-light
                     text-[#F4F1EA]
                   "
                 >
@@ -406,26 +411,24 @@ export function EonEcosystemSection() {
                     mt-4
                     text-sm
                     leading-6
-                    text-white/40
-                    transition-colors
-                    duration-500
-                    group-hover:text-white/55
+                    text-white/50
                   "
                 >
                   {product.description}
                 </p>
 
                 {/* =================================================
-                    BOTTOM ACTION
+                    STATUS / ACTION
                 ================================================== */}
 
                 <div
                   className="
                     relative
-                    mt-7
+                    mt-6
                     flex
                     items-center
                     justify-between
+                    gap-4
                   "
                 >
                   {!product.active ? (
@@ -433,17 +436,17 @@ export function EonEcosystemSection() {
                       className="
                         rounded-full
                         border
-                        border-white/[0.08]
-                        bg-white/[0.025]
+                        border-white/10
+                        bg-white/[0.02]
                         px-3
-                        py-1.5
-                        text-[9px]
+                        py-1
+                        text-[10px]
                         uppercase
-                        tracking-[0.25em]
-                        text-white/35
+                        tracking-[0.2em]
+                        text-white/40
                         transition-all
                         duration-500
-                        group-hover:border-[#D6B25E]/25
+                        group-hover:border-[#D6B25E]/20
                         group-hover:text-[#D6B25E]/70
                       "
                     >
@@ -452,402 +455,149 @@ export function EonEcosystemSection() {
                   ) : (
                     <span
                       className="
-                        text-[9px]
+                        rounded-full
+                        border
+                        border-[#D6B25E]/20
+                        bg-[#D6B25E]/5
+                        px-3
+                        py-1
+                        text-[10px]
                         uppercase
-                        tracking-[0.25em]
-                        text-white/35
-                        transition-colors
-                        duration-500
-                        group-hover:text-[#D6B25E]
+                        tracking-[0.2em]
+                        text-[#D6B25E]/70
                       "
                     >
-                      Explore
+                      Available
                     </span>
                   )}
 
-                  <ArrowRight
-                    size={16}
-                    strokeWidth={1.5}
+                  <motion.div
+                    animate={{
+                      rotate: isExpanded ? 90 : 0,
+                      x: isExpanded ? 2 : 0,
+                    }}
                     className="
-                      text-white/20
+                      flex
+                      h-8
+                      w-8
+                      items-center
+                      justify-center
+                      rounded-full
+                      border
+                      border-white/10
+                      text-white/30
                       transition-all
-                      duration-700
-                      group-hover:translate-x-1
+                      duration-500
+                      group-hover:border-[#D6B25E]/30
                       group-hover:text-[#D6B25E]
                     "
-                  />
+                  >
+                    <ArrowRight size={14} />
+                  </motion.div>
                 </div>
-              </motion.button>
-            );
-          })}
-        </div>
-      </section>
 
-      {/* =========================================================
-          CINEMATIC PRODUCT MODAL
-      ========================================================== */}
+                {/* =================================================
+                    EXPANDED CONTENT
+                ================================================== */}
 
-      <AnimatePresence>
-        {selectedProduct && (
-          <motion.div
-            className="
-              fixed
-              inset-0
-              z-[99990]
-              flex
-              items-center
-              justify-center
-              overflow-y-auto
-              px-5
-              py-10
-            "
-            initial={{
-              opacity: 0,
-            }}
-            animate={{
-              opacity: 1,
-            }}
-            exit={{
-              opacity: 0,
-            }}
-          >
-            {/* BACKDROP */}
+                <AnimatePresence initial={false}>
+                  {isExpanded && !product.active && (
+                    <motion.div
+                      initial={{
+                        opacity: 0,
+                        height: 0,
+                        y: -10,
+                      }}
+                      animate={{
+                        opacity: 1,
+                        height: "auto",
+                        y: 0,
+                      }}
+                      exit={{
+                        opacity: 0,
+                        height: 0,
+                        y: -10,
+                      }}
+                      transition={{
+                        duration: 0.6,
+                        ease: [0.16, 1, 0.3, 1],
+                      }}
+                      className="overflow-hidden"
+                    >
+                      <div className="mt-7 border-t border-white/[0.08] pt-6">
+                        <p
+                          className="
+                            text-sm
+                            leading-7
+                            text-white/55
+                          "
+                        >
+                          {product.expandedDescription}
+                        </p>
 
-            <motion.button
-              type="button"
-              aria-label="Close"
-              onClick={() => setSelectedProduct(null)}
-              className="
-                absolute
-                inset-0
-                cursor-default
-                bg-[#050505]/90
-                backdrop-blur-xl
-              "
-              initial={{
-                opacity: 0,
-              }}
-              animate={{
-                opacity: 1,
-              }}
-              exit={{
-                opacity: 0,
-              }}
-            />
+                        <div
+                          className="
+                            mt-6
+                            flex
+                            items-center
+                            justify-between
+                            rounded-2xl
+                            border
+                            border-[#D6B25E]/10
+                            bg-[#D6B25E]/[0.035]
+                            px-4
+                            py-3
+                          "
+                        >
+                          <span
+                            className="
+                              text-[10px]
+                              uppercase
+                              tracking-[0.25em]
+                              text-[#D6B25E]/70
+                            "
+                          >
+                            In development
+                          </span>
 
-            {/* GOLD ATMOSPHERE */}
-
-            <motion.div
-              initial={{
-                opacity: 0,
-                scale: 0.5,
-              }}
-              animate={{
-                opacity: 1,
-                scale: 1,
-              }}
-              exit={{
-                opacity: 0,
-                scale: 1.3,
-              }}
-              transition={{
-                duration: 1,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-              className="
-                pointer-events-none
-                absolute
-                left-1/2
-                top-1/2
-                h-[500px]
-                w-[700px]
-                -translate-x-1/2
-                -translate-y-1/2
-                rounded-full
-                bg-[#D6B25E]/10
-                blur-[150px]
-              "
-            />
-
-            {/* CARD */}
-
-            <motion.div
-              initial={{
-                opacity: 0,
-                y: 45,
-                scale: 0.94,
-                filter: "blur(12px)",
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                filter: "blur(0px)",
-              }}
-              exit={{
-                opacity: 0,
-                y: -25,
-                scale: 1.03,
-                filter: "blur(10px)",
-              }}
-              transition={{
-                duration: 0.85,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-              className="
-                relative
-                z-10
-                w-full
-                max-w-2xl
-                overflow-hidden
-                rounded-[40px]
-                border
-                border-white/[0.1]
-                bg-[#0a0a0a]/95
-                p-8
-                shadow-[0_40px_120px_rgba(0,0,0,0.7)]
-                backdrop-blur-3xl
-                md:p-12
-              "
-            >
-              {/* TOP GOLD LINE */}
-
-              <div
-                className="
-                  absolute
-                  left-10
-                  right-10
-                  top-0
-                  h-px
-                  bg-gradient-to-r
-                  from-transparent
-                  via-[#D6B25E]/70
-                  to-transparent
-                "
-              />
-
-              {/* CLOSE */}
-
-              <button
-                type="button"
-                onClick={() => setSelectedProduct(null)}
-                className="
-                  absolute
-                  right-6
-                  top-6
-                  flex
-                  h-10
-                  w-10
-                  cursor-pointer
-                  items-center
-                  justify-center
-                  rounded-full
-                  border
-                  border-white/[0.08]
-                  bg-white/[0.025]
-                  text-white/40
-                  transition-all
-                  duration-500
-                  hover:border-[#D6B25E]/30
-                  hover:bg-[#D6B25E]/10
-                  hover:text-[#D6B25E]
-                "
-              >
-                <X size={17} strokeWidth={1.5} />
-              </button>
-
-              {/* ICON */}
-
-              <motion.div
-                initial={{
-                  opacity: 0,
-                  scale: 0.7,
-                }}
-                animate={{
-                  opacity: 1,
-                  scale: 1,
-                }}
-                transition={{
-                  delay: 0.15,
-                  duration: 0.6,
-                }}
-                className="
-                  flex
-                  h-16
-                  w-16
-                  items-center
-                  justify-center
-                  rounded-3xl
-                  border
-                  border-[#D6B25E]/20
-                  bg-[#D6B25E]/10
-                  shadow-[0_0_50px_rgba(214,178,94,0.1)]
-                "
-              >
-                <selectedProduct.icon
-                  size={28}
-                  strokeWidth={1.4}
-                  className="text-[#D6B25E]"
-                />
-              </motion.div>
-
-              {/* CATEGORY */}
-
-              <motion.p
-                initial={{
-                  opacity: 0,
-                  y: 15,
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                transition={{
-                  delay: 0.25,
-                }}
-                className="
-                  mt-8
-                  text-[10px]
-                  uppercase
-                  tracking-[0.4em]
-                  text-[#D6B25E]
-                "
-              >
-                {selectedProduct.category}
-              </motion.p>
-
-              {/* TITLE */}
-
-              <motion.h2
-                initial={{
-                  opacity: 0,
-                  y: 20,
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                transition={{
-                  delay: 0.3,
-                }}
-                className="
-                  mt-4
-                  text-4xl
-                  font-light
-                  tracking-tight
-                  text-[#F4F1EA]
-                  md:text-5xl
-                "
-              >
-                {selectedProduct.name}
-              </motion.h2>
-
-              {/* COMING SOON */}
-
-              <motion.div
-                initial={{
-                  opacity: 0,
-                  scale: 0.9,
-                }}
-                animate={{
-                  opacity: 1,
-                  scale: 1,
-                }}
-                transition={{
-                  delay: 0.4,
-                }}
-                className="
-                  mt-6
-                  inline-flex
-                  rounded-full
-                  border
-                  border-[#D6B25E]/20
-                  bg-[#D6B25E]/[0.06]
-                  px-4
-                  py-2
-                  text-[9px]
-                  uppercase
-                  tracking-[0.3em]
-                  text-[#D6B25E]/80
-                "
-              >
-                Coming Soon
-              </motion.div>
-
-              {/* DESCRIPTION */}
-
-              <motion.p
-                initial={{
-                  opacity: 0,
-                }}
-                animate={{
-                  opacity: 1,
-                }}
-                transition={{
-                  delay: 0.55,
-                  duration: 0.8,
-                }}
-                className="
-                  mt-8
-                  min-h-[120px]
-                  text-base
-                  leading-8
-                  text-white/50
-                "
-              >
-                {selectedProduct.description}
-              </motion.p>
-
-              {/* BOTTOM */}
-
-              <motion.div
-                initial={{
-                  opacity: 0,
-                  y: 15,
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                transition={{
-                  delay: 0.7,
-                }}
-                className="
-                  mt-10
-                  flex
-                  items-center
-                  justify-between
-                  border-t
-                  border-white/[0.07]
-                  pt-6
-                "
-              >
-                <span
-                  className="
-                    text-[9px]
-                    uppercase
-                    tracking-[0.3em]
-                    text-white/25
-                  "
-                >
-                  EON AI
-                </span>
-
-                <span
-                  className="
-                    text-[9px]
-                    uppercase
-                    tracking-[0.3em]
-                    text-white/25
-                  "
-                >
-                  In development
-                </span>
+                          <button
+                            type="button"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              setExpandedProduct(null);
+                            }}
+                            className="
+                              flex
+                              h-7
+                              w-7
+                              cursor-pointer
+                              items-center
+                              justify-center
+                              rounded-full
+                              border
+                              border-white/10
+                              text-white/40
+                              transition-all
+                              duration-300
+                              hover:border-white/20
+                              hover:bg-white/[0.06]
+                              hover:text-white
+                            "
+                            aria-label={`Close ${product.name}`}
+                          >
+                            <X size={13} />
+                          </button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+          );
+        })}
+      </div>
+    </section>
   );
 }
+
