@@ -14,7 +14,6 @@ interface EcosystemProduct {
   category: string;
   description: string;
   icon: LucideIcon;
-  active: boolean;
 }
 
 const products: EcosystemProduct[] = [
@@ -24,7 +23,6 @@ const products: EcosystemProduct[] = [
     description:
       "AI reflection system for identity, archetypes, dreams and personal evolution.",
     icon: Brain,
-    active: true,
   },
   {
     name: "Memora",
@@ -32,7 +30,6 @@ const products: EcosystemProduct[] = [
     description:
       "A personal AI memory layer that remembers your experiences and knowledge.",
     icon: Clock,
-    active: false,
   },
   {
     name: "Future Self",
@@ -40,7 +37,6 @@ const products: EcosystemProduct[] = [
     description:
       "Explore possible versions of yourself through AI-powered scenarios.",
     icon: Sparkles,
-    active: false,
   },
   {
     name: "Parallel",
@@ -48,7 +44,6 @@ const products: EcosystemProduct[] = [
     description:
       "A new generation of interactive AI worlds and experiences.",
     icon: Globe2,
-    active: false,
   },
 ];
 
@@ -65,7 +60,9 @@ export function EonEcosystemSection() {
         px-6
       "
     >
-      {/* Glow */}
+      {/* =====================================================
+          AMBIENT GLOW
+      ====================================================== */}
 
       <div
         className="
@@ -82,7 +79,9 @@ export function EonEcosystemSection() {
         "
       />
 
-      {/* Header */}
+      {/* =====================================================
+          HEADER
+      ====================================================== */}
 
       <motion.div
         initial={{
@@ -95,12 +94,15 @@ export function EonEcosystemSection() {
         }}
         viewport={{
           once: true,
+          amount: 0.3,
         }}
         transition={{
-          duration: 0.8,
+          duration: 0.9,
+          ease: [0.16, 1, 0.3, 1],
         }}
         className="
           relative
+          z-10
           text-center
         "
       >
@@ -147,11 +149,14 @@ export function EonEcosystemSection() {
         </p>
       </motion.div>
 
-      {/* Products */}
+      {/* =====================================================
+          PRODUCTS
+      ====================================================== */}
 
       <div
         className="
           relative
+          z-10
           mt-16
           grid
           gap-5
@@ -173,105 +178,238 @@ export function EonEcosystemSection() {
                 opacity: 1,
                 y: 0,
               }}
-              transition={{
-                delay: index * 0.1,
-              }}
               viewport={{
                 once: true,
+                amount: 0.2,
               }}
-              className={`
+              transition={{
+                delay: index * 0.1,
+                duration: 0.8,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              whileHover={{
+                y: -10,
+                scale: 1.015,
+              }}
+              className="
+                group
+                relative
+                cursor-pointer
+                overflow-hidden
                 rounded-[32px]
                 border
+                border-white/[0.08]
+                bg-white/[0.025]
                 p-7
                 backdrop-blur-2xl
                 transition-all
-                duration-300
-                ${
-                  product.active
-                    ? `
-                      border-[#D6B25E]/30
-                      bg-gradient-to-br
-                      from-[#D6B25E]/10
-                      to-white/[0.03]
-                    `
-                    : `
-                      border-white/10
-                      bg-white/[0.03]
-                      opacity-70
-                    `
-                }
-                hover:-translate-y-2
-              `}
+                duration-700
+                ease-[cubic-bezier(0.16,1,0.3,1)]
+                hover:border-[#D6B25E]/35
+                hover:bg-white/[0.045]
+                hover:shadow-[0_20px_80px_rgba(214,178,94,0.10)]
+              "
             >
+              {/* =================================================
+                  HOVER GOLDEN LIGHT
+              ================================================== */}
+
               <div
                 className="
+                  pointer-events-none
+                  absolute
+                  -right-24
+                  -top-24
+                  h-56
+                  w-56
+                  rounded-full
+                  bg-[#D6B25E]/0
+                  blur-[80px]
+                  transition-all
+                  duration-700
+                  group-hover:bg-[#D6B25E]/[0.14]
+                "
+              />
+
+              {/* =================================================
+                  HOVER INNER GLOW
+              ================================================== */}
+
+              <div
+                className="
+                  pointer-events-none
+                  absolute
+                  inset-0
+                  rounded-[32px]
+                  opacity-0
+                  transition-opacity
+                  duration-700
+                  group-hover:opacity-100
+                  bg-[radial-gradient(circle_at_20%_0%,rgba(214,178,94,0.12),transparent_45%)]
+                "
+              />
+
+              {/* =================================================
+                  TOP SHINE
+              ================================================== */}
+
+              <div
+                className="
+                  pointer-events-none
+                  absolute
+                  left-1/2
+                  top-0
+                  h-px
+                  w-0
+                  -translate-x-1/2
+                  bg-gradient-to-r
+                  from-transparent
+                  via-[#D6B25E]
+                  to-transparent
+                  opacity-0
+                  transition-all
+                  duration-700
+                  group-hover:w-[70%]
+                  group-hover:opacity-70
+                "
+              />
+
+              {/* =================================================
+                  ICON
+              ================================================== */}
+
+              <div
+                className="
+                  relative
+                  z-10
                   flex
                   h-12
                   w-12
                   items-center
                   justify-center
                   rounded-2xl
-                  bg-[#D6B25E]/10
+                  border
+                  border-white/[0.06]
+                  bg-white/[0.035]
+                  transition-all
+                  duration-500
+                  group-hover:border-[#D6B25E]/30
+                  group-hover:bg-[#D6B25E]/10
+                  group-hover:scale-110
+                  group-hover:shadow-[0_0_30px_rgba(214,178,94,0.15)]
                 "
               >
                 <Icon
-                  size={24}
-                  className="text-[#D6B25E]"
+                  size={22}
+                  strokeWidth={1.5}
+                  className="
+                    text-white/50
+                    transition-all
+                    duration-500
+                    group-hover:text-[#D6B25E]
+                    group-hover:scale-110
+                  "
                 />
               </div>
 
-              <p
-                className="
-                  mt-6
-                  text-xs
-                  uppercase
-                  tracking-[0.3em]
-                  text-[#D6B25E]
-                "
-              >
-                {product.category}
-              </p>
+              {/* =================================================
+                  CONTENT
+              ================================================== */}
 
-              <h3
-                className="
-                  mt-3
-                  text-2xl
-                  text-[#F4F1EA]
-                "
-              >
-                {product.name}
-              </h3>
-
-              <p
-                className="
-                  mt-4
-                  text-sm
-                  leading-6
-                  text-white/50
-                "
-              >
-                {product.description}
-              </p>
-
-              {!product.active && (
-                <span
+              <div className="relative z-10">
+                <p
                   className="
-                    mt-5
-                    inline-block
-                    rounded-full
-                    border
-                    border-white/10
-                    px-3
-                    py-1
-                    text-[10px]
+                    mt-6
+                    text-xs
                     uppercase
-                    tracking-widest
-                    text-white/40
+                    tracking-[0.3em]
+                    text-white/35
+                    transition-colors
+                    duration-500
+                    group-hover:text-[#D6B25E]/80
                   "
                 >
-                  Coming Soon
-                </span>
-              )}
+                  {product.category}
+                </p>
+
+                <h3
+                  className="
+                    mt-3
+                    text-2xl
+                    text-[#F4F1EA]
+                    transition-all
+                    duration-500
+                    group-hover:text-white
+                  "
+                >
+                  {product.name}
+                </h3>
+
+                <p
+                  className="
+                    mt-4
+                    text-sm
+                    leading-6
+                    text-white/40
+                    transition-colors
+                    duration-500
+                    group-hover:text-white/55
+                  "
+                >
+                  {product.description}
+                </p>
+
+                {/* =================================================
+                    COMING SOON
+                ================================================== */}
+
+                {product.name !== "SoulMirror" && (
+                  <span
+                    className="
+                      mt-5
+                      inline-block
+                      rounded-full
+                      border
+                      border-white/[0.08]
+                      bg-white/[0.02]
+                      px-3
+                      py-1
+                      text-[10px]
+                      uppercase
+                      tracking-widest
+                      text-white/30
+                      transition-all
+                      duration-500
+                      group-hover:border-[#D6B25E]/20
+                      group-hover:text-[#D6B25E]/60
+                    "
+                  >
+                    Coming Soon
+                  </span>
+                )}
+              </div>
+
+              {/* =================================================
+                  BOTTOM GLOW
+              ================================================== */}
+
+              <div
+                className="
+                  pointer-events-none
+                  absolute
+                  bottom-[-100px]
+                  left-1/2
+                  h-40
+                  w-40
+                  -translate-x-1/2
+                  rounded-full
+                  bg-[#D6B25E]/0
+                  blur-[70px]
+                  transition-all
+                  duration-700
+                  group-hover:bg-[#D6B25E]/[0.08]
+                "
+              />
             </motion.div>
           );
         })}
