@@ -1,15 +1,9 @@
 "use client";
 
-import {
-  motion,
-  useScroll,
-  useTransform,
-} from "framer-motion";
+import { motion } from "framer-motion";
+import { ReactNode } from "react";
 
-import {
-  ReactNode,
-  useRef,
-} from "react";
+import { SoulSectionAtmosphere } from "./SoulSectionAtmosphere";
 
 interface CinematicSectionProps {
   children: ReactNode;
@@ -20,120 +14,38 @@ export function CinematicSection({
   children,
   className = "",
 }: CinematicSectionProps) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  const {
-    scrollYProgress,
-  } = useScroll({
-    target: ref,
-    offset: [
-      "start end",
-      "end start",
-    ],
-  });
-
-  /*
-   * VERTICAL MOVEMENT
-   */
-
-  const y = useTransform(
-    scrollYProgress,
-    [0, 0.35, 0.65, 1],
-    [120, 0, 0, -80]
-  );
-
-  /*
-   * SCALE
-   */
-
-  const scale = useTransform(
-    scrollYProgress,
-    [0, 0.35, 0.65, 1],
-    [0.92, 1, 1, 0.96]
-  );
-
-  /*
-   * OPACITY
-   */
-
-  const opacity = useTransform(
-    scrollYProgress,
-    [0, 0.2, 0.75, 1],
-    [0, 1, 1, 0.35]
-  );
-
-  /*
-   * BLUR
-   *
-   * Важно:
-   * useTransform сразу возвращает готовое
-   * CSS-значение filter.
-   *
-   * Поэтому здесь больше НЕ используется:
-   *
-   * blur.to(...)
-   */
-
-  const blur = useTransform(
-    scrollYProgress,
-    [0, 0.3, 0.7, 1],
-    [
-      "blur(12px)",
-      "blur(0px)",
-      "blur(0px)",
-      "blur(4px)",
-    ]
-  );
-
-  /*
-   * BORDER RADIUS
-   */
-
-  const radius = useTransform(
-    scrollYProgress,
-    [0, 0.35, 0.65, 1],
-    [32, 0, 0, 0]
-  );
-
   return (
-    <section
-      ref={ref}
-      className="
+    <motion.section
+      initial={{
+        opacity: 0,
+        y: 40,
+        filter: "blur(10px)",
+      }}
+      whileInView={{
+        opacity: 1,
+        y: 0,
+        filter: "blur(0px)",
+      }}
+      viewport={{
+        once: true,
+        amount: 0.12,
+      }}
+      transition={{
+        duration: 1.2,
+        ease: [0.16, 1, 0.3, 1],
+      }}
+      className={`
         relative
-        min-h-[125vh]
-        w-full
-      "
+        isolate
+        overflow-hidden
+        ${className}
+      `}
     >
-      <div
-        className="
-          sticky
-          top-0
-          flex
-          min-h-screen
-          w-full
-          items-center
-          overflow-hidden
-        "
-      >
-        <motion.div
-          style={{
-            y,
-            scale,
-            opacity,
-            filter: blur,
-            borderRadius: radius,
-          }}
-          className={`
-            relative
-            min-h-screen
-            w-full
-            overflow-hidden
-            ${className}
-          `}
-        >
-          {children}
-        </motion.div>
+      <SoulSectionAtmosphere />
+
+      <div className="relative z-10">
+        {children}
       </div>
-    </section>
+    </motion.section>
   );
 }
