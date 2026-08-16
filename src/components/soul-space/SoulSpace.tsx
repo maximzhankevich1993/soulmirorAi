@@ -1,3 +1,4 @@
+
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
@@ -106,33 +107,219 @@ export function SoulSpace() {
         <AmbientBackground />
 
         {/* =================================================
-            02 — GLOBAL PARTICLES
+            02 — CINEMATIC GOLDEN LINES
         ================================================== */}
 
-        <GlobalParticles />
+        <div
+          className="
+            pointer-events-none
+            absolute
+            inset-0
+            z-[1]
+            overflow-hidden
+          "
+        >
+          {/* TOP GOLDEN FLOW */}
+
+          <motion.div
+            animate={{
+              x: ["-25%", "10%", "-25%"],
+              y: ["8vh", "14vh", "8vh"],
+              scaleX: [1, 1.15, 1],
+              opacity: [0.18, 0.32, 0.18],
+            }}
+            transition={{
+              duration: 18,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="
+              absolute
+              left-[-20%]
+              top-[6%]
+              h-[180px]
+              w-[140%]
+              rounded-[50%]
+              border-t-[7px]
+              border-[#D6B25E]/40
+              blur-[18px]
+              rotate-[-3deg]
+            "
+          />
+
+          {/* MAIN GOLDEN FLOW */}
+
+          <motion.div
+            animate={{
+              x: ["-35%", "15%", "-35%"],
+              y: ["0vh", "10vh", "0vh"],
+              scaleX: [1, 1.2, 1],
+              opacity: [0.2, 0.38, 0.2],
+            }}
+            transition={{
+              duration: 24,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="
+              absolute
+              left-[-30%]
+              top-[22%]
+              h-[220px]
+              w-[160%]
+              rounded-[50%]
+              border-t-[9px]
+              border-[#D6B25E]/45
+              blur-[24px]
+              rotate-[2deg]
+            "
+          />
+
+          {/* CENTER GOLDEN WAVE */}
+
+          <motion.div
+            animate={{
+              x: ["-20%", "20%", "-20%"],
+              y: ["-6vh", "8vh", "-6vh"],
+              scaleX: [1.05, 1.25, 1.05],
+              opacity: [0.16, 0.3, 0.16],
+            }}
+            transition={{
+              duration: 30,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="
+              absolute
+              left-[-20%]
+              top-[42%]
+              h-[260px]
+              w-[150%]
+              rounded-[50%]
+              border-t-[10px]
+              border-[#D6B25E]/35
+              blur-[30px]
+              rotate-[-2deg]
+            "
+          />
+
+          {/* LOWER GOLDEN WAVE */}
+
+          <motion.div
+            animate={{
+              x: ["-30%", "10%", "-30%"],
+              y: ["5vh", "-7vh", "5vh"],
+              scaleX: [1, 1.18, 1],
+              opacity: [0.14, 0.28, 0.14],
+            }}
+            transition={{
+              duration: 26,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="
+              absolute
+              left-[-25%]
+              top-[65%]
+              h-[230px]
+              w-[155%]
+              rounded-[50%]
+              border-t-[8px]
+              border-[#D6B25E]/35
+              blur-[26px]
+              rotate-[3deg]
+            "
+          />
+
+          {/* BOTTOM GOLDEN WAVE */}
+
+          <motion.div
+            animate={{
+              x: ["-20%", "18%", "-20%"],
+              y: ["-4vh", "6vh", "-4vh"],
+              scaleX: [1, 1.22, 1],
+              opacity: [0.12, 0.25, 0.12],
+            }}
+            transition={{
+              duration: 34,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="
+              absolute
+              left-[-20%]
+              top-[84%]
+              h-[200px]
+              w-[145%]
+              rounded-[50%]
+              border-t-[8px]
+              border-[#D6B25E]/30
+              blur-[28px]
+              rotate-[-2deg]
+            "
+          />
+
+          {/* SOFT GOLDEN CORE */}
+
+          <motion.div
+            animate={{
+              x: ["-15%", "15%", "-15%"],
+              opacity: [0.06, 0.12, 0.06],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="
+              absolute
+              left-[-15%]
+              top-[31%]
+              h-[180px]
+              w-[130%]
+              rounded-full
+              bg-[#D6B25E]/20
+              blur-[90px]
+            "
+          />
+        </div>
 
         {/* =================================================
-            03 — CURSOR ATMOSPHERE
+            03 — GLOBAL PARTICLES
         ================================================== */}
 
-        <CursorAtmosphere />
+        <div className="relative z-[2]">
+          <GlobalParticles />
+        </div>
 
         {/* =================================================
-            04 — MEMORY / LOADING ATMOSPHERE
+            04 — CURSOR ATMOSPHERE
         ================================================== */}
 
-        <SoulMemoryLoader />
+        <div className="relative z-[3]">
+          <CursorAtmosphere />
+        </div>
 
         {/* =================================================
-            05 — HERO
+            05 — MEMORY / LOADING ATMOSPHERE
         ================================================== */}
 
-        <SoulSpaceHero
-          onOpenAuth={handleOpenAuth}
-        />
+        <div className="relative z-[4]">
+          <SoulMemoryLoader />
+        </div>
 
         {/* =================================================
-            06 — EON ECOSYSTEM
+            06 — HERO
+        ================================================== */}
+
+        <div className="relative z-[5]">
+          <SoulSpaceHero
+            onOpenAuth={handleOpenAuth}
+          />
+        </div>
+
+        {/* =================================================
+            07 — EON ECOSYSTEM
         ================================================== */}
 
         <CinematicSection>
@@ -142,7 +329,7 @@ export function SoulSpace() {
         </CinematicSection>
 
         {/* =================================================
-            07 — SOUL DASHBOARD
+            08 — SOUL DASHBOARD
         ================================================== */}
 
         <CinematicSection>
@@ -150,7 +337,7 @@ export function SoulSpace() {
         </CinematicSection>
 
         {/* =================================================
-            08 — DAILY REFLECTION
+            09 — DAILY REFLECTION
         ================================================== */}
 
         <CinematicSection>
@@ -158,7 +345,7 @@ export function SoulSpace() {
         </CinematicSection>
 
         {/* =================================================
-            09 — SOUL SCAN
+            10 — SOUL SCAN
         ================================================== */}
 
         <CinematicSection>
@@ -168,7 +355,7 @@ export function SoulSpace() {
         </CinematicSection>
 
         {/* =================================================
-            10 — DREAMS + TAROT
+            11 — DREAMS + TAROT
         ================================================== */}
 
         <CinematicSection>
@@ -180,7 +367,7 @@ export function SoulSpace() {
         </CinematicSection>
 
         {/* =================================================
-            11 — JOURNAL
+            12 — JOURNAL
         ================================================== */}
 
         <CinematicSection>
@@ -194,7 +381,7 @@ export function SoulSpace() {
         </CinematicSection>
 
         {/* =================================================
-            12 — PRICING
+            13 — PRICING
         ================================================== */}
 
         <CinematicSection>
@@ -239,9 +426,7 @@ export function SoulSpace() {
               bg-[#050505]
             "
           >
-            {/* =================================================
-                AUTH BACKDROP
-            ================================================== */}
+            {/* AUTH BACKDROP */}
 
             <motion.div
               initial={{
@@ -265,9 +450,7 @@ export function SoulSpace() {
               "
             />
 
-            {/* =================================================
-                GOLD ATMOSPHERE
-            ================================================== */}
+            {/* GOLD ATMOSPHERE */}
 
             <motion.div
               initial={{
@@ -301,9 +484,7 @@ export function SoulSpace() {
               "
             />
 
-            {/* =================================================
-                SECONDARY LIGHT
-            ================================================== */}
+            {/* SECONDARY LIGHT */}
 
             <motion.div
               initial={{
@@ -338,9 +519,7 @@ export function SoulSpace() {
               "
             />
 
-            {/* =================================================
-                AUTH SCREEN
-            ================================================== */}
+            {/* AUTH SCREEN */}
 
             <motion.div
               initial={{
@@ -375,9 +554,7 @@ export function SoulSpace() {
               <AuthScreen mode={authMode} />
             </motion.div>
 
-            {/* =================================================
-                CLOSE
-            ================================================== */}
+            {/* CLOSE */}
 
             <motion.button
               type="button"
@@ -438,3 +615,4 @@ export function SoulSpace() {
     </>
   );
 }
+
