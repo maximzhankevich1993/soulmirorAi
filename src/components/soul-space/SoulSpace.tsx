@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -40,12 +41,36 @@ export function SoulSpace() {
     setShowOnboarding(false);
   };
 
+  /*
+   * AUTH
+   */
+
   const handleOpenAuth = () => {
     setShowAuth(true);
   };
 
   const handleCloseAuth = () => {
     setShowAuth(false);
+  };
+
+  /*
+   * START EXPERIENCE
+   *
+   * Start Experience does NOT open registration.
+   * It takes the user directly to Soul Scan.
+   */
+
+  const handleStartExperience = () => {
+    const soulScan = document.getElementById("features");
+
+    if (!soulScan) {
+      return;
+    }
+
+    soulScan.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   };
 
   return (
@@ -56,7 +81,9 @@ export function SoulSpace() {
         />
       )}
 
-      {/* AUTH */}
+      {/* =====================================================
+          AUTH SCREEN
+      ====================================================== */}
 
       {showAuth && (
         <div className="fixed inset-0 z-[99999]">
@@ -83,10 +110,12 @@ export function SoulSpace() {
               text-white/50
               backdrop-blur-xl
               transition-all
-              duration-300
+              duration-500
+              hover:-translate-y-0.5
               hover:border-white/20
               hover:bg-white/[0.06]
               hover:text-white
+              active:scale-95
             "
           >
             Close
@@ -103,31 +132,42 @@ export function SoulSpace() {
 
         <SoulMemoryLoader />
 
-        {/* HERO */}
+        {/* =====================================================
+            HERO
+        ====================================================== */}
 
         <SoulSpaceHero
           onOpenAuth={handleOpenAuth}
+          onStartExperience={handleStartExperience}
         />
 
-        {/* ECOSYSTEM */}
+        {/* =====================================================
+            ECOSYSTEM
+        ====================================================== */}
 
         <CinematicSection>
           <EonEcosystemSection />
         </CinematicSection>
 
-        {/* DASHBOARD */}
+        {/* =====================================================
+            DASHBOARD
+        ====================================================== */}
 
         <CinematicSection>
           <SoulDashboard />
         </CinematicSection>
 
-        {/* DAILY REFLECTION */}
+        {/* =====================================================
+            DAILY REFLECTION
+        ====================================================== */}
 
         <CinematicSection>
           <DailyReflection />
         </CinematicSection>
 
-        {/* SOUL SCAN */}
+        {/* =====================================================
+            SOUL SCAN
+        ====================================================== */}
 
         <CinematicSection>
           <section id="features">
@@ -135,16 +175,21 @@ export function SoulSpace() {
           </section>
         </CinematicSection>
 
-        {/* DREAMS */}
+        {/* =====================================================
+            DREAMS
+        ====================================================== */}
 
         <CinematicSection>
           <section id="dreams">
             <DreamConsole />
+
             <TarotConsole />
           </section>
         </CinematicSection>
 
-        {/* JOURNAL */}
+        {/* =====================================================
+            JOURNAL
+        ====================================================== */}
 
         <CinematicSection>
           <section id="journal">
@@ -156,7 +201,9 @@ export function SoulSpace() {
           </section>
         </CinematicSection>
 
-        {/* PRICING */}
+        {/* =====================================================
+            PRICING
+        ====================================================== */}
 
         <CinematicSection>
           <section id="pricing">
@@ -167,3 +214,4 @@ export function SoulSpace() {
     </>
   );
 }
+
