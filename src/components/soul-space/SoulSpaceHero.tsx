@@ -11,30 +11,6 @@ import { useRef } from "react";
 
 const title = "SoulMirror";
 
-const letterVariants = {
-  hidden: {
-    opacity: 0,
-    y: 40,
-    x: 0,
-    scale: 0.94,
-    filter: "blur(14px)",
-  },
-
-  visible: (index: number) => ({
-    opacity: 1,
-    y: 0,
-    x: 0,
-    scale: 1,
-    filter: "blur(0px)",
-
-    transition: {
-      delay: 0.35 + index * 0.075,
-      duration: 1.1,
-      ease: [0.22, 1, 0.36, 1],
-    },
-  }),
-};
-
 export function SoulSpaceHero() {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -66,45 +42,10 @@ export function SoulSpaceHero() {
         justify-center
         overflow-hidden
         px-6
-        pt-24
-        pb-24
+        py-24
       "
     >
-      {/* =====================================================
-          CINEMATIC ATMOSPHERE
-      ====================================================== */}
-
-      <div
-        className="
-          pointer-events-none
-          absolute
-          left-1/2
-          top-[-180px]
-          h-[700px]
-          w-[1000px]
-          -translate-x-1/2
-          rounded-full
-          bg-[#D6B25E]/[0.025]
-          blur-[200px]
-        "
-      />
-
-      <div
-        className="
-          pointer-events-none
-          absolute
-          left-1/2
-          top-[30%]
-          h-[500px]
-          w-[900px]
-          -translate-x-1/2
-          rounded-full
-          bg-white/[0.012]
-          blur-[180px]
-        "
-      />
-
-      {/* very subtle center glow */}
+      {/* Background */}
 
       <motion.div
         initial={{
@@ -124,19 +65,15 @@ export function SoulSpaceHero() {
           absolute
           left-1/2
           top-1/2
-          h-[260px]
-          w-[700px]
+          h-[650px]
+          w-[1000px]
           -translate-x-1/2
           -translate-y-1/2
           rounded-full
-          bg-white/[0.008]
-          blur-[120px]
+          bg-[#D6B25E]/[0.025]
+          blur-[180px]
         "
       />
-
-      {/* =====================================================
-          HERO CONTENT
-      ====================================================== */}
 
       <motion.div
         style={{
@@ -146,7 +83,6 @@ export function SoulSpaceHero() {
         className="
           relative
           z-10
-          mx-auto
           flex
           w-full
           max-w-7xl
@@ -155,15 +91,13 @@ export function SoulSpaceHero() {
           text-center
         "
       >
-        {/* =================================================
-            EON AI
-        ================================================= */}
+        {/* EON AI */}
 
         <motion.p
           initial={{
             opacity: 0,
-            y: 18,
-            filter: "blur(8px)",
+            y: 25,
+            filter: "blur(12px)",
           }}
           animate={{
             opacity: 1,
@@ -171,6 +105,7 @@ export function SoulSpaceHero() {
             filter: "blur(0px)",
           }}
           transition={{
+            delay: 0.2,
             duration: 1.2,
             ease: [0.22, 1, 0.36, 1],
           }}
@@ -184,13 +119,9 @@ export function SoulSpaceHero() {
           EON AI
         </motion.p>
 
-        {/* =================================================
-            SOULMIRROR
-            LETTER-BY-LETTER REVEAL
-        ================================================== */}
+        {/* SoulMirror */}
 
-        <motion.h1
-          aria-label="SoulMirror"
+        <h1
           className="
             mt-8
             flex
@@ -209,20 +140,39 @@ export function SoulSpaceHero() {
           {title.split("").map((letter, index) => (
             <motion.span
               key={`${letter}-${index}`}
-              custom={index}
-              variants={letterVariants}
-              initial="hidden"
-              animate="visible"
+              initial={{
+                opacity: 0,
+                x:
+                  index % 2 === 0
+                    ? -80
+                    : 80,
+                y:
+                  index % 3 === 0
+                    ? -30
+                    : 30,
+                scale: 0.8,
+                filter: "blur(15px)",
+              }}
+              animate={{
+                opacity: 1,
+                x: 0,
+                y: 0,
+                scale: 1,
+                filter: "blur(0px)",
+              }}
+              transition={{
+                delay: 0.45 + index * 0.09,
+                duration: 1.15,
+                ease: [0.22, 1, 0.36, 1],
+              }}
               className="inline-block"
             >
               {letter}
             </motion.span>
           ))}
-        </motion.h1>
+        </h1>
 
-        {/* =================================================
-            GOLDEN LINE
-        ================================================== */}
+        {/* Golden line */}
 
         <motion.div
           initial={{
@@ -234,8 +184,8 @@ export function SoulSpaceHero() {
             opacity: 1,
           }}
           transition={{
-            delay: 1.35,
-            duration: 1.2,
+            delay: 1.55,
+            duration: 1.1,
             ease: [0.22, 1, 0.36, 1],
           }}
           className="
@@ -250,15 +200,13 @@ export function SoulSpaceHero() {
           "
         />
 
-        {/* =================================================
-            TAGLINE
-        ================================================== */}
+        {/* Tagline */}
 
         <motion.p
           initial={{
             opacity: 0,
-            y: 12,
-            filter: "blur(6px)",
+            y: 15,
+            filter: "blur(8px)",
           }}
           animate={{
             opacity: 1,
@@ -266,9 +214,8 @@ export function SoulSpaceHero() {
             filter: "blur(0px)",
           }}
           transition={{
-            delay: 1.65,
+            delay: 1.85,
             duration: 1,
-            ease: [0.22, 1, 0.36, 1],
           }}
           className="
             mt-7
@@ -281,15 +228,13 @@ export function SoulSpaceHero() {
           Reflect · Understand · Evolve
         </motion.p>
 
-        {/* =================================================
-            DESCRIPTION
-        ================================================== */}
+        {/* Description */}
 
         <motion.p
           initial={{
             opacity: 0,
-            y: 18,
-            filter: "blur(7px)",
+            y: 20,
+            filter: "blur(8px)",
           }}
           animate={{
             opacity: 1,
@@ -297,14 +242,12 @@ export function SoulSpaceHero() {
             filter: "blur(0px)",
           }}
           transition={{
-            delay: 1.9,
-            duration: 1.1,
-            ease: [0.22, 1, 0.36, 1],
+            delay: 2.1,
+            duration: 1,
           }}
           className="
             mt-8
             max-w-xl
-            text-center
             text-base
             leading-8
             text-white/45
@@ -317,15 +260,13 @@ export function SoulSpaceHero() {
           dreams, archetypes and evolution.
         </motion.p>
 
-        {/* =================================================
-            BUTTONS
-        ================================================== */}
+        {/* Buttons */}
 
         <motion.div
           initial={{
             opacity: 0,
-            y: 20,
-            filter: "blur(7px)",
+            y: 25,
+            filter: "blur(8px)",
           }}
           animate={{
             opacity: 1,
@@ -333,9 +274,8 @@ export function SoulSpaceHero() {
             filter: "blur(0px)",
           }}
           transition={{
-            delay: 2.25,
+            delay: 2.45,
             duration: 1,
-            ease: [0.22, 1, 0.36, 1],
           }}
           className="
             mt-12
@@ -346,8 +286,6 @@ export function SoulSpaceHero() {
             sm:flex-row
           "
         >
-          {/* PRIMARY */}
-
           <button
             type="button"
             className="
@@ -366,7 +304,6 @@ export function SoulSpaceHero() {
               font-medium
               text-white
               backdrop-blur-2xl
-              shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]
               transition-all
               duration-500
               hover:border-white/[0.28]
@@ -375,7 +312,7 @@ export function SoulSpaceHero() {
               active:scale-[0.97]
             "
           >
-            <span>Start Experience</span>
+            Start Experience
 
             <ArrowRight
               size={16}
@@ -387,8 +324,6 @@ export function SoulSpaceHero() {
               "
             />
           </button>
-
-          {/* SECONDARY */}
 
           <a
             href="#ecosystem"
