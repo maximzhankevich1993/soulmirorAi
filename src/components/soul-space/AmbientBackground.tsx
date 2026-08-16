@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 
 export function AmbientBackground() {
+  const particles = Array.from({ length: 30 });
+
   return (
     <div
       className="
@@ -21,7 +23,7 @@ export function AmbientBackground() {
       <div className="absolute inset-0 bg-[#050505]" />
 
       {/* =====================================================
-          GOLDEN ATMOSPHERE
+          GOLDEN EON LIGHT
       ====================================================== */}
 
       <motion.div
@@ -76,7 +78,7 @@ export function AmbientBackground() {
       />
 
       {/* =====================================================
-          GOLDEN CINEMATIC LIGHT THREADS
+          GOLDEN CINEMATIC LINES
       ====================================================== */}
 
       <svg
@@ -85,29 +87,33 @@ export function AmbientBackground() {
           inset-0
           h-full
           w-full
-          min-h-screen
-          min-w-full
-          opacity-70
+          overflow-visible
         "
-        viewBox="0 0 1440 900"
+        viewBox="0 0 1000 800"
         preserveAspectRatio="none"
         fill="none"
       >
-        {/* MAIN GOLD THREAD */}
+        {/* ---------------------------------------------------
+            LINE 1
+        ---------------------------------------------------- */}
 
         <motion.path
           d="
-            M -180 650
-            C 80 470, 220 420, 430 540
-            C 650 665, 720 760, 940 570
-            C 1120 410, 1260 190, 1620 280
+            M -100 560
+            C 100 430, 190 430, 310 520
+            C 430 610, 500 650, 620 540
+            C 740 430, 800 300, 1100 390
           "
           stroke="#D6B25E"
           strokeWidth="1.2"
-          strokeLinecap="round"
+          vectorEffect="non-scaling-stroke"
+          initial={{
+            pathLength: 0,
+            opacity: 0,
+          }}
           animate={{
-            pathLength: [0.35, 1, 0.35],
-            opacity: [0.18, 0.8, 0.18],
+            pathLength: [0, 1, 1, 0],
+            opacity: [0, 0.65, 0.65, 0],
           }}
           transition={{
             duration: 14,
@@ -116,203 +122,205 @@ export function AmbientBackground() {
           }}
         />
 
-        {/* SECOND GOLD THREAD */}
+        {/* ---------------------------------------------------
+            LINE 2
+        ---------------------------------------------------- */}
 
         <motion.path
           d="
-            M -220 180
-            C 120 320, 250 650, 520 590
-            C 790 530, 820 180, 1090 250
-            C 1280 300, 1390 480, 1650 420
+            M -100 260
+            C 80 350, 180 470, 330 380
+            C 480 290, 570 140, 710 250
+            C 840 350, 900 500, 1100 450
           "
           stroke="#D6B25E"
-          strokeWidth="0.9"
-          strokeLinecap="round"
+          strokeWidth="0.8"
+          vectorEffect="non-scaling-stroke"
+          initial={{
+            pathLength: 0,
+            opacity: 0,
+          }}
           animate={{
-            pathLength: [0.2, 1, 0.2],
-            opacity: [0.08, 0.55, 0.08],
+            pathLength: [0, 1, 1, 0],
+            opacity: [0, 0.4, 0.4, 0],
           }}
           transition={{
             duration: 18,
-            repeat: Infinity,
-            ease: "easeInOut",
             delay: 2,
-          }}
-        />
-
-        {/* THIRD THIN THREAD */}
-
-        <motion.path
-          d="
-            M -160 780
-            C 220 700, 350 300, 640 390
-            C 930 480, 1040 720, 1300 590
-            C 1420 530, 1510 390, 1640 350
-          "
-          stroke="#F4F1EA"
-          strokeWidth="0.45"
-          strokeLinecap="round"
-          animate={{
-            pathLength: [0.15, 1, 0.15],
-            opacity: [0.04, 0.3, 0.04],
-          }}
-          transition={{
-            duration: 16,
             repeat: Infinity,
             ease: "easeInOut",
-            delay: 4,
           }}
         />
 
-        {/* FOURTH GOLD THREAD */}
+        {/* ---------------------------------------------------
+            LINE 3
+        ---------------------------------------------------- */}
 
         <motion.path
           d="
-            M -100 420
-            C 180 620, 360 700, 580 520
-            C 790 350, 970 90, 1210 220
-            C 1390 315, 1460 510, 1600 600
+            M -100 690
+            C 120 580, 250 600, 390 690
+            C 530 780, 650 720, 760 590
+            C 850 485, 960 500, 1100 580
           "
           stroke="#D6B25E"
           strokeWidth="0.6"
-          strokeLinecap="round"
+          vectorEffect="non-scaling-stroke"
+          initial={{
+            pathLength: 0,
+            opacity: 0,
+          }}
           animate={{
-            pathLength: [0.25, 1, 0.25],
-            opacity: [0.05, 0.4, 0.05],
+            pathLength: [0, 1, 1, 0],
+            opacity: [0, 0.28, 0.28, 0],
           }}
           transition={{
-            duration: 21,
+            duration: 20,
+            delay: 5,
             repeat: Infinity,
             ease: "easeInOut",
-            delay: 6,
+          }}
+        />
+
+        {/* ---------------------------------------------------
+            SOFT WHITE THREAD
+        ---------------------------------------------------- */}
+
+        <motion.path
+          d="
+            M -100 160
+            C 160 90, 250 230, 430 180
+            C 600 130, 700 40, 1100 180
+          "
+          stroke="#F4F1EA"
+          strokeWidth="0.45"
+          vectorEffect="non-scaling-stroke"
+          animate={{
+            opacity: [0.05, 0.22, 0.05],
+          }}
+          transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: "easeInOut",
           }}
         />
       </svg>
 
       {/* =====================================================
-          GLOW ALONG THE MAIN LINE
+          GLOW ALONG THE LINES
       ====================================================== */}
 
-      <motion.div
-        animate={{
-          x: ["-20%", "120%"],
-          opacity: [0, 0.35, 0],
-        }}
-        transition={{
-          duration: 12,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
+      <div
         className="
+          pointer-events-none
           absolute
-          left-0
-          top-[55%]
-          h-[2px]
-          w-[35%]
-          rotate-[-7deg]
-          bg-gradient-to-r
-          from-transparent
-          via-[#D6B25E]
-          to-transparent
-          blur-[4px]
+          inset-0
+          opacity-[0.12]
+          blur-[10px]
         "
-      />
-
-      {/* =====================================================
-          FLYING GOLD PARTICLES
-      ====================================================== */}
-
-      <div className="absolute inset-0">
-        {Array.from({ length: 35 }).map((_, i) => (
-          <motion.span
-            key={i}
-            className="
-              absolute
-              h-[2px]
-              w-[2px]
-              rounded-full
-              bg-[#D6B25E]
-              shadow-[0_0_8px_rgba(214,178,94,0.7)]
+      >
+        <svg
+          className="h-full w-full"
+          viewBox="0 0 1000 800"
+          preserveAspectRatio="none"
+          fill="none"
+        >
+          <path
+            d="
+              M -100 560
+              C 100 430, 190 430, 310 520
+              C 430 610, 500 650, 620 540
+              C 740 430, 800 300, 1100 390
             "
-            style={{
-              left: `${(i * 37) % 100}%`,
-              top: `${(i * 53) % 100}%`,
-            }}
-            animate={{
-              y: [0, -80, 0],
-              x: [0, (i % 2 === 0 ? 25 : -25), 0],
-              opacity: [0.05, 0.65, 0.05],
-              scale: [0.6, 1.3, 0.6],
-            }}
-            transition={{
-              duration: 5 + (i % 5),
-              repeat: Infinity,
-              delay: i * 0.25,
-              ease: "easeInOut",
-            }}
+            stroke="#D6B25E"
+            strokeWidth="5"
+            vectorEffect="non-scaling-stroke"
           />
-        ))}
+
+          <path
+            d="
+              M -100 260
+              C 80 350, 180 470, 330 380
+              C 480 290, 570 140, 710 250
+              C 840 350, 900 500, 1100 450
+            "
+            stroke="#D6B25E"
+            strokeWidth="4"
+            vectorEffect="non-scaling-stroke"
+          />
+        </svg>
       </div>
 
       {/* =====================================================
-          SOFT VIGNETTE
+          FLOATING GOLD PARTICLES
+      ====================================================== */}
+
+      <div className="absolute inset-0">
+        {particles.map((_, i) => {
+          const left = (i * 37) % 100;
+          const top = (i * 53) % 100;
+
+          return (
+            <motion.span
+              key={i}
+              initial={{
+                opacity: 0,
+                scale: 0.5,
+              }}
+              animate={{
+                y: [0, -60 - (i % 4) * 20, 0],
+                x: [0, (i % 2 === 0 ? 1 : -1) * 15, 0],
+                opacity: [0.08, 0.5, 0.08],
+                scale: [0.5, 1, 0.5],
+              }}
+              transition={{
+                duration: 5 + (i % 5),
+                delay: i * 0.25,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className="
+                absolute
+                h-[2px]
+                w-[2px]
+                rounded-full
+                bg-[#D6B25E]
+                shadow-[0_0_8px_rgba(214,178,94,0.7)]
+              "
+              style={{
+                left: `${left}%`,
+                top: `${top}%`,
+              }}
+            />
+          );
+        })}
+      </div>
+
+      {/* =====================================================
+          CINEMATIC DARK OVERLAY
       ====================================================== */}
 
       <div
         className="
           absolute
           inset-0
-          bg-[radial-gradient(circle_at_center,transparent_30%,rgba(5,5,5,.3)_65%,#050505_100%)]
-        "
-      />
-
-      {/* =====================================================
-          DARK TOP
-      ====================================================== */}
-
-      <div
-        className="
-          absolute
-          inset-x-0
-          top-0
-          h-48
           bg-gradient-to-b
-          from-[#050505]
-          to-transparent
+          from-black/20
+          via-transparent
+          to-black/65
         "
       />
 
       {/* =====================================================
-          DARK BOTTOM
-      ====================================================== */}
-
-      <div
-        className="
-          absolute
-          inset-x-0
-          bottom-0
-          h-56
-          bg-gradient-to-t
-          from-[#050505]
-          to-transparent
-        "
-      />
-
-      {/* =====================================================
-          CINEMATIC NOISE
+          VIGNETTE
       ====================================================== */}
 
       <div
         className="
           absolute
           inset-0
-          opacity-[0.018]
-          mix-blend-soft-light
+          bg-[radial-gradient(circle_at_center,transparent_25%,rgba(5,5,5,0.28)_65%,#050505_100%)]
         "
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E\")",
-        }}
       />
     </div>
   );
