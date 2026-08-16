@@ -51,21 +51,36 @@ export function SoulSpace() {
 
   return (
     <>
-      {/* =========================
+      {/* =====================================================
           ONBOARDING
-      ========================== */}
+      ====================================================== */}
 
-      {showOnboarding && (
-        <OnboardingRitual
-          onContinue={handleOnboardingContinue}
-        />
-      )}
+      <AnimatePresence>
+        {showOnboarding && (
+          <OnboardingRitual
+            onContinue={handleOnboardingContinue}
+          />
+        )}
+      </AnimatePresence>
 
-      {/* =========================
-          MAIN APPLICATION
-      ========================== */}
+      {/* =====================================================
+          MAIN SOUL SPACE
+      ====================================================== */}
 
-      <main>
+      <main
+        className={`
+          relative
+          min-h-screen
+          transition-[filter,transform,opacity]
+          duration-1000
+          ease-[cubic-bezier(0.16,1,0.3,1)]
+          ${
+            showAuth
+              ? "scale-[0.985] opacity-40 blur-[2px]"
+              : "scale-100 opacity-100 blur-0"
+          }
+        `}
+      >
         <CursorAtmosphere />
 
         <GlobalParticles />
@@ -74,31 +89,41 @@ export function SoulSpace() {
 
         <SoulMemoryLoader />
 
-        {/* HERO */}
+        {/* =================================================
+            HERO
+        ================================================== */}
 
         <SoulSpaceHero
           onOpenAuth={handleOpenAuth}
         />
 
-        {/* ECOSYSTEM */}
+        {/* =================================================
+            ECOSYSTEM
+        ================================================== */}
 
         <CinematicSection>
           <EonEcosystemSection />
         </CinematicSection>
 
-        {/* DASHBOARD */}
+        {/* =================================================
+            DASHBOARD
+        ================================================== */}
 
         <CinematicSection>
           <SoulDashboard />
         </CinematicSection>
 
-        {/* DAILY REFLECTION */}
+        {/* =================================================
+            DAILY REFLECTION
+        ================================================== */}
 
         <CinematicSection>
           <DailyReflection />
         </CinematicSection>
 
-        {/* SOUL SCAN */}
+        {/* =================================================
+            SOUL SCAN
+        ================================================== */}
 
         <CinematicSection>
           <section id="features">
@@ -106,16 +131,21 @@ export function SoulSpace() {
           </section>
         </CinematicSection>
 
-        {/* DREAMS */}
+        {/* =================================================
+            DREAMS
+        ================================================== */}
 
         <CinematicSection>
           <section id="dreams">
             <DreamConsole />
+
             <TarotConsole />
           </section>
         </CinematicSection>
 
-        {/* JOURNAL */}
+        {/* =================================================
+            JOURNAL
+        ================================================== */}
 
         <CinematicSection>
           <section id="journal">
@@ -127,7 +157,9 @@ export function SoulSpace() {
           </section>
         </CinematicSection>
 
-        {/* PRICING */}
+        {/* =================================================
+            PRICING
+        ================================================== */}
 
         <CinematicSection>
           <section id="pricing">
@@ -136,34 +168,25 @@ export function SoulSpace() {
         </CinematicSection>
       </main>
 
-      {/* =========================
-          AUTH TRANSITION
-      ========================== */}
+      {/* =====================================================
+          AUTH CINEMATIC TRANSITION
+      ====================================================== */}
 
       <AnimatePresence mode="wait">
         {showAuth && (
           <motion.div
-            key="auth-screen"
+            key="soulmirror-auth"
             initial={{
               opacity: 0,
-              scale: 1.04,
-              y: 30,
-              filter: "blur(18px)",
             }}
             animate={{
               opacity: 1,
-              scale: 1,
-              y: 0,
-              filter: "blur(0px)",
             }}
             exit={{
               opacity: 0,
-              scale: 1.02,
-              y: -25,
-              filter: "blur(14px)",
             }}
             transition={{
-              duration: 1.15,
+              duration: 0.7,
               ease: [0.16, 1, 0.3, 1],
             }}
             className="
@@ -174,12 +197,39 @@ export function SoulSpace() {
               bg-[#050505]
             "
           >
-            {/* Atmospheric transition glow */}
+            {/* =================================================
+                DARK TRANSITION LAYER
+            ================================================== */}
 
             <motion.div
               initial={{
                 opacity: 0,
-                scale: 0.7,
+              }}
+              animate={{
+                opacity: 1,
+              }}
+              exit={{
+                opacity: 0,
+              }}
+              transition={{
+                duration: 1,
+              }}
+              className="
+                pointer-events-none
+                absolute
+                inset-0
+                bg-black/[0.82]
+              "
+            />
+
+            {/* =================================================
+                GOLD ATMOSPHERE
+            ================================================== */}
+
+            <motion.div
+              initial={{
+                opacity: 0,
+                scale: 0.5,
               }}
               animate={{
                 opacity: 1,
@@ -187,7 +237,46 @@ export function SoulSpace() {
               }}
               exit={{
                 opacity: 0,
-                scale: 1.2,
+                scale: 1.25,
+              }}
+              transition={{
+                duration: 1.5,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="
+                pointer-events-none
+                absolute
+                left-1/2
+                top-1/2
+                h-[650px]
+                w-[900px]
+                -translate-x-1/2
+                -translate-y-1/2
+                rounded-full
+                bg-[#D6B25E]/[0.025]
+                blur-[180px]
+              "
+            />
+
+            {/* =================================================
+                SECONDARY LIGHT
+            ================================================== */}
+
+            <motion.div
+              initial={{
+                opacity: 0,
+                x: -150,
+                y: 100,
+              }}
+              animate={{
+                opacity: 1,
+                x: 0,
+                y: 0,
+              }}
+              exit={{
+                opacity: 0,
+                x: 150,
+                y: -100,
               }}
               transition={{
                 duration: 1.4,
@@ -196,23 +285,56 @@ export function SoulSpace() {
               className="
                 pointer-events-none
                 absolute
-                left-1/2
-                top-1/2
-                h-[600px]
-                w-[900px]
-                -translate-x-1/2
-                -translate-y-1/2
+                left-[-250px]
+                top-[20%]
+                h-[500px]
+                w-[500px]
                 rounded-full
-                bg-[#D6B25E]/[0.035]
-                blur-[180px]
+                bg-white/[0.012]
+                blur-[160px]
               "
             />
 
-            {/* Auth */}
+            {/* =================================================
+                AUTH SCREEN
+            ================================================== */}
 
-            <AuthScreen />
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 40,
+                scale: 0.97,
+                filter: "blur(18px)",
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                filter: "blur(0px)",
+              }}
+              exit={{
+                opacity: 0,
+                y: -30,
+                scale: 1.015,
+                filter: "blur(14px)",
+              }}
+              transition={{
+                duration: 1.15,
+                delay: 0.12,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="
+                relative
+                z-10
+                min-h-screen
+              "
+            >
+              <AuthScreen />
+            </motion.div>
 
-            {/* Close */}
+            {/* =================================================
+                CLOSE BUTTON
+            ================================================== */}
 
             <motion.button
               type="button"
@@ -220,7 +342,7 @@ export function SoulSpace() {
               initial={{
                 opacity: 0,
                 x: 30,
-                filter: "blur(8px)",
+                filter: "blur(10px)",
               }}
               animate={{
                 opacity: 1,
@@ -230,12 +352,12 @@ export function SoulSpace() {
               exit={{
                 opacity: 0,
                 x: 30,
-                filter: "blur(8px)",
+                filter: "blur(10px)",
               }}
               transition={{
-                delay: 0.55,
+                delay: 0.65,
                 duration: 0.8,
-                ease: [0.22, 1, 0.36, 1],
+                ease: [0.16, 1, 0.3, 1],
               }}
               className="
                 fixed
@@ -256,6 +378,7 @@ export function SoulSpace() {
                 backdrop-blur-xl
                 transition-all
                 duration-500
+                hover:-translate-y-0.5
                 hover:border-white/[0.2]
                 hover:bg-white/[0.06]
                 hover:text-white
