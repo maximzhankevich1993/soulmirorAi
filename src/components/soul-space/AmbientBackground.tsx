@@ -1,4 +1,3 @@
-
 "use client";
 
 import { motion } from "framer-motion";
@@ -10,7 +9,7 @@ export function AmbientBackground() {
         pointer-events-none
         fixed
         inset-0
-        z-[-50]
+        z-0
         overflow-hidden
       "
     >
@@ -18,13 +17,7 @@ export function AmbientBackground() {
           DEEP CINEMATIC ATMOSPHERE
       ====================================================== */}
 
-      <div
-        className="
-          absolute
-          inset-0
-          bg-[#050505]
-        "
-      />
+      <div className="absolute inset-0 bg-[#050505]" />
 
       {/* =====================================================
           GOLDEN EON LIGHT
@@ -82,7 +75,7 @@ export function AmbientBackground() {
       />
 
       {/* =====================================================
-          CINEMATIC LIGHT THREADS
+          GOLDEN CINEMATIC LIGHT THREADS
       ====================================================== */}
 
       <svg
@@ -91,30 +84,33 @@ export function AmbientBackground() {
           inset-0
           h-full
           w-full
-          opacity-20
+          opacity-60
         "
         viewBox="0 0 1200 800"
         preserveAspectRatio="none"
         fill="none"
       >
-        {/* GOLDEN CURVED LINE */}
+        {/* Main flowing golden line */}
 
         <motion.path
           d="
-            M-100 500
-            C250 300
-            500 650
-            900 350
-            C1100 200
-            1300 300
-            1400 100
+            M-150 560
+            C80 400
+            180 280
+            390 390
+            C570 485
+            670 690
+            900 500
+            C1080 350
+            1170 170
+            1400 260
           "
           stroke="#D6B25E"
           strokeWidth="1"
-          vectorEffect="non-scaling-stroke"
+          strokeLinecap="round"
           animate={{
-            pathLength: [0.2, 1, 0.2],
-            opacity: [0.35, 0.9, 0.35],
+            pathLength: [0.15, 1, 0.15],
+            opacity: [0.15, 0.75, 0.15],
           }}
           transition={{
             duration: 14,
@@ -123,24 +119,27 @@ export function AmbientBackground() {
           }}
         />
 
-        {/* SECOND GOLDEN CURVED LINE */}
+        {/* Second large flowing line */}
 
         <motion.path
           d="
-            M-200 150
-            C150 500
-            450 100
-            800 420
-            C1050 650
-            1250 400
-            1400 550
+            M-200 170
+            C100 340
+            260 510
+            510 400
+            C730 305
+            790 100
+            1050 220
+            C1180 280
+            1300 420
+            1450 350
           "
           stroke="#D6B25E"
           strokeWidth="0.8"
-          vectorEffect="non-scaling-stroke"
+          strokeLinecap="round"
           animate={{
-            pathLength: [0.15, 1, 0.15],
-            opacity: [0.15, 0.55, 0.15],
+            pathLength: [0.2, 1, 0.2],
+            opacity: [0.08, 0.55, 0.08],
           }}
           transition={{
             duration: 18,
@@ -150,28 +149,96 @@ export function AmbientBackground() {
           }}
         />
 
-        {/* WHITE CINEMATIC THREAD */}
+        {/* Third subtle crossing line */}
 
         <motion.path
           d="
-            M0 200
-            C300 450
-            650 100
-            1200 500
+            M-100 720
+            C220 620
+            300 180
+            600 300
+            C820 390
+            900 650
+            1220 520
+            C1320 480
+            1380 350
+            1450 220
           "
           stroke="#F4F1EA"
           strokeWidth="0.5"
-          vectorEffect="non-scaling-stroke"
+          strokeLinecap="round"
           animate={{
-            opacity: [0.1, 0.5, 0.1],
+            pathLength: [0.1, 1, 0.1],
+            opacity: [0.04, 0.28, 0.04],
           }}
           transition={{
-            duration: 10,
+            duration: 20,
             repeat: Infinity,
             ease: "easeInOut",
+            delay: 4,
+          }}
+        />
+
+        {/* Fourth golden wave */}
+
+        <motion.path
+          d="
+            M-200 350
+            C100 200
+            280 250
+            470 470
+            C650 680
+            850 620
+            1030 410
+            C1170 250
+            1300 220
+            1450 300
+          "
+          stroke="#D6B25E"
+          strokeWidth="0.6"
+          strokeLinecap="round"
+          animate={{
+            pathLength: [0.1, 1, 0.1],
+            opacity: [0.05, 0.4, 0.05],
+          }}
+          transition={{
+            duration: 24,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 6,
           }}
         />
       </svg>
+
+      {/* =====================================================
+          SECONDARY GOLDEN THREAD — MOBILE VISIBILITY
+      ====================================================== */}
+
+      <motion.div
+        animate={{
+          x: ["-20%", "20%", "-20%"],
+          rotate: [-4, 4, -4],
+          opacity: [0.08, 0.22, 0.08],
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="
+          absolute
+          left-[-20%]
+          top-[38%]
+          h-px
+          w-[140%]
+          rotate-[8deg]
+          bg-gradient-to-r
+          from-transparent
+          via-[#D6B25E]/70
+          to-transparent
+          blur-[1px]
+        "
+      />
 
       {/* =====================================================
           FLOATING PARTICLES
@@ -183,7 +250,9 @@ export function AmbientBackground() {
             key={i}
             animate={{
               y: [0, -80, 0],
+              x: [0, i % 2 === 0 ? 15 : -15, 0],
               opacity: [0.1, 0.5, 0.1],
+              scale: [0.7, 1.15, 0.7],
             }}
             transition={{
               duration: 5 + (i % 5),
@@ -197,10 +266,44 @@ export function AmbientBackground() {
               w-1
               rounded-full
               bg-[#D6B25E]
+              shadow-[0_0_8px_rgba(214,178,94,0.5)]
             "
             style={{
               left: `${(i * 37) % 100}%`,
               top: `${(i * 53) % 100}%`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* =====================================================
+          ADDITIONAL SOFT PARTICLES
+      ====================================================== */}
+
+      <div className="absolute inset-0">
+        {Array.from({ length: 12 }).map((_, i) => (
+          <motion.span
+            key={`soft-${i}`}
+            animate={{
+              y: [0, -120, 0],
+              opacity: [0.02, 0.18, 0.02],
+            }}
+            transition={{
+              duration: 8 + (i % 4),
+              repeat: Infinity,
+              delay: i * 0.6,
+              ease: "easeInOut",
+            }}
+            className="
+              absolute
+              h-[2px]
+              w-[2px]
+              rounded-full
+              bg-[#F4F1EA]
+            "
+            style={{
+              left: `${(i * 67) % 100}%`,
+              top: `${(i * 29) % 100}%`,
             }}
           />
         ))}
@@ -220,7 +323,18 @@ export function AmbientBackground() {
           to-black/60
         "
       />
+
+      {/* =====================================================
+          CENTER VIGNETTE
+      ====================================================== */}
+
+      <div
+        className="
+          absolute
+          inset-0
+          bg-[radial-gradient(circle_at_center,transparent_25%,rgba(5,5,5,0.18)_55%,rgba(5,5,5,0.65)_100%)]
+        "
+      />
     </div>
   );
 }
-
