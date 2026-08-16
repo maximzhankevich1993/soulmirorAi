@@ -3,15 +3,13 @@
 import { motion } from "framer-motion";
 
 export function AmbientBackground() {
-  const particles = Array.from({ length: 35 });
-
   return (
     <div
       className="
         pointer-events-none
         fixed
         inset-0
-        z-0
+        z-[-10]
         overflow-hidden
         bg-[#050505]
       "
@@ -23,18 +21,16 @@ export function AmbientBackground() {
       <div className="absolute inset-0 bg-[#050505]" />
 
       {/* =====================================================
-          GOLDEN CENTRAL ATMOSPHERE
+          CENTRAL GOLDEN ATMOSPHERE
       ====================================================== */}
 
       <motion.div
         animate={{
-          scale: [1, 1.12, 1],
-          opacity: [0.1, 0.2, 0.1],
-          x: [-30, 30, -30],
-          y: [20, -20, 20],
+          scale: [1, 1.08, 1],
+          opacity: [0.12, 0.22, 0.12],
         }}
         transition={{
-          duration: 14,
+          duration: 12,
           repeat: Infinity,
           ease: "easeInOut",
         }}
@@ -43,37 +39,9 @@ export function AmbientBackground() {
           left-1/2
           top-1/2
           h-[700px]
-          w-[1100px]
+          w-[1000px]
           -translate-x-1/2
           -translate-y-1/2
-          rounded-full
-          bg-[#D6B25E]
-          blur-[190px]
-        "
-      />
-
-      {/* =====================================================
-          SECOND GOLDEN LIGHT
-      ====================================================== */}
-
-      <motion.div
-        animate={{
-          x: [-180, 180, -180],
-          y: [80, -80, 80],
-          scale: [0.9, 1.1, 0.9],
-          opacity: [0.04, 0.11, 0.04],
-        }}
-        transition={{
-          duration: 22,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="
-          absolute
-          left-[-250px]
-          top-[25%]
-          h-[500px]
-          w-[900px]
           rounded-full
           bg-[#D6B25E]
           blur-[180px]
@@ -81,333 +49,254 @@ export function AmbientBackground() {
       />
 
       {/* =====================================================
-          PURPLE INTELLIGENCE LIGHT
+          HORIZONTAL GOLDEN LIGHT THREAD 01
       ====================================================== */}
 
       <motion.div
         animate={{
-          x: [80, -80, 80],
-          y: [-50, 70, -50],
-          scale: [1, 1.12, 1],
-          opacity: [0.025, 0.07, 0.025],
+          x: ["-35%", "15%", "-35%"],
+          y: ["0%", "-8%", "0%"],
+          scaleX: [0.95, 1.15, 0.95],
+          opacity: [0.25, 0.55, 0.25],
         }}
         transition={{
-          duration: 24,
+          duration: 18,
           repeat: Infinity,
           ease: "easeInOut",
         }}
         className="
           absolute
-          right-[-300px]
-          top-[15%]
-          h-[650px]
-          w-[700px]
-          rounded-full
-          bg-[#8B5CF6]
-          blur-[200px]
+          left-[-10%]
+          top-[27%]
+          h-[90px]
+          w-[120%]
+          rounded-[50%]
+          bg-[#D6B25E]/30
+          blur-[32px]
         "
       />
 
       {/* =====================================================
-          HORIZONTAL GOLDEN LIGHT THREADS
-      ====================================================== */}
-
-      <svg
-        className="
-          absolute
-          inset-0
-          h-full
-          w-full
-          overflow-visible
-        "
-        viewBox="0 0 1600 900"
-        preserveAspectRatio="none"
-        fill="none"
-      >
-        {/* -------------------------------------------------
-            LINE 1
-        -------------------------------------------------- */}
-
-        <motion.path
-          d="
-            M-300 300
-            C50 80 280 560 650 350
-            C950 180 1180 520 1900 250
-          "
-          stroke="#D6B25E"
-          strokeWidth="10"
-          strokeLinecap="round"
-          opacity="0.16"
-          filter="blur(14px)"
-          animate={{
-            d: [
-              `
-                M-300 300
-                C50 80 280 560 650 350
-                C950 180 1180 520 1900 250
-              `,
-              `
-                M-300 420
-                C120 620 350 120 720 390
-                C1050 620 1350 120 1900 400
-              `,
-              `
-                M-300 300
-                C50 80 280 560 650 350
-                C950 180 1180 520 1900 250
-              `,
-            ],
-          }}
-          transition={{
-            duration: 18,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-
-        {/* -------------------------------------------------
-            LINE 2
-        -------------------------------------------------- */}
-
-        <motion.path
-          d="
-            M-400 520
-            C0 720 300 260 620 480
-            C950 700 1200 250 2000 500
-          "
-          stroke="#D6B25E"
-          strokeWidth="7"
-          strokeLinecap="round"
-          opacity="0.12"
-          filter="blur(12px)"
-          animate={{
-            d: [
-              `
-                M-400 520
-                C0 720 300 260 620 480
-                C950 700 1200 250 2000 500
-              `,
-              `
-                M-400 430
-                C100 180 350 650 700 420
-                C1050 180 1400 650 2000 380
-              `,
-              `
-                M-400 520
-                C0 720 300 260 620 480
-                C950 700 1200 250 2000 500
-              `,
-            ],
-          }}
-          transition={{
-            duration: 21,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-
-        {/* -------------------------------------------------
-            LINE 3 — THINNER
-        -------------------------------------------------- */}
-
-        <motion.path
-          d="
-            M-300 650
-            C180 430 380 760 800 600
-            C1150 470 1350 700 1900 560
-          "
-          stroke="#F4F1EA"
-          strokeWidth="2"
-          strokeLinecap="round"
-          opacity="0.1"
-          filter="blur(5px)"
-          animate={{
-            x: [-80, 80, -80],
-            y: [30, -30, 30],
-          }}
-          transition={{
-            duration: 16,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-
-        {/* -------------------------------------------------
-            LINE 4 — UPPER
-        -------------------------------------------------- */}
-
-        <motion.path
-          d="
-            M-400 180
-            C100 400 350 50 700 220
-            C1050 390 1400 80 2000 220
-          "
-          stroke="#D6B25E"
-          strokeWidth="5"
-          strokeLinecap="round"
-          opacity="0.08"
-          filter="blur(10px)"
-          animate={{
-            y: [-30, 35, -30],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      </svg>
-
-      {/* =====================================================
-          MOVING GOLDEN LIGHT STREAK
+          HORIZONTAL GOLDEN LIGHT THREAD 02
       ====================================================== */}
 
       <motion.div
         animate={{
-          x: ["-120%", "120%"],
-          opacity: [0, 0.5, 0],
+          x: ["20%", "-25%", "20%"],
+          y: ["0%", "7%", "0%"],
+          scaleX: [1, 1.12, 1],
+          opacity: [0.18, 0.42, 0.18],
         }}
         transition={{
-          duration: 9,
+          duration: 23,
           repeat: Infinity,
           ease: "easeInOut",
-          repeatDelay: 4,
         }}
         className="
           absolute
-          left-0
-          top-[42%]
-          h-[80px]
-          w-[45%]
-          rounded-full
-          bg-gradient-to-r
-          from-transparent
-          via-[#D6B25E]/20
-          to-transparent
-          blur-[35px]
+          left-[-10%]
+          top-[43%]
+          h-[120px]
+          w-[120%]
+          rounded-[50%]
+          bg-[#D6B25E]/25
+          blur-[42px]
         "
       />
 
       {/* =====================================================
-          SECOND MOVING STREAK
+          HORIZONTAL GOLDEN LIGHT THREAD 03
       ====================================================== */}
 
       <motion.div
         animate={{
-          x: ["120%", "-120%"],
-          opacity: [0, 0.35, 0],
+          x: ["-20%", "25%", "-20%"],
+          y: ["0%", "-5%", "0%"],
+          scaleX: [1, 1.18, 1],
+          opacity: [0.15, 0.38, 0.15],
         }}
         transition={{
-          duration: 12,
+          duration: 27,
           repeat: Infinity,
           ease: "easeInOut",
-          repeatDelay: 2,
         }}
         className="
           absolute
-          right-0
-          top-[62%]
+          left-[-10%]
+          top-[61%]
           h-[100px]
-          w-[50%]
-          rounded-full
-          bg-gradient-to-r
-          from-transparent
-          via-[#D6B25E]/15
-          to-transparent
-          blur-[40px]
+          w-[120%]
+          rounded-[50%]
+          bg-[#D6B25E]/20
+          blur-[38px]
         "
       />
 
       {/* =====================================================
-          FLOATING PARTICLES
+          HORIZONTAL GOLDEN LIGHT THREAD 04
+      ====================================================== */}
+
+      <motion.div
+        animate={{
+          x: ["15%", "-20%", "15%"],
+          y: ["0%", "6%", "0%"],
+          scaleX: [1, 1.15, 1],
+          opacity: [0.12, 0.32, 0.12],
+        }}
+        transition={{
+          duration: 31,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="
+          absolute
+          left-[-10%]
+          top-[76%]
+          h-[80px]
+          w-[120%]
+          rounded-[50%]
+          bg-[#D6B25E]/20
+          blur-[34px]
+        "
+      />
+
+      {/* =====================================================
+          BRIGHT CORE OF THE MAIN LINE
+      ====================================================== */}
+
+      <motion.div
+        animate={{
+          x: ["-30%", "20%", "-30%"],
+          y: ["0%", "-8%", "0%"],
+          opacity: [0.08, 0.25, 0.08],
+        }}
+        transition={{
+          duration: 18,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="
+          absolute
+          left-[-10%]
+          top-[30%]
+          h-[4px]
+          w-[120%]
+          rounded-full
+          bg-[#D6B25E]
+          blur-[7px]
+        "
+      />
+
+      {/* =====================================================
+          SECOND BRIGHT CORE
+      ====================================================== */}
+
+      <motion.div
+        animate={{
+          x: ["20%", "-25%", "20%"],
+          y: ["0%", "7%", "0%"],
+          opacity: [0.05, 0.18, 0.05],
+        }}
+        transition={{
+          duration: 23,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="
+          absolute
+          left-[-10%]
+          top-[45%]
+          h-[3px]
+          w-[120%]
+          rounded-full
+          bg-[#D6B25E]
+          blur-[6px]
+        "
+      />
+
+      {/* =====================================================
+          GOLDEN FLOATING PARTICLES
       ====================================================== */}
 
       <div className="absolute inset-0">
-        {particles.map((_, index) => (
+        {Array.from({ length: 35 }).map((_, i) => (
           <motion.span
-            key={index}
+            key={i}
+            animate={{
+              x: [0, (i % 2 === 0 ? 35 : -35), 0],
+              y: [0, -70 - (i % 4) * 20, 0],
+              opacity: [0.08, 0.45, 0.08],
+              scale: [0.7, 1.2, 0.7],
+            }}
+            transition={{
+              duration: 5 + (i % 6),
+              repeat: Infinity,
+              delay: i * 0.25,
+              ease: "easeInOut",
+            }}
             className="
               absolute
               h-[2px]
               w-[2px]
               rounded-full
               bg-[#D6B25E]
-              shadow-[0_0_8px_rgba(214,178,94,0.7)]
+              shadow-[0_0_8px_rgba(214,178,94,0.8)]
             "
             style={{
-              left: `${(index * 37) % 100}%`,
-              top: `${(index * 53) % 100}%`,
-            }}
-            animate={{
-              y: [0, -80, 0],
-              x: [
-                0,
-                index % 2 === 0 ? 25 : -25,
-                0,
-              ],
-              opacity: [
-                0.05,
-                0.65,
-                0.05,
-              ],
-              scale: [
-                0.7,
-                1.4,
-                0.7,
-              ],
-            }}
-            transition={{
-              duration: 5 + (index % 6),
-              delay: index * 0.18,
-              repeat: Infinity,
-              ease: "easeInOut",
+              left: `${(i * 37) % 100}%`,
+              top: `${(i * 53) % 100}%`,
             }}
           />
         ))}
       </div>
 
       {/* =====================================================
-          SOFT PARTICLE CLOUD
+          SOFT GOLDEN HAZE
       ====================================================== */}
 
       <motion.div
         animate={{
-          opacity: [0.03, 0.08, 0.03],
-          scale: [1, 1.04, 1],
+          opacity: [0.04, 0.1, 0.04],
+          scale: [1, 1.06, 1],
         }}
         transition={{
-          duration: 12,
+          duration: 15,
           repeat: Infinity,
           ease: "easeInOut",
         }}
         className="
           absolute
           left-1/2
-          top-1/2
-          h-[800px]
-          w-[1400px]
+          top-[48%]
+          h-[500px]
+          w-[1100px]
           -translate-x-1/2
           -translate-y-1/2
           rounded-full
-          bg-[#D6B25E]
-          blur-[220px]
+          bg-[#D6B25E]/20
+          blur-[150px]
         "
       />
 
       {/* =====================================================
-          VIGNETTE
+          CINEMATIC VIGNETTE
       ====================================================== */}
 
       <div
         className="
           absolute
           inset-0
-          bg-[radial-gradient(circle_at_center,transparent_25%,rgba(5,5,5,.35)_70%,#050505_100%)]
+          bg-[radial-gradient(
+            ellipse_at_center,
+            transparent_25%,
+            rgba(5,5,5,0.2)_60%,
+            rgba(5,5,5,0.85)_100%
+          )]
         "
       />
 
       {/* =====================================================
-          TOP DARKNESS
+          TOP DARK FADE
       ====================================================== */}
 
       <div
@@ -423,7 +312,7 @@ export function AmbientBackground() {
       />
 
       {/* =====================================================
-          BOTTOM DARKNESS
+          BOTTOM DARK FADE
       ====================================================== */}
 
       <div
@@ -431,25 +320,10 @@ export function AmbientBackground() {
           absolute
           inset-x-0
           bottom-0
-          h-64
+          h-56
           bg-gradient-to-t
           from-[#050505]
           to-transparent
-        "
-      />
-
-      {/* =====================================================
-          CINEMATIC OVERLAY
-      ====================================================== */}
-
-      <div
-        className="
-          absolute
-          inset-0
-          bg-gradient-to-b
-          from-black/10
-          via-transparent
-          to-black/40
         "
       />
     </div>
