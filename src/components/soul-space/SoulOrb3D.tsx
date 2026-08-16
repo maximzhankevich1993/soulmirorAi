@@ -1,270 +1,265 @@
 "use client";
 
-import { Canvas } from "@react-three/fiber";
-import { Environment, Float } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { useRef } from "react";
+import * as THREE from "three";
 
-import { SoulCore } from "./SoulCore";
-import { SoulAura } from "./SoulAura";
-import { EnergyRing } from "./EnergyRing";
-import { EnergyThread } from "./EnergyThread";
-import { SoulLights } from "./SoulLights";
-import { SoulParticles } from "./SoulParticles";
-import { CinematicCamera } from "./CinematicCamera";
-
+import { useSoulOrbStore } from "@/store/soul-orb-store";
 import { SoulOrbInteraction } from "./SoulOrbInteraction";
 import { soulStates } from "./SoulOrbStates";
 
-import { useSoulOrbStore } from "@/store/soul-orb-store";
+function SoulCoreVisual({
+  color,
+  intensity,
+  scale,
+}: {
+  color: string;
+  intensity: number;
+  scale: number;
+}) {
+  const coreRef = useRef<THREE.Mesh>(null);
+  const glowRef = useRef<THREE.Mesh>(null);
 
+  useFrame(({ clock }) => {
+    const time = clock.getElapsedTime();
 
+    const pulse =
+      1 +
+      Math.sin(time * 1.4) * 0.035;
+
+    if (coreRef.current) {
+      coreRef.current.scale.setScalar(
+        scale * pulse
+      );
+    }
+
+    if (glowRef.current) {
+      const glowPulse =
+        1 +
+        Math.sin(time * 1.1) * 0.06;
+
+      glowRef.current.scale.setScalar(
+        scale * glowPulse
+      );
+    }
+  });
+
+  return (
+    <group>
+      {/* Soft outer glow */}
+      <mesh ref={glowRef}>
+        <sphereGeometry
+          args={[0.82, 64, 64]}
+        />
+
+        <meshBasicMaterial
+          color={color}
+          transparent
+          opacity={0.045 * intensity}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </mesh>
+
+      {/* Main core */}
+      <mesh ref={coreRef}>
+        <sphereGeometry
+          args={[0.48, 64, 64]}
+        />
+
+        <meshStandardMaterial
+          color="#090909"
+          emissive={color}
+          emissiveIntensity={0.8 * intensity}
+          roughness={0.18}
+          metalness={0.35}
+        />
+      </mesh>
+
+      {/* Inner light */}
+      <pointLight
+        color={color}
+        intensity={1.8 * intensity}
+        distance={2.8}
+        decay={2}
+      />
+    </group>
+  );
+}
+
+function EnergyRing({
+  radius,
+  color,
+  rotation,
+  speed,
+  opacity,
+}: {
+  radius: number;
+  color: string;
+  rotation: [number, number, number];
+  speed: number;
+  opacity: number;
+}) {
+  const ref = useRef<THREE.Mesh>(null);
+
+  useFrame(() => {
+    if (!ref.current) return;
+
+    ref.current.rotation.x +=
+      speed;
+
+    ref.current.rotation.z +=
+      speed * 0.35;
+  });
+
+  return (
+    <mesh
+      ref={ref}
+      rotation={rotation}
+    >
+      <torusGeometry
+        args={[
+          radius,
+          0.006,
+          12,
+          160,
+        ]}
+      />
+
+      <meshBasicMaterial
+        color={color}
+        transparent
+        opacity={opacity}
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+      />
+    </mesh>
+  );
+}
+
+function OrbScene({
+  color,
+  intensity,
+  scale,
+}: {
+  color: string;
+  intensity: number;
+  scale: number;
+}) {
+  return (
+    <>
+      {/* Extremely soft light */}
+      <ambientLight
+        intensity={0.08}
+      />
+
+      <pointLight
+        position={[0, 0, 2]}
+        color={color}
+        intensity={2 * intensity}
+        distance={5}
+        decay={2}
+      />
+
+      {/* Core */}
+      <SoulCoreVisual
+        color={color}
+        intensity={intensity}
+        scale={scale}
+      />
+
+      {/* Minimal energy structure */}
+      <EnergyRing
+        radius={0.82}
+        color={color}
+        rotation={[
+          Math.PI / 3,
+          0,
+          0,
+        ]}
+        speed={0.0015}
+        opacity={0.28 * intensity}
+      />
+
+      <EnergyRing
+        radius={0.94}
+        color={color}
+        rotation={[
+          0,
+          Math.PI / 2.5,
+          0,
+        ]}
+        speed={-0.001}
+        opacity={0.16 * intensity}
+      />
+    </>
+  );
+}
 
 export function SoulOrb3D() {
-
-
-  const {
-    scale,
-    intensity,
-  } =
+  const { scale, intensity } =
     SoulOrbInteraction();
-
-
 
   const currentState =
     useSoulOrbStore(
       (state) => state.state
     );
 
-
-
   const config =
     soulStates[currentState];
 
-
-
   return (
-
     <div
-
       className="
-      relative
-      h-[320px]
-      w-[320px]
-      md:h-[380px]
-      md:w-[380px]
+        relative
+        h-[280px]
+        w-[280px]
+        sm:h-[320px]
+        sm:w-[320px]
+        md:h-[360px]
+        md:w-[360px]
       "
-
     >
-
-
-      {/* cinematic aura background */}
-
+      {/* Atmospheric glow */}
       <div
-
         className="
-        absolute
-        inset-0
-        rounded-full
-        blur-[120px]
+          pointer-events-none
+          absolute
+          left-1/2
+          top-1/2
+          h-[180px]
+          w-[180px]
+          -translate-x-1/2
+          -translate-y-1/2
+          rounded-full
+          blur-[100px]
         "
-
         style={{
-
-          background:
-            config.color,
-
-          opacity:
-            0.15,
-
+          background: config.color,
+          opacity: 0.12,
         }}
-
       />
 
-
-
       <Canvas
-
-        camera={{
-
-          position:[
-            0,
-            0,
-            3.5,
-          ],
-
-          fov:45,
-
+        dpr={[1, 1.5]}
+        gl={{
+          antialias: true,
+          alpha: true,
         }}
-
+        camera={{
+          position: [0, 0, 3.2],
+          fov: 42,
+        }}
       >
-
-
-
-        <CinematicCamera />
-
-
-
-        <SoulLights
-
-          color={
-            config.color
+        <OrbScene
+          color={config.color}
+          intensity={
+            config.intensity *
+            intensity
           }
-
+          scale={scale}
         />
-
-
-
-        <Environment
-
-          preset="night"
-
-        />
-
-
-
-        <Float
-
-          speed={1.5}
-
-          floatIntensity={0.35}
-
-        >
-
-
-
-          <group
-
-            scale={scale}
-
-          >
-
-
-
-            <SoulAura
-
-              color={
-                config.color
-              }
-
-              intensity={
-                config.intensity *
-                intensity
-              }
-
-            />
-
-
-
-            <SoulCore
-
-              color={
-                config.color
-              }
-
-              intensity={
-                config.intensity *
-                intensity
-              }
-
-            />
-
-
-
-            <EnergyThread
-
-              color={
-                config.emissive
-              }
-
-            />
-
-
-
-            <EnergyRing
-
-              radius={1.15}
-
-              speed={0.003}
-
-              rotation={[
-                0,
-                0,
-                0,
-              ]}
-
-              color={
-                config.color
-              }
-
-              intensity={
-                config.intensity * 2
-              }
-
-            />
-
-
-
-            <EnergyRing
-
-              radius={1.2}
-
-              speed={-0.002}
-
-              rotation={[
-                Math.PI / 2,
-                0,
-                0,
-              ]}
-
-              color={
-                config.color
-              }
-
-              intensity={
-                config.intensity * 2
-              }
-
-            />
-
-
-
-            <EnergyRing
-
-              radius={1.25}
-
-              speed={0.0015}
-
-              rotation={[
-                0,
-                Math.PI / 2,
-                0,
-              ]}
-
-              color={
-                config.color
-              }
-
-              intensity={
-                config.intensity * 2
-              }
-
-            />
-
-
-          </group>
-
-
-        </Float>
-
-
-
-        <SoulParticles />
-
-
       </Canvas>
-
-
     </div>
-
   );
-
 }
