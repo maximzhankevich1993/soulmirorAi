@@ -24,9 +24,18 @@ import { CinematicSection } from "./CinematicSection";
 
 import { AuthScreen } from "../../../components/auth/AuthScreen";
 
+type AuthMode = "login" | "register";
+
 export function SoulSpace() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
+  const [authMode, setAuthMode] = useState<AuthMode>("login");
+
+  /*
+   * =====================================================
+   * ONBOARDING
+   * =====================================================
+   */
 
   useEffect(() => {
     const seen = localStorage.getItem("soulmirror-onboarding");
@@ -41,7 +50,14 @@ export function SoulSpace() {
     setShowOnboarding(false);
   };
 
-  const handleOpenAuth = () => {
+  /*
+   * =====================================================
+   * AUTH
+   * =====================================================
+   */
+
+  const handleOpenAuth = (mode: AuthMode) => {
+    setAuthMode(mode);
     setShowAuth(true);
   };
 
@@ -102,7 +118,9 @@ export function SoulSpace() {
         ================================================== */}
 
         <CinematicSection>
-          <EonEcosystemSection />
+          <section id="ecosystem">
+            <EonEcosystemSection />
+          </section>
         </CinematicSection>
 
         {/* =================================================
@@ -178,15 +196,21 @@ export function SoulSpace() {
             key="soulmirror-auth"
             initial={{
               opacity: 0,
+              scale: 1.025,
+              filter: "blur(14px)",
             }}
             animate={{
               opacity: 1,
+              scale: 1,
+              filter: "blur(0px)",
             }}
             exit={{
               opacity: 0,
+              scale: 1.015,
+              filter: "blur(12px)",
             }}
             transition={{
-              duration: 0.7,
+              duration: 1,
               ease: [0.16, 1, 0.3, 1],
             }}
             className="
@@ -197,22 +221,15 @@ export function SoulSpace() {
               bg-[#050505]
             "
           >
-            {/* =================================================
-                DARK TRANSITION LAYER
-            ================================================== */}
+            {/* DARK TRANSITION */}
 
             <motion.div
-              initial={{
-                opacity: 0,
-              }}
-              animate={{
-                opacity: 1,
-              }}
-              exit={{
-                opacity: 0,
-              }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{
-                duration: 1,
+                duration: 1.2,
+                ease: "easeOut",
               }}
               className="
                 pointer-events-none
@@ -222,14 +239,12 @@ export function SoulSpace() {
               "
             />
 
-            {/* =================================================
-                GOLD ATMOSPHERE
-            ================================================== */}
+            {/* GOLD ATMOSPHERE */}
 
             <motion.div
               initial={{
                 opacity: 0,
-                scale: 0.5,
+                scale: 0.65,
               }}
               animate={{
                 opacity: 1,
@@ -237,10 +252,10 @@ export function SoulSpace() {
               }}
               exit={{
                 opacity: 0,
-                scale: 1.25,
+                scale: 1.2,
               }}
               transition={{
-                duration: 1.5,
+                duration: 1.6,
                 ease: [0.16, 1, 0.3, 1],
               }}
               className="
@@ -258,9 +273,7 @@ export function SoulSpace() {
               "
             />
 
-            {/* =================================================
-                SECONDARY LIGHT
-            ================================================== */}
+            {/* SECONDARY LIGHT */}
 
             <motion.div
               initial={{
@@ -295,16 +308,14 @@ export function SoulSpace() {
               "
             />
 
-            {/* =================================================
-                AUTH SCREEN
-            ================================================== */}
+            {/* AUTH SCREEN */}
 
             <motion.div
               initial={{
                 opacity: 0,
-                y: 40,
-                scale: 0.97,
-                filter: "blur(18px)",
+                y: 35,
+                scale: 0.975,
+                filter: "blur(16px)",
               }}
               animate={{
                 opacity: 1,
@@ -314,13 +325,13 @@ export function SoulSpace() {
               }}
               exit={{
                 opacity: 0,
-                y: -30,
+                y: -25,
                 scale: 1.015,
-                filter: "blur(14px)",
+                filter: "blur(12px)",
               }}
               transition={{
                 duration: 1.15,
-                delay: 0.12,
+                delay: 0.1,
                 ease: [0.16, 1, 0.3, 1],
               }}
               className="
@@ -329,20 +340,18 @@ export function SoulSpace() {
                 min-h-screen
               "
             >
-              <AuthScreen />
+              <AuthScreen mode={authMode} />
             </motion.div>
 
-            {/* =================================================
-                CLOSE BUTTON
-            ================================================== */}
+            {/* CLOSE */}
 
             <motion.button
               type="button"
               onClick={handleCloseAuth}
               initial={{
                 opacity: 0,
-                x: 30,
-                filter: "blur(10px)",
+                x: 25,
+                filter: "blur(8px)",
               }}
               animate={{
                 opacity: 1,
@@ -351,11 +360,11 @@ export function SoulSpace() {
               }}
               exit={{
                 opacity: 0,
-                x: 30,
-                filter: "blur(10px)",
+                x: 25,
+                filter: "blur(8px)",
               }}
               transition={{
-                delay: 0.65,
+                delay: 0.6,
                 duration: 0.8,
                 ease: [0.16, 1, 0.3, 1],
               }}
