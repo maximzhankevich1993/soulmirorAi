@@ -9,7 +9,7 @@ import {
 import { ArrowRight } from "lucide-react";
 import { useRef } from "react";
 
-import { SoulOrb3D } from "./SoulOrb3D";
+import { SoulMirrorSignal } from "./SoulMirrorSignal";
 
 export function SoulSpaceHero() {
   const ref = useRef<HTMLDivElement>(null);
@@ -19,16 +19,16 @@ export function SoulSpaceHero() {
     offset: ["start start", "end start"],
   });
 
-  const orbY = useTransform(
+  const signalY = useTransform(
     scrollYProgress,
     [0, 1],
-    [0, -180]
+    [0, -140]
   );
 
-  const orbScale = useTransform(
+  const signalScale = useTransform(
     scrollYProgress,
     [0, 1],
-    [1, 0.85]
+    [1, 0.9]
   );
 
   const opacity = useTransform(
@@ -57,12 +57,12 @@ export function SoulSpaceHero() {
           pointer-events-none
           absolute
           left-1/2
-          top-20
-          h-[700px]
-          w-[700px]
+          top-10
+          h-[600px]
+          w-[900px]
           -translate-x-1/2
           rounded-full
-          bg-[#D6B25E]/10
+          bg-[#D6B25E]/[0.045]
           blur-[180px]
         "
       />
@@ -71,13 +71,14 @@ export function SoulSpaceHero() {
         className="
           pointer-events-none
           absolute
-          right-[-200px]
-          top-1/3
+          left-1/2
+          top-1/2
           h-[500px]
-          w-[500px]
+          w-[900px]
+          -translate-x-1/2
           rounded-full
-          bg-[#8B5CF6]/10
-          blur-[180px]
+          bg-white/[0.015]
+          blur-[160px]
         "
       />
 
@@ -92,7 +93,7 @@ export function SoulSpaceHero() {
           z-10
           mx-auto
           flex
-          max-w-6xl
+          max-w-7xl
           flex-col
           items-center
         "
@@ -151,14 +152,14 @@ export function SoulSpaceHero() {
             whitespace-nowrap
             text-center
             font-[family:var(--font-cormorant)]
-            text-[64px]
+            text-[58px]
             font-light
             leading-none
             tracking-[0.04em]
             text-[#F4F1EA]
-            sm:text-[82px]
-            md:text-[110px]
-            lg:text-[132px]
+            sm:text-[78px]
+            md:text-[105px]
+            lg:text-[128px]
           "
         >
           SoulMirror
@@ -248,18 +249,18 @@ export function SoulSpaceHero() {
         </motion.p>
 
         {/* =========================
-            SOUL ORB
+            SOULMIRROR SIGNAL
         ========================== */}
 
         <motion.div
           style={{
-            y: orbY,
-            scale: orbScale,
+            y: signalY,
+            scale: signalScale,
           }}
           initial={{
             opacity: 0,
-            scale: 0.8,
-            filter: "blur(10px)",
+            scale: 0.94,
+            filter: "blur(8px)",
           }}
           animate={{
             opacity: 1,
@@ -267,13 +268,21 @@ export function SoulSpaceHero() {
             filter: "blur(0px)",
           }}
           transition={{
-            delay: 1.6,
-            duration: 1.6,
+            delay: 1.55,
+            duration: 1.8,
             ease: [0.22, 1, 0.36, 1],
           }}
-          className="mt-16"
+          className="
+            relative
+            mt-8
+            h-[260px]
+            w-full
+            max-w-[1200px]
+            sm:h-[300px]
+            md:h-[340px]
+          "
         >
-          <SoulOrb3D />
+          <SoulMirrorSignal />
         </motion.div>
 
         {/* =========================
@@ -290,11 +299,13 @@ export function SoulSpaceHero() {
             y: 0,
           }}
           transition={{
-            delay: 2,
+            delay: 1.9,
             duration: 1,
           }}
           className="
-            mt-10
+            relative
+            z-20
+            mt-2
             flex
             flex-col
             items-center
@@ -314,7 +325,7 @@ export function SoulSpaceHero() {
               py-4
               font-semibold
               text-black
-              shadow-[0_0_60px_rgba(214,178,94,.35)]
+              shadow-[0_0_50px_rgba(214,178,94,.22)]
               transition-transform
               duration-300
               hover:scale-[1.03]
