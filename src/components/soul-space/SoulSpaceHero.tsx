@@ -1,121 +1,53 @@
 "use client";
 
-import {
-  motion,
-  useScroll,
-  useTransform,
-} from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
-import { ArrowRight } from "lucide-react";
+import { OnboardingRitual } from "@/components/onboarding/OnboardingRitual";
+import { EonEcosystemSection } from "../../../components/sections/eon-ecosystem-section";
 
-import {
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { AmbientBackground } from "./AmbientBackground";
+import { SoulSpaceHero } from "./SoulSpaceHero";
+import { LatestInsight } from "./LatestInsight";
+import { SoulProfile } from "./SoulProfile";
+import { PremiumCard } from "./PremiumCard";
+import { CursorAtmosphere } from "./CursorAtmosphere";
+import { SoulScanConsole } from "./SoulScanConsole";
+import { DreamConsole } from "./DreamConsole";
+import { TarotConsole } from "./TarotConsole";
+import { SoulJourneyTimeline } from "./SoulJourneyTimeline";
+import { SoulMemoryLoader } from "./SoulMemoryLoader";
+import { SoulDashboard } from "./SoulDashboard";
+import { DailyReflection } from "./DailyReflection";
+import { GlobalParticles } from "./GlobalParticles";
+import { CinematicSection } from "./CinematicSection";
 
-interface SoulSpaceHeroProps {
-  onOpenAuth?: (mode: "login" | "register") => void;
-}
+import { AuthScreen } from "../../../components/auth/AuthScreen";
 
-const letters = "SoulMirror".split("");
+type AuthMode = "login" | "register";
 
-export function SoulSpaceHero({
-  onOpenAuth,
-}: SoulSpaceHeroProps) {
-  const ref = useRef<HTMLDivElement>(null);
+export function SoulSpace() {
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
+  const [authMode, setAuthMode] = useState<AuthMode>("login");
 
-  const [started, setStarted] = useState(false);
+  /*
+   * =====================================================
+   * ONBOARDING
+   * =====================================================
+   */
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
-      setStarted(true);
-    }, 100);
+    const seen = localStorage.getItem("soulmirror-onboarding");
 
-    return () => {
-      window.clearTimeout(timer);
-    };
+    if (!seen) {
+      setShowOnboarding(true);
+    }
   }, []);
 
-  /*
-   * =====================================================
-   * HERO SCROLL
-   * =====================================================
-   */
-
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end start"],
-  });
-
-  const heroY = useTransform(
-    scrollYProgress,
-    [0, 1],
-    [0, -140]
-  );
-
-  const heroScale = useTransform(
-    scrollYProgress,
-    [0, 1],
-    [1, 0.94]
-  );
-
-  const heroOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.7, 1],
-    [1, 1, 0]
-  );
-
-  const heroBlur = useTransform(
-    scrollYProgress,
-    [0, 0.7, 1],
-    [
-      "blur(0px)",
-      "blur(0px)",
-      "blur(8px)",
-    ]
-  );
-
-  /*
-   * =====================================================
-   * START EXPERIENCE
-   * =====================================================
-   */
-
-  const handleStartExperience = () => {
-    const target = document.getElementById(
-      "features"
-    );
-
-    if (!target) return;
-
-    target.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-  };
-
-  /*
-   * =====================================================
-   * ECOSYSTEM
-   * =====================================================
-   */
-
-  const handleExploreEcosystem = (
-    event: React.MouseEvent<HTMLAnchorElement>
-  ) => {
-    event.preventDefault();
-
-    const target = document.getElementById(
-      "ecosystem"
-    );
-
-    if (!target) return;
-
-    target.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
+  const handleOnboardingContinue = () => {
+    localStorage.setItem("soulmirror-onboarding", "true");
+    setShowOnboarding(false);
   };
 
   /*
@@ -124,608 +56,351 @@ export function SoulSpaceHero({
    * =====================================================
    */
 
-  const handleSignIn = () => {
-    onOpenAuth?.("login");
+  const handleOpenAuth = (mode: AuthMode) => {
+    setAuthMode(mode);
+    setShowAuth(true);
   };
 
-  const handleSignUp = () => {
-    onOpenAuth?.("register");
+  const handleCloseAuth = () => {
+    setShowAuth(false);
   };
 
   return (
-    <section
-      ref={ref}
-      className="
-        relative
-        flex
-        min-h-screen
-        items-center
-        justify-center
-        overflow-hidden
-        px-6
-        py-24
-      "
-    >
+    <>
       {/* =====================================================
-          AMBIENT LIGHT
+          ONBOARDING
       ====================================================== */}
 
-      <motion.div
-        initial={{
-          opacity: 0,
-          scale: 0.8,
-        }}
-        animate={{
-          opacity: started ? 1 : 0,
-          scale: started ? 1 : 0.8,
-        }}
-        transition={{
-          duration: 2,
-          ease: [0.16, 1, 0.3, 1],
-        }}
-        className="
-          pointer-events-none
-          absolute
-          left-1/2
-          top-1/2
-          h-[700px]
-          w-[1000px]
-          -translate-x-1/2
-          -translate-y-1/2
-          rounded-full
-          bg-[#D6B25E]/[0.025]
-          blur-[180px]
-        "
-      />
-
-      <motion.div
-        initial={{
-          opacity: 0,
-          scale: 0.7,
-        }}
-        animate={{
-          opacity: started ? 1 : 0,
-          scale: started ? 1 : 0.7,
-        }}
-        transition={{
-          delay: 0.35,
-          duration: 2,
-          ease: [0.16, 1, 0.3, 1],
-        }}
-        className="
-          pointer-events-none
-          absolute
-          right-[-300px]
-          top-[20%]
-          h-[500px]
-          w-[500px]
-          rounded-full
-          bg-[#8B5CF6]/[0.018]
-          blur-[180px]
-        "
-      />
+      <AnimatePresence>
+        {showOnboarding && (
+          <OnboardingRitual
+            onContinue={handleOnboardingContinue}
+          />
+        )}
+      </AnimatePresence>
 
       {/* =====================================================
-          AUTH BUTTONS
+          MAIN SOUL SPACE
       ====================================================== */}
 
-      <motion.div
-        initial={{
-          opacity: 0,
-          y: -30,
-          x: 20,
-          filter: "blur(12px)",
-        }}
-        animate={{
-          opacity: started ? 1 : 0,
-          y: started ? 0 : -30,
-          x: started ? 0 : 20,
-          filter: started
-            ? "blur(0px)"
-            : "blur(12px)",
-        }}
-        transition={{
-          delay: 0.65,
-          duration: 1.2,
-          ease: [0.16, 1, 0.3, 1],
-        }}
-        className="
-          absolute
-          right-5
-          top-5
-          z-30
-          flex
-          items-center
-          gap-2
-          sm:right-8
-          sm:top-8
-          md:right-10
-          md:top-10
-        "
-      >
-        {/* SIGN IN */}
-
-        <motion.button
-          type="button"
-          onClick={handleSignIn}
-          whileHover={{
-            y: -2,
-            scale: 1.025,
-          }}
-          whileTap={{
-            scale: 0.96,
-          }}
-          className="
-            cursor-pointer
-            rounded-full
-            border
-            border-white/[0.08]
-            bg-white/[0.025]
-            px-5
-            py-2.5
-            text-[10px]
-            uppercase
-            tracking-[0.28em]
-            text-white/45
-            backdrop-blur-xl
-            transition-all
-            duration-500
-            hover:border-white/[0.2]
-            hover:bg-white/[0.06]
-            hover:text-white
-          "
-        >
-          Sign In
-        </motion.button>
-
-        {/* SIGN UP */}
-
-        <motion.button
-          type="button"
-          onClick={handleSignUp}
-          whileHover={{
-            y: -2,
-            scale: 1.025,
-          }}
-          whileTap={{
-            scale: 0.96,
-          }}
-          className="
-            cursor-pointer
-            rounded-full
-            border
-            border-white/[0.14]
-            bg-white/[0.055]
-            px-5
-            py-2.5
-            text-[10px]
-            uppercase
-            tracking-[0.28em]
-            text-white/75
-            backdrop-blur-xl
-            shadow-[0_8px_30px_rgba(0,0,0,0.18)]
-            transition-all
-            duration-500
-            hover:border-white/[0.28]
-            hover:bg-white/[0.09]
-            hover:text-white
-            hover:shadow-[0_15px_50px_rgba(255,255,255,0.06)]
-          "
-        >
-          Sign Up
-        </motion.button>
-      </motion.div>
-
-      {/* =====================================================
-          HERO
-      ====================================================== */}
-
-      <motion.div
-        style={{
-          y: heroY,
-          scale: heroScale,
-          opacity: heroOpacity,
-          filter: heroBlur,
-        }}
-        className="
+      <main
+        className={`
           relative
-          z-10
-          flex
-          w-full
-          max-w-7xl
-          flex-col
-          items-center
-          text-center
-        "
+          min-h-screen
+          transition-[filter,transform,opacity]
+          duration-1000
+          ease-[cubic-bezier(0.16,1,0.3,1)]
+          ${
+            showAuth
+              ? "scale-[0.985] opacity-40 blur-[2px]"
+              : "scale-100 opacity-100 blur-0"
+          }
+        `}
       >
-        {/* =================================================
-            EON AI
-        ================================================== */}
+        <CursorAtmosphere />
 
-        <motion.p
-          initial={{
-            opacity: 0,
-            y: 25,
-            x: -20,
-            filter: "blur(10px)",
-          }}
-          animate={{
-            opacity: started ? 1 : 0,
-            y: started ? 0 : 25,
-            x: started ? 0 : -20,
-            filter: started
-              ? "blur(0px)"
-              : "blur(10px)",
-          }}
-          transition={{
-            duration: 1,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-          className="
-            text-[10px]
-            uppercase
-            tracking-[0.65em]
-            text-[#D6B25E]/80
-          "
-        >
-          EON AI
-        </motion.p>
+        <GlobalParticles />
+
+        <AmbientBackground />
+
+        <SoulMemoryLoader />
 
         {/* =================================================
-            SOULMIRROR
+            HERO
         ================================================== */}
 
-        <h1
-          className="
-            mt-8
-            flex
-            whitespace-nowrap
-            font-[family:var(--font-cormorant)]
-            text-[56px]
-            font-light
-            leading-none
-            tracking-[0.025em]
-            text-[#F4F1EA]
-            sm:text-[76px]
-            md:text-[104px]
-            lg:text-[128px]
-          "
-        >
-          {letters.map((letter, index) => (
-            <motion.span
-              key={`${letter}-${index}`}
-              initial={{
-                opacity: 0,
-                x:
-                  index % 2 === 0
-                    ? -140
-                    : 140,
-                y:
-                  index % 3 === 0
-                    ? -60
-                    : 60,
-                scale: 0.7,
-                rotate:
-                  index % 2 === 0
-                    ? -8
-                    : 8,
-                filter: "blur(18px)",
-              }}
-              animate={
-                started
-                  ? {
-                      opacity: 1,
-                      x: 0,
-                      y: 0,
-                      scale: 1,
-                      rotate: 0,
-                      filter: "blur(0px)",
-                    }
-                  : {
-                      opacity: 0,
-                      x:
-                        index % 2 === 0
-                          ? -140
-                          : 140,
-                      y:
-                        index % 3 === 0
-                          ? -60
-                          : 60,
-                      scale: 0.7,
-                      rotate:
-                        index % 2 === 0
-                          ? -8
-                          : 8,
-                      filter: "blur(18px)",
-                    }
-              }
-              transition={{
-                delay:
-                  0.25 +
-                  index * 0.11,
-                duration: 1.25,
-                ease: [
-                  0.16,
-                  1,
-                  0.3,
-                  1,
-                ],
-              }}
-              className="inline-block"
-            >
-              {letter}
-            </motion.span>
-          ))}
-        </h1>
-
-        {/* =================================================
-            GOLD LINE
-        ================================================== */}
-
-        <motion.div
-          initial={{
-            opacity: 0,
-            scaleX: 0,
-          }}
-          animate={{
-            opacity: started ? 1 : 0,
-            scaleX: started ? 1 : 0,
-          }}
-          transition={{
-            delay: 1.55,
-            duration: 1,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-          className="
-            mt-8
-            h-px
-            w-[120px]
-            origin-center
-            bg-gradient-to-r
-            from-transparent
-            via-[#D6B25E]/70
-            to-transparent
-          "
+        <SoulSpaceHero
+          onOpenAuth={handleOpenAuth}
         />
 
         {/* =================================================
-            TAGLINE
+            ECOSYSTEM
         ================================================== */}
 
-        <motion.p
-          initial={{
-            opacity: 0,
-            y: 15,
-          }}
-          animate={{
-            opacity: started ? 1 : 0,
-            y: started ? 0 : 15,
-          }}
-          transition={{
-            delay: 1.8,
-            duration: 1,
-          }}
-          className="
-            mt-7
-            text-[10px]
-            uppercase
-            tracking-[0.5em]
-            text-white/40
-          "
-        >
-          Reflect · Understand · Evolve
-        </motion.p>
+        <CinematicSection>
+          <section id="ecosystem">
+            <EonEcosystemSection />
+          </section>
+        </CinematicSection>
 
         {/* =================================================
-            DESCRIPTION
+            DASHBOARD
         ================================================== */}
 
-        <motion.p
-          initial={{
-            opacity: 0,
-            y: 20,
-          }}
-          animate={{
-            opacity: started ? 1 : 0,
-            y: started ? 0 : 20,
-          }}
-          transition={{
-            delay: 2.05,
-            duration: 1,
-          }}
-          className="
-            mt-8
-            max-w-xl
-            text-base
-            leading-8
-            text-white/45
-            md:text-lg
-          "
-        >
-          Your personal intelligence mirror.
-          <br />
-          AI designed to understand identity,
-          dreams, archetypes and evolution.
-        </motion.p>
+        <CinematicSection>
+          <SoulDashboard />
+        </CinematicSection>
 
         {/* =================================================
-            ACTIONS
+            DAILY REFLECTION
         ================================================== */}
 
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 25,
-            filter: "blur(8px)",
-          }}
-          animate={{
-            opacity: started ? 1 : 0,
-            y: started ? 0 : 25,
-            filter: started
-              ? "blur(0px)"
-              : "blur(8px)",
-          }}
-          transition={{
-            delay: 2.35,
-            duration: 1.1,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-          className="
-            mt-12
-            flex
-            flex-col
-            items-center
-            gap-3
-            sm:flex-row
-          "
-        >
-          {/* START EXPERIENCE */}
-
-          <motion.button
-            type="button"
-            onClick={handleStartExperience}
-            whileHover={{
-              y: -3,
-              scale: 1.025,
-            }}
-            whileTap={{
-              scale: 0.97,
-            }}
-            className="
-              group
-              flex
-              cursor-pointer
-              items-center
-              gap-3
-              rounded-full
-              border
-              border-white/[0.16]
-              bg-white/[0.07]
-              px-8
-              py-4
-              text-sm
-              font-medium
-              text-white
-              backdrop-blur-2xl
-              shadow-[0_10px_40px_rgba(0,0,0,0.25)]
-              transition-all
-              duration-500
-              hover:border-white/[0.3]
-              hover:bg-white/[0.11]
-              hover:shadow-[0_15px_60px_rgba(255,255,255,0.08)]
-            "
-          >
-            Start Experience
-
-            <ArrowRight
-              size={16}
-              strokeWidth={1.5}
-              className="
-                transition-transform
-                duration-500
-                group-hover:translate-x-1
-              "
-            />
-          </motion.button>
-
-          {/* EXPLORE */}
-
-          <motion.a
-            href="#ecosystem"
-            onClick={
-              handleExploreEcosystem
-            }
-            whileHover={{
-              y: -3,
-            }}
-            whileTap={{
-              scale: 0.97,
-            }}
-            className="
-              cursor-pointer
-              rounded-full
-              border
-              border-white/[0.07]
-              bg-transparent
-              px-8
-              py-4
-              text-[10px]
-              uppercase
-              tracking-[0.3em]
-              text-white/45
-              transition-all
-              duration-500
-              hover:border-white/[0.18]
-              hover:bg-white/[0.035]
-              hover:text-white/80
-            "
-          >
-            Explore Ecosystem
-          </motion.a>
-        </motion.div>
+        <CinematicSection>
+          <DailyReflection />
+        </CinematicSection>
 
         {/* =================================================
-            SCROLL INDICATOR
+            SOUL SCAN
         ================================================== */}
 
-        <motion.div
-          initial={{
-            opacity: 0,
-          }}
-          animate={{
-            opacity: started ? 1 : 0,
-          }}
-          transition={{
-            delay: 3.1,
-            duration: 1.2,
-          }}
-          className="
-            absolute
-            -bottom-28
-            left-1/2
-            hidden
-            -translate-x-1/2
-            flex-col
-            items-center
-            gap-3
-            md:flex
-          "
-        >
-          <span
-            className="
-              text-[9px]
-              uppercase
-              tracking-[0.45em]
-              text-white/20
-            "
-          >
-            Scroll to explore
-          </span>
+        <CinematicSection>
+          <section id="features">
+            <SoulScanConsole />
+          </section>
+        </CinematicSection>
 
+        {/* =================================================
+            DREAMS
+        ================================================== */}
+
+        <CinematicSection>
+          <section id="dreams">
+            <DreamConsole />
+
+            <TarotConsole />
+          </section>
+        </CinematicSection>
+
+        {/* =================================================
+            JOURNAL
+        ================================================== */}
+
+        <CinematicSection>
+          <section id="journal">
+            <SoulProfile />
+
+            <SoulJourneyTimeline />
+
+            <LatestInsight />
+          </section>
+        </CinematicSection>
+
+        {/* =================================================
+            PRICING
+        ================================================== */}
+
+        <CinematicSection>
+          <section id="pricing">
+            <PremiumCard />
+          </section>
+        </CinematicSection>
+      </main>
+
+      {/* =====================================================
+          AUTH CINEMATIC TRANSITION
+      ====================================================== */}
+
+      <AnimatePresence mode="wait">
+        {showAuth && (
           <motion.div
+            key="soulmirror-auth"
+            initial={{
+              opacity: 0,
+              scale: 1.025,
+              filter: "blur(14px)",
+            }}
             animate={{
-              y: [0, 5, 0],
-              opacity: [
-                0.25,
-                0.7,
-                0.25,
-              ],
+              opacity: 1,
+              scale: 1,
+              filter: "blur(0px)",
+            }}
+            exit={{
+              opacity: 0,
+              scale: 1.015,
+              filter: "blur(12px)",
             }}
             transition={{
-              duration: 2.2,
-              repeat: Infinity,
-              ease: "easeInOut",
+              duration: 1,
+              ease: [0.16, 1, 0.3, 1],
             }}
             className="
-              h-8
-              w-px
-              bg-gradient-to-b
-              from-white/30
-              to-transparent
+              fixed
+              inset-0
+              z-[99999]
+              overflow-y-auto
+              bg-[#050505]
             "
-          />
-        </motion.div>
-      </motion.div>
-    </section>
+          >
+            {/* DARK TRANSITION */}
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{
+                duration: 1.2,
+                ease: "easeOut",
+              }}
+              className="
+                pointer-events-none
+                absolute
+                inset-0
+                bg-black/[0.82]
+              "
+            />
+
+            {/* GOLD ATMOSPHERE */}
+
+            <motion.div
+              initial={{
+                opacity: 0,
+                scale: 0.65,
+              }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+              }}
+              exit={{
+                opacity: 0,
+                scale: 1.2,
+              }}
+              transition={{
+                duration: 1.6,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="
+                pointer-events-none
+                absolute
+                left-1/2
+                top-1/2
+                h-[650px]
+                w-[900px]
+                -translate-x-1/2
+                -translate-y-1/2
+                rounded-full
+                bg-[#D6B25E]/[0.025]
+                blur-[180px]
+              "
+            />
+
+            {/* SECONDARY LIGHT */}
+
+            <motion.div
+              initial={{
+                opacity: 0,
+                x: -150,
+                y: 100,
+              }}
+              animate={{
+                opacity: 1,
+                x: 0,
+                y: 0,
+              }}
+              exit={{
+                opacity: 0,
+                x: 150,
+                y: -100,
+              }}
+              transition={{
+                duration: 1.4,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="
+                pointer-events-none
+                absolute
+                left-[-250px]
+                top-[20%]
+                h-[500px]
+                w-[500px]
+                rounded-full
+                bg-white/[0.012]
+                blur-[160px]
+              "
+            />
+
+            {/* AUTH SCREEN */}
+
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 35,
+                scale: 0.975,
+                filter: "blur(16px)",
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                filter: "blur(0px)",
+              }}
+              exit={{
+                opacity: 0,
+                y: -25,
+                scale: 1.015,
+                filter: "blur(12px)",
+              }}
+              transition={{
+                duration: 1.15,
+                delay: 0.1,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="
+                relative
+                z-10
+                min-h-screen
+              "
+            >
+              <AuthScreen mode={authMode} />
+            </motion.div>
+
+            {/* CLOSE */}
+
+            <motion.button
+              type="button"
+              onClick={handleCloseAuth}
+              initial={{
+                opacity: 0,
+                x: 25,
+                filter: "blur(8px)",
+              }}
+              animate={{
+                opacity: 1,
+                x: 0,
+                filter: "blur(0px)",
+              }}
+              exit={{
+                opacity: 0,
+                x: 25,
+                filter: "blur(8px)",
+              }}
+              transition={{
+                delay: 0.6,
+                duration: 0.8,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="
+                fixed
+                right-5
+                top-5
+                z-[100000]
+                cursor-pointer
+                rounded-full
+                border
+                border-white/[0.08]
+                bg-white/[0.025]
+                px-5
+                py-2.5
+                text-[10px]
+                uppercase
+                tracking-[0.3em]
+                text-white/45
+                backdrop-blur-xl
+                transition-all
+                duration-500
+                hover:-translate-y-0.5
+                hover:border-white/[0.2]
+                hover:bg-white/[0.06]
+                hover:text-white
+                active:scale-95
+                sm:right-8
+                sm:top-8
+              "
+            >
+              Close
+            </motion.button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
