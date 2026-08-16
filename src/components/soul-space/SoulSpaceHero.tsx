@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -138,25 +139,32 @@ export function SoulSpaceHero({
         items-center
         justify-center
         overflow-hidden
+        bg-[#050505]
         px-6
         py-24
       "
     >
       {/* =====================================================
-          AMBIENT LIGHT
+          DEEP ATMOSPHERE
+      ====================================================== */}
+
+      <div className="pointer-events-none absolute inset-0 bg-[#050505]" />
+
+      {/* =====================================================
+          CENTRAL GOLDEN ATMOSPHERE
       ====================================================== */}
 
       <motion.div
         initial={{
           opacity: 0,
-          scale: 0.8,
+          scale: 0.75,
         }}
         animate={{
           opacity: started ? 1 : 0,
-          scale: started ? 1 : 0.8,
+          scale: started ? 1 : 0.75,
         }}
         transition={{
-          duration: 2,
+          duration: 2.4,
           ease: [0.16, 1, 0.3, 1],
         }}
         className="
@@ -164,40 +172,214 @@ export function SoulSpaceHero({
           absolute
           left-1/2
           top-1/2
-          h-[700px]
-          w-[1000px]
+          h-[720px]
+          w-[720px]
           -translate-x-1/2
           -translate-y-1/2
           rounded-full
-          bg-[#D6B25E]/[0.025]
+          bg-[#D6B25E]/[0.035]
           blur-[180px]
         "
       />
 
+      {/* =====================================================
+          PURPLE INTELLIGENCE ATMOSPHERE
+      ====================================================== */}
+
       <motion.div
-        initial={{
-          opacity: 0,
-          scale: 0.7,
-        }}
         animate={{
-          opacity: started ? 1 : 0,
-          scale: started ? 1 : 0.7,
+          x: [-40, 40, -40],
+          y: [20, -20, 20],
+          opacity: [0.05, 0.12, 0.05],
+          scale: [1, 1.08, 1],
         }}
         transition={{
-          delay: 0.35,
-          duration: 2,
-          ease: [0.16, 1, 0.3, 1],
+          duration: 18,
+          repeat: Infinity,
+          ease: "easeInOut",
         }}
         className="
           pointer-events-none
           absolute
-          right-[-300px]
-          top-[20%]
-          h-[500px]
-          w-[500px]
+          bottom-[-150px]
+          right-[-150px]
+          h-[550px]
+          w-[550px]
           rounded-full
-          bg-[#8B5CF6]/[0.018]
+          bg-[#8B5CF6]
           blur-[180px]
+        "
+      />
+
+      {/* =====================================================
+          GOLDEN CINEMATIC LIGHT THREADS
+      ====================================================== */}
+
+      <motion.svg
+        initial={{
+          opacity: 0,
+        }}
+        animate={{
+          opacity: started ? 1 : 0,
+        }}
+        transition={{
+          duration: 2.5,
+          delay: 0.4,
+        }}
+        className="
+          pointer-events-none
+          absolute
+          inset-0
+          h-full
+          w-full
+          overflow-visible
+        "
+        viewBox="0 0 1440 900"
+        preserveAspectRatio="none"
+        fill="none"
+      >
+        {/* Main sweeping line */}
+
+        <motion.path
+          d="
+            M -180 610
+            C 100 420
+              270 360
+              500 510
+            C 760 680
+              930 760
+              1130 500
+            C 1260 330
+              1380 360
+              1600 180
+          "
+          stroke="#D6B25E"
+          strokeWidth="1.15"
+          strokeLinecap="round"
+          initial={{
+            pathLength: 0.15,
+            opacity: 0.08,
+          }}
+          animate={{
+            pathLength: [0.15, 1, 0.15],
+            pathOffset: [0, 0.05, 0],
+            opacity: [0.08, 0.5, 0.08],
+          }}
+          transition={{
+            duration: 15,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+
+        {/* Opposite sweeping line */}
+
+        <motion.path
+          d="
+            M -160 180
+            C 130 340
+              330 520
+              610 360
+            C 860 220
+              1050 110
+              1220 330
+            C 1320 470
+              1450 520
+              1610 410
+          "
+          stroke="#D6B25E"
+          strokeWidth="0.8"
+          strokeLinecap="round"
+          initial={{
+            pathLength: 0.1,
+            opacity: 0.04,
+          }}
+          animate={{
+            pathLength: [0.1, 0.85, 0.1],
+            opacity: [0.04, 0.32, 0.04],
+          }}
+          transition={{
+            duration: 18,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2,
+          }}
+        />
+
+        {/* Fine white/gold thread */}
+
+        <motion.path
+          d="
+            M -120 760
+            C 260 650
+              430 760
+              700 570
+            C 950 390
+              1150 420
+              1570 620
+          "
+          stroke="#F4F1EA"
+          strokeWidth="0.45"
+          strokeLinecap="round"
+          initial={{
+            pathLength: 0.1,
+            opacity: 0.02,
+          }}
+          animate={{
+            pathLength: [0.1, 1, 0.1],
+            opacity: [0.02, 0.18, 0.02],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 4,
+          }}
+        />
+
+        {/* Soft secondary golden line */}
+
+        <motion.path
+          d="
+            M -100 430
+            C 180 600
+              400 620
+              650 430
+            C 880 250
+              1080 250
+              1510 470
+          "
+          stroke="#D6B25E"
+          strokeWidth="0.5"
+          strokeLinecap="round"
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: [0.02, 0.2, 0.02],
+          }}
+          transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1,
+          }}
+        />
+      </motion.svg>
+
+      {/* =====================================================
+          DARK CINEMATIC OVERLAY
+      ====================================================== */}
+
+      <div
+        className="
+          pointer-events-none
+          absolute
+          inset-0
+          bg-gradient-to-b
+          from-black/20
+          via-transparent
+          to-black/65
         "
       />
 
@@ -239,6 +421,8 @@ export function SoulSpaceHero({
           md:top-10
         "
       >
+        {/* SIGN IN */}
+
         <motion.button
           type="button"
           onClick={handleSignIn}
@@ -251,7 +435,7 @@ export function SoulSpaceHero({
           }}
           className="
             cursor-pointer
-            rounded-full
+            rounded-2xl
             border
             border-white/[0.08]
             bg-white/[0.025]
@@ -262,6 +446,7 @@ export function SoulSpaceHero({
             tracking-[0.28em]
             text-white/45
             backdrop-blur-xl
+            shadow-[0_8px_30px_rgba(0,0,0,0.18)]
             transition-all
             duration-500
             hover:border-white/[0.2]
@@ -271,6 +456,8 @@ export function SoulSpaceHero({
         >
           Sign In
         </motion.button>
+
+        {/* SIGN UP */}
 
         <motion.button
           type="button"
@@ -284,7 +471,7 @@ export function SoulSpaceHero({
           }}
           className="
             cursor-pointer
-            rounded-full
+            rounded-2xl
             border
             border-white/[0.14]
             bg-white/[0.055]
@@ -295,7 +482,7 @@ export function SoulSpaceHero({
             tracking-[0.28em]
             text-white/75
             backdrop-blur-xl
-            shadow-[0_8px_30px_rgba(0,0,0,0.18)]
+            shadow-[0_10px_40px_rgba(0,0,0,0.25)]
             transition-all
             duration-500
             hover:border-white/[0.28]
@@ -330,6 +517,8 @@ export function SoulSpaceHero({
           text-center
         "
       >
+        {/* EON AI */}
+
         <motion.p
           initial={{
             opacity: 0,
@@ -358,6 +547,8 @@ export function SoulSpaceHero({
         >
           EON AI
         </motion.p>
+
+        {/* SOULMIRROR */}
 
         <h1
           className="
@@ -417,6 +608,8 @@ export function SoulSpaceHero({
           ))}
         </h1>
 
+        {/* GOLD LINE */}
+
         <motion.div
           initial={{
             opacity: 0,
@@ -443,6 +636,8 @@ export function SoulSpaceHero({
           "
         />
 
+        {/* TAGLINE */}
+
         <motion.p
           initial={{
             opacity: 0,
@@ -466,6 +661,8 @@ export function SoulSpaceHero({
         >
           Reflect · Understand · Evolve
         </motion.p>
+
+        {/* DESCRIPTION */}
 
         <motion.p
           initial={{
@@ -495,9 +692,7 @@ export function SoulSpaceHero({
           dreams, archetypes and evolution.
         </motion.p>
 
-        {/* =====================================================
-            ACTIONS
-        ====================================================== */}
+        {/* ACTIONS */}
 
         <motion.div
           initial={{
@@ -526,30 +721,32 @@ export function SoulSpaceHero({
             sm:flex-row
           "
         >
-          {/* START EXPERIENCE → SOUL SCAN */}
+          {/* START EXPERIENCE */}
 
           <motion.button
             type="button"
             onClick={handleStartExperience}
             whileHover={{
               y: -3,
-              scale: 1.025,
+              scale: 1.02,
             }}
             whileTap={{
               scale: 0.97,
             }}
             className="
               group
+              relative
               flex
+              h-14
               cursor-pointer
               items-center
               gap-3
-              rounded-full
+              overflow-hidden
+              rounded-2xl
               border
-              border-white/[0.16]
-              bg-white/[0.07]
+              border-white/[0.14]
+              bg-white/[0.055]
               px-8
-              py-4
               text-sm
               font-medium
               text-white
@@ -557,17 +754,37 @@ export function SoulSpaceHero({
               shadow-[0_10px_40px_rgba(0,0,0,0.25)]
               transition-all
               duration-500
-              hover:border-white/[0.3]
-              hover:bg-white/[0.11]
-              hover:shadow-[0_15px_60px_rgba(255,255,255,0.08)]
+              hover:border-white/[0.28]
+              hover:bg-white/[0.09]
+              hover:shadow-[0_15px_55px_rgba(255,255,255,0.06)]
             "
           >
-            Start Experience
+            <span
+              className="
+                pointer-events-none
+                absolute
+                inset-0
+                -translate-x-full
+                bg-gradient-to-r
+                from-transparent
+                via-white/[0.07]
+                to-transparent
+                transition-transform
+                duration-1000
+                group-hover:translate-x-full
+              "
+            />
+
+            <span className="relative z-10">
+              Start Experience
+            </span>
 
             <ArrowRight
               size={16}
               strokeWidth={1.5}
               className="
+                relative
+                z-10
                 transition-transform
                 duration-500
                 group-hover:translate-x-1
@@ -587,21 +804,25 @@ export function SoulSpaceHero({
               scale: 0.97,
             }}
             className="
+              flex
+              h-14
               cursor-pointer
-              rounded-full
+              items-center
+              justify-center
+              rounded-2xl
               border
-              border-white/[0.07]
-              bg-transparent
+              border-white/[0.08]
+              bg-white/[0.025]
               px-8
-              py-4
               text-[10px]
               uppercase
               tracking-[0.3em]
               text-white/45
+              backdrop-blur-xl
               transition-all
               duration-500
               hover:border-white/[0.18]
-              hover:bg-white/[0.035]
+              hover:bg-white/[0.05]
               hover:text-white/80
             "
           >
@@ -609,9 +830,7 @@ export function SoulSpaceHero({
           </motion.a>
         </motion.div>
 
-        {/* =====================================================
-            SCROLL INDICATOR
-        ====================================================== */}
+        {/* SCROLL INDICATOR */}
 
         <motion.div
           initial={{
@@ -667,6 +886,40 @@ export function SoulSpaceHero({
           />
         </motion.div>
       </motion.div>
+
+      {/* =====================================================
+          FLOATING PARTICLES
+      ====================================================== */}
+
+      <div className="pointer-events-none absolute inset-0">
+        {Array.from({ length: 18 }).map((_, i) => (
+          <motion.span
+            key={i}
+            animate={{
+              y: [0, -60, 0],
+              opacity: [0.05, 0.3, 0.05],
+            }}
+            transition={{
+              duration: 5 + (i % 5),
+              repeat: Infinity,
+              delay: i * 0.35,
+              ease: "easeInOut",
+            }}
+            className="
+              absolute
+              h-[2px]
+              w-[2px]
+              rounded-full
+              bg-[#D6B25E]
+            "
+            style={{
+              left: `${(i * 37) % 100}%`,
+              top: `${(i * 53) % 100}%`,
+            }}
+          />
+        ))}
+      </div>
     </section>
   );
 }
+
