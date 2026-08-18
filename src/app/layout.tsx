@@ -9,6 +9,7 @@ import "./globals.css";
 import { CinematicOverlay } from "../components/effects/cinematic-overlay";
 import { PageTransition } from "../components/providers/page-transition";
 import { SmoothScroll } from "../components/providers/smooth-scroll";
+import { Footer } from "../components/layout/footer";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -118,6 +119,7 @@ export default function RootLayout({
         className={`
           ${inter.variable}
           ${cormorant.variable}
+          min-h-screen
           bg-[#09090B]
           text-[#F4F1EA]
           antialiased
@@ -130,7 +132,11 @@ export default function RootLayout({
 
         <SmoothScroll>
           <PageTransition>
-            {children}
+            <div className="min-h-screen">
+              {children}
+            </div>
+
+            <Footer />
           </PageTransition>
         </SmoothScroll>
       </body>
