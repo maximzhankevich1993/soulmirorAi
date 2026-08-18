@@ -1,7 +1,7 @@
 import Link from "next/link";
+
 import { Container } from "@/components/ui/container";
 import { Logo } from "@/components/ui/logo";
-
 
 const footerLinks = [
   {
@@ -26,13 +26,12 @@ const footerLinks = [
     ],
   },
 
-
   {
     title: "EON Ecosystem",
     links: [
       {
         label: "SoulMirror",
-        href: "#",
+        href: "/",
       },
       {
         label: "Memora",
@@ -49,17 +48,16 @@ const footerLinks = [
     ],
   },
 
-
   {
     title: "Company",
     links: [
       {
-        label: "About EON AI",
-        href: "#",
+        label: "About",
+        href: "/about",
       },
       {
         label: "Contact",
-        href: "#",
+        href: "/contact",
       },
       {
         label: "Careers",
@@ -68,298 +66,267 @@ const footerLinks = [
     ],
   },
 
-
   {
     title: "Legal",
     links: [
       {
         label: "Privacy Policy",
-        href: "#",
+        href: "/privacy",
       },
       {
         label: "Terms of Service",
-        href: "#",
+        href: "/terms",
       },
     ],
   },
 ];
 
-
-
 export function Footer() {
-
   return (
-
     <footer
       className="
-      relative
-      mt-24
-      border-t
-      border-white/5
-      bg-[#050505]
+        relative
+        mt-24
+        overflow-hidden
+        border-t
+        border-white/[0.06]
+        bg-[#050505]
       "
     >
-
+      {/* Ambient glow */}
 
       <div
         className="
-        pointer-events-none
-        absolute
-        top-0
-        left-0
-        h-px
-        w-full
-        bg-gradient-to-r
-        from-transparent
-        via-[#D6B25E]/40
-        to-transparent
+          pointer-events-none
+          absolute
+          -top-40
+          left-1/2
+          h-[500px]
+          w-[700px]
+          -translate-x-1/2
+          rounded-full
+          bg-[#D6B25E]/[0.035]
+          blur-[150px]
         "
       />
 
+      {/* Top cinematic line */}
 
-
-      <Container
+      <div
         className="
-        py-20
+          pointer-events-none
+          absolute
+          left-0
+          top-0
+          h-px
+          w-full
+          bg-gradient-to-r
+          from-transparent
+          via-[#D6B25E]/30
+          to-transparent
         "
-      >
+      />
 
-
+      <Container className="relative py-20 md:py-24">
         <div
           className="
-          grid
-          gap-12
-          lg:grid-cols-12
+            grid
+            gap-16
+            lg:grid-cols-12
           "
         >
-
-
           {/* BRAND */}
 
-
           <div
             className="
-            lg:col-span-4
+              lg:col-span-4
             "
           >
-
-            <Logo />
-
-
-            <div
+            <Link
+              href="/"
               className="
-              mt-6
+                inline-flex
+                cursor-pointer
+                transition-opacity
+                duration-300
+                hover:opacity-80
               "
             >
-
-              <p
-                className="
-                text-sm
-                leading-relaxed
-                text-[#F4F1EA]/60
-                "
-              >
-                SoulMirror AI is the first personal
-                intelligence experience created by EON AI.
-                Explore identity, dreams, emotions and
-                human evolution through AI.
-              </p>
-
-
-            </div>
-
-
-
-            <div
-              className="
-              mt-6
-              text-xs
-              uppercase
-              tracking-[0.35em]
-              text-[#D6B25E]/70
-              "
-            >
-              A product by EON AI
-            </div>
-
-
-          </div>
-
-
-
-
-
-          {/* LINKS */}
-
-
-          <div
-            className="
-            grid
-            gap-10
-            sm:grid-cols-2
-            lg:col-span-8
-            lg:grid-cols-4
-            "
-          >
-
-
-            {
-              footerLinks.map((group)=>(
-
-
-                <div
-                  key={group.title}
-                >
-
-                  <h4
-                    className="
-                    text-sm
-                    font-medium
-                    text-[#F4F1EA]
-                    "
-                  >
-                    {group.title}
-                  </h4>
-
-
-
-                  <ul
-                    className="
-                    mt-5
-                    space-y-3
-                    "
-                  >
-
-                    {
-                      group.links.map((link)=>(
-
-                        <li
-                          key={link.label}
-                        >
-
-                          <Link
-
-                            href={link.href}
-
-                            className="
-                            text-sm
-                            text-[#F4F1EA]/50
-                            transition-all
-                            duration-300
-                            hover:text-[#D6B25E]
-                            "
-
-                          >
-
-                            {link.label}
-
-                          </Link>
-
-
-                        </li>
-
-
-                      ))
-                    }
-
-                  </ul>
-
-
-                </div>
-
-
-              ))
-            }
-
-
-          </div>
-
-
-        </div>
-
-
-
-
-
-        {/* BOTTOM */}
-
-
-        <div
-          className="
-          mt-16
-          flex
-          flex-col
-          gap-6
-          border-t
-          border-white/5
-          pt-8
-          sm:flex-row
-          sm:items-center
-          sm:justify-between
-          "
-        >
-
-
-          <div>
+              <Logo />
+            </Link>
 
             <p
               className="
-              text-xs
-              text-[#F4F1EA]/40
+                mt-7
+                max-w-sm
+                text-sm
+                leading-7
+                text-[#F4F1EA]/50
+              "
+            >
+              SoulMirror AI is a personal intelligence
+              experience created by EON AI — designed to
+              explore identity, emotions, dreams and
+              human potential.
+            </p>
+
+            <div
+              className="
+                mt-7
+                flex
+                items-center
+                gap-3
+              "
+            >
+              <div
+                className="
+                  h-px
+                  w-8
+                  bg-[#D6B25E]/50
+                "
+              />
+
+              <span
+                className="
+                  text-[9px]
+                  uppercase
+                  tracking-[0.4em]
+                  text-[#D6B25E]/70
+                "
+              >
+                A product by EON AI
+              </span>
+            </div>
+          </div>
+
+          {/* LINKS */}
+
+          <div
+            className="
+              grid
+              gap-12
+              sm:grid-cols-2
+              lg:col-span-8
+              lg:grid-cols-4
+            "
+          >
+            {footerLinks.map((group) => (
+              <div key={group.title}>
+                <h4
+                  className="
+                    text-[10px]
+                    uppercase
+                    tracking-[0.35em]
+                    text-[#F4F1EA]/70
+                  "
+                >
+                  {group.title}
+                </h4>
+
+                <ul className="mt-6 space-y-3.5">
+                  {group.links.map((link) => (
+                    <li key={link.label}>
+                      <Link
+                        href={link.href}
+                        className="
+                          group
+                          inline-flex
+                          cursor-pointer
+                          items-center
+                          text-sm
+                          text-[#F4F1EA]/40
+                          transition-all
+                          duration-300
+                          hover:translate-x-1
+                          hover:text-[#D6B25E]
+                        "
+                      >
+                        <span>{link.label}</span>
+
+                        <span
+                          className="
+                            ml-2
+                            w-0
+                            overflow-hidden
+                            text-[#D6B25E]/70
+                            opacity-0
+                            transition-all
+                            duration-300
+                            group-hover:w-3
+                            group-hover:opacity-100
+                          "
+                        >
+                          →
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* BOTTOM */}
+
+        <div
+          className="
+            mt-20
+            flex
+            flex-col
+            gap-6
+            border-t
+            border-white/[0.06]
+            pt-8
+            sm:flex-row
+            sm:items-center
+            sm:justify-between
+          "
+        >
+          <div>
+            <p
+              className="
+                text-xs
+                text-[#F4F1EA]/35
               "
             >
               © {new Date().getFullYear()} EON AI.
               All rights reserved.
             </p>
 
-
             <p
               className="
-              mt-2
-              text-xs
-              text-[#F4F1EA]/30
+                mt-2
+                text-[10px]
+                uppercase
+                tracking-[0.25em]
+                text-[#F4F1EA]/20
               "
             >
-              SoulMirror AI is a product by EON AI.
+              SoulMirror AI · Personal Intelligence
             </p>
-
-
           </div>
-
-
-
 
           <div
             className="
-            flex
-            gap-6
-            text-xs
-            text-[#F4F1EA]/40
+              flex
+              flex-wrap
+              gap-x-6
+              gap-y-2
+              text-[10px]
+              uppercase
+              tracking-[0.25em]
+              text-[#F4F1EA]/25
             "
           >
+            <span>Conscious AI</span>
 
-            <span>
-              Conscious AI
-            </span>
+            <span>Human Evolution</span>
 
-
-            <span>
-              Personal Intelligence
-            </span>
-
-
+            <span>Personal Intelligence</span>
           </div>
-
-
         </div>
-
-
-
       </Container>
-
-
     </footer>
-
   );
-
 }
