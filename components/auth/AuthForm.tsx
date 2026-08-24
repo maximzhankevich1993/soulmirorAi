@@ -41,6 +41,7 @@ export function AuthForm({
         setMessage(
           "Please enter your email and password."
         );
+
         setLoading(false);
         return;
       }
@@ -71,7 +72,7 @@ export function AuthForm({
         }
 
         /*
-         * User successfully authenticated.
+         * Successfully authenticated.
          * Enter the personal Dashboard.
          */
 
@@ -100,8 +101,8 @@ export function AuthForm({
       }
 
       /*
-       * If Supabase immediately creates a session,
-       * we can enter the Dashboard directly.
+       * Supabase can immediately create a session
+       * when email confirmation is disabled.
        */
 
       if (data.session && data.user) {
@@ -112,9 +113,8 @@ export function AuthForm({
       }
 
       /*
-       * If email confirmation is enabled,
-       * Supabase returns no session until the
-       * user confirms their email.
+       * Email confirmation is enabled.
+       * No session exists yet.
        */
 
       setMessage(
@@ -175,7 +175,9 @@ export function AuthForm({
             ease: [0.16, 1, 0.3, 1],
           }}
         >
-          {/* TITLE */}
+          {/* =========================================
+              TITLE
+          ========================================== */}
 
           <motion.div
             initial={{
@@ -238,9 +240,13 @@ export function AuthForm({
             />
           </motion.div>
 
-          {/* INPUTS */}
+          {/* =========================================
+              INPUTS
+          ========================================== */}
 
           <div className="space-y-3">
+            {/* EMAIL */}
+
             <motion.div
               initial={{
                 opacity: 0,
@@ -316,6 +322,8 @@ export function AuthForm({
                 "
               />
             </motion.div>
+
+            {/* PASSWORD */}
 
             <motion.div
               initial={{
@@ -403,7 +411,9 @@ export function AuthForm({
             </motion.div>
           </div>
 
-          {/* BUTTON */}
+          {/* =========================================
+              MAIN BUTTON
+          ========================================== */}
 
           <motion.button
             type="button"
@@ -487,7 +497,9 @@ export function AuthForm({
             </span>
           </motion.button>
 
-          {/* MODE SWITCH */}
+          {/* =========================================
+              MODE SWITCH
+          ========================================== */}
 
           <motion.div
             initial={{
@@ -543,7 +555,9 @@ export function AuthForm({
             </button>
           </motion.div>
 
-          {/* MESSAGE */}
+          {/* =========================================
+              MESSAGE
+          ========================================== */}
 
           <AnimatePresence mode="wait">
             {message && (
