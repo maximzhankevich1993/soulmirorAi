@@ -1,5 +1,5 @@
+
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
 
 import { Container } from "@/components/ui/container";
 import { Logo } from "@/components/ui/logo";
@@ -10,19 +10,19 @@ const footerGroups = [
     links: [
       {
         label: "Features",
-        href: "/#features",
+        href: "#features",
       },
       {
-        label: "Dream Analysis",
-        href: "/#dreams",
+        label: "Dreams",
+        href: "#dreams",
       },
       {
         label: "Journal",
-        href: "/#journal",
+        href: "#journal",
       },
       {
         label: "Pricing",
-        href: "/#pricing",
+        href: "#pricing",
       },
     ],
   },
@@ -39,12 +39,30 @@ const footerGroups = [
         href: "/contact",
       },
       {
-        label: "Sign In",
-        href: "/auth",
+        label: "Start Experience",
+        href: "#soul-scan",
+      },
+    ],
+  },
+
+  {
+    title: "EON Ecosystem",
+    links: [
+      {
+        label: "SoulMirror",
+        href: "/",
       },
       {
-        label: "Dashboard",
-        href: "/dashboard",
+        label: "Future Self",
+        href: "#",
+      },
+      {
+        label: "Memora",
+        href: "#",
+      },
+      {
+        label: "Parallel",
+        href: "#",
       },
     ],
   },
@@ -66,68 +84,72 @@ const footerGroups = [
 
 export function Footer() {
   return (
-    <footer className="relative mt-32 overflow-hidden border-t border-white/[0.07] bg-[#050505]">
-      {/* Ambient glow */}
+    <footer
+      className="
+        relative
+        mt-32
+        overflow-hidden
+        border-t
+        border-white/5
+        bg-[#050505]
+      "
+    >
+      {/* Cinematic top glow */}
       <div
         className="
           pointer-events-none
           absolute
-          -right-40
-          -top-40
-          h-[500px]
-          w-[500px]
-          rounded-full
-          bg-[#D6B25E]/[0.05]
-          blur-[150px]
-        "
-      />
-
-      <div
-        className="
-          pointer-events-none
-          absolute
-          -bottom-60
-          -left-40
-          h-[450px]
-          w-[450px]
-          rounded-full
-          bg-[#8B5CF6]/[0.035]
-          blur-[150px]
-        "
-      />
-
-      {/* Top cinematic line */}
-      <div
-        className="
-          pointer-events-none
-          absolute
-          left-0
+          left-1/2
           top-0
           h-px
           w-full
+          max-w-5xl
+          -translate-x-1/2
           bg-gradient-to-r
           from-transparent
-          via-[#D6B25E]/30
+          via-[#D6B25E]/40
           to-transparent
         "
       />
 
-      <Container className="relative z-10 py-20 md:py-28">
+      <div
+        className="
+          pointer-events-none
+          absolute
+          left-1/2
+          top-0
+          h-80
+          w-[600px]
+          -translate-x-1/2
+          rounded-full
+          bg-[#D6B25E]/[0.035]
+          blur-[120px]
+        "
+      />
+
+      <Container className="relative py-20 md:py-24">
         {/* Main footer */}
-        <div className="grid gap-16 lg:grid-cols-12">
+        <div
+          className="
+            grid
+            gap-16
+            lg:grid-cols-12
+          "
+        >
           {/* Brand */}
-          <div className="lg:col-span-5">
+          <div
+            className="
+              lg:col-span-4
+            "
+          >
             <Link
               href="/"
               className="
-                group
                 inline-flex
                 cursor-pointer
-                items-center
-                rounded-2xl
-                transition-all
+                transition-opacity
                 duration-300
-                hover:opacity-90
+                hover:opacity-80
               "
             >
               <Logo />
@@ -136,29 +158,28 @@ export function Footer() {
             <p
               className="
                 mt-7
-                max-w-md
+                max-w-sm
                 text-sm
-                leading-8
-                text-white/45
+                leading-7
+                text-[#F4F1EA]/50
               "
             >
-              A personal intelligence experience for
-              exploring identity, emotions, dreams and
-              the patterns shaping your inner world.
+              SoulMirror AI is a personal intelligence
+              experience designed to help you explore
+              emotions, dreams, identity and the patterns
+              that shape your inner world.
             </p>
 
             <div
               className="
-                mt-8
+                mt-7
                 inline-flex
                 items-center
                 gap-3
-                rounded-full
-                border
-                border-[#D6B25E]/15
-                bg-[#D6B25E]/[0.04]
-                px-4
-                py-2
+                text-[10px]
+                uppercase
+                tracking-[0.35em]
+                text-[#D6B25E]/70
               "
             >
               <span
@@ -167,218 +188,177 @@ export function Footer() {
                   w-1.5
                   rounded-full
                   bg-[#D6B25E]
-                  shadow-[0_0_12px_rgba(214,178,94,0.8)]
+                  shadow-[0_0_12px_rgba(214,178,94,0.7)]
                 "
               />
 
-              <span
-                className="
-                  text-[9px]
-                  uppercase
-                  tracking-[0.35em]
-                  text-[#D6B25E]/70
-                "
-              >
-                A product by EON AI
-              </span>
+              A product by EON AI
             </div>
           </div>
 
-          {/* Navigation */}
-          <div className="grid gap-12 sm:grid-cols-3 lg:col-span-7">
+          {/* Links */}
+          <div
+            className="
+              grid
+              gap-10
+              sm:grid-cols-2
+              lg:col-span-8
+              lg:grid-cols-4
+            "
+          >
             {footerGroups.map((group) => (
               <div key={group.title}>
                 <p
                   className="
                     text-[10px]
                     uppercase
-                    tracking-[0.4em]
+                    tracking-[0.35em]
                     text-[#D6B25E]/70
                   "
                 >
                   {group.title}
                 </p>
 
-                <ul className="mt-6 space-y-4">
-                  {group.links.map((link) => (
-                    <li key={link.label}>
-                      <Link
-                        href={link.href}
-                        className="
-                          group
-                          inline-flex
-                          cursor-pointer
-                          items-center
-                          gap-2
-                          text-sm
-                          text-white/45
-                          transition-all
-                          duration-300
-                          hover:text-[#F4F1EA]
-                        "
-                      >
-                        <span>{link.label}</span>
+                <ul className="mt-5 space-y-3">
+                  {group.links.map((link) => {
+                    const isComingSoon =
+                      link.href === "#";
 
-                        <ArrowUpRight
-                          size={12}
+                    return (
+                      <li key={link.label}>
+                        <Link
+                          href={link.href}
+                          scroll={
+                            link.href.startsWith("#")
+                              ? false
+                              : true
+                          }
                           className="
-                            opacity-0
-                            -translate-x-1
+                            group
+                            inline-flex
+                            cursor-pointer
+                            items-center
+                            gap-2
+                            text-sm
+                            text-[#F4F1EA]/50
                             transition-all
                             duration-300
-                            group-hover:translate-x-0
-                            group-hover:opacity-60
-                            group-hover:text-[#D6B25E]
+                            hover:text-[#F4F1EA]
                           "
-                        />
-                      </Link>
-                    </li>
-                  ))}
+                        >
+                          <span
+                            className="
+                              relative
+                              transition-colors
+                              duration-300
+                              group-hover:text-[#D6B25E]
+                            "
+                          >
+                            {link.label}
+                          </span>
+
+                          {isComingSoon && (
+                            <span
+                              className="
+                                rounded-full
+                                border
+                                border-[#8B5CF6]/20
+                                bg-[#8B5CF6]/5
+                                px-2
+                                py-0.5
+                                text-[7px]
+                                uppercase
+                                tracking-[0.2em]
+                                text-purple-300/60
+                              "
+                            >
+                              Soon
+                            </span>
+                          )}
+                        </Link>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Philosophy */}
+        {/* Divider */}
         <div
           className="
-            relative
-            mt-24
-            overflow-hidden
-            rounded-[32px]
-            border
-            border-white/[0.07]
-            bg-white/[0.02]
-            px-7
-            py-8
-            backdrop-blur-2xl
-            md:px-10
-            md:py-9
+            mt-20
+            h-px
+            bg-gradient-to-r
+            from-transparent
+            via-white/10
+            to-transparent
           "
-        >
-          <div
-            className="
-              pointer-events-none
-              absolute
-              inset-0
-              bg-gradient-to-r
-              from-[#D6B25E]/[0.03]
-              via-transparent
-              to-[#8B5CF6]/[0.03]
-            "
-          />
-
-          <div
-            className="
-              relative
-              flex
-              flex-col
-              gap-5
-              md:flex-row
-              md:items-center
-              md:justify-between
-            "
-          >
-            <div>
-              <p
-                className="
-                  text-[9px]
-                  uppercase
-                  tracking-[0.4em]
-                  text-[#D6B25E]/60
-                "
-              >
-                SoulMirror Philosophy
-              </p>
-
-              <p
-                className="
-                  mt-3
-                  font-[family:var(--font-cormorant)]
-                  text-2xl
-                  font-light
-                  text-[#F4F1EA]
-                  md:text-3xl
-                "
-              >
-                Technology should help us understand
-                ourselves.
-              </p>
-            </div>
-
-            <span
-              className="
-                text-[9px]
-                uppercase
-                tracking-[0.35em]
-                text-white/25
-              "
-            >
-              Conscious AI
-            </span>
-          </div>
-        </div>
+        />
 
         {/* Bottom */}
         <div
           className="
-            mt-10
+            mt-8
             flex
             flex-col
-            gap-5
-            border-t
-            border-white/[0.07]
-            pt-7
+            gap-6
             sm:flex-row
             sm:items-center
             sm:justify-between
           "
         >
           <div>
-            <p className="text-xs text-white/30">
+            <p
+              className="
+                text-xs
+                text-[#F4F1EA]/40
+              "
+            >
               © {new Date().getFullYear()} EON AI.
               All rights reserved.
             </p>
 
-            <p className="mt-2 text-[10px] text-white/20">
-              SoulMirror AI is a product by EON AI.
+            <p
+              className="
+                mt-2
+                text-[10px]
+                uppercase
+                tracking-[0.25em]
+                text-[#F4F1EA]/20
+              "
+            >
+              SoulMirror AI · Personal Intelligence
             </p>
           </div>
 
-          <div className="flex items-center gap-6">
-            <Link
-              href="/privacy"
-              className="
-                cursor-pointer
-                text-[10px]
-                uppercase
-                tracking-[0.25em]
-                text-white/25
-                transition-colors
-                hover:text-[#D6B25E]
-              "
-            >
-              Privacy
-            </Link>
+          <div
+            className="
+              flex
+              flex-wrap
+              items-center
+              gap-x-6
+              gap-y-2
+              text-[10px]
+              uppercase
+              tracking-[0.25em]
+              text-[#F4F1EA]/25
+            "
+          >
+            <span>Conscious AI</span>
 
-            <Link
-              href="/terms"
-              className="
-                cursor-pointer
-                text-[10px]
-                uppercase
-                tracking-[0.25em]
-                text-white/25
-                transition-colors
-                hover:text-[#D6B25E]
-              "
-            >
-              Terms
-            </Link>
+            <span className="hidden h-1 w-1 rounded-full bg-[#D6B25E]/40 sm:block" />
+
+            <span>Personal Intelligence</span>
+
+            <span className="hidden h-1 w-1 rounded-full bg-[#D6B25E]/40 sm:block" />
+
+            <span>EON AI</span>
           </div>
         </div>
       </Container>
     </footer>
   );
 }
+
