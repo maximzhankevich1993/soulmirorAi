@@ -2,18 +2,31 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { supabase } from "../../src/lib/supabaseClient";
 
-export function AuthForm() {
+interface AuthFormProps {
+  initialMode?: "login" | "register";
+}
+
+export function AuthForm({
+  initialMode = "login",
+}: AuthFormProps) {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const [loading, setLoading] = useState(false);
 
-  const [mode, setMode] = useState<"login" | "register">("login");
+  const [mode, setMode] = useState<"login" | "register">(
+    initialMode
+  );
 
-  const [message, setMessage] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(
+    null
+  );
 
   const isLogin = mode === "login";
 
@@ -25,13 +38,24 @@ export function AuthForm() {
       setMessage(null);
 
       if (!email.trim() || !password.trim()) {
-        setMessage("Please enter your email and password.");
+        setMessage(
+          "Please enter your email and password."
+        );
         setLoading(false);
         return;
       }
 
+      /*
+       * =========================================
+       * LOGIN
+       * =========================================
+       */
+
       if (mode === "login") {
-        const { error } = await supabase.auth.signInWithPassword({
+        const {
+          data,
+          error,
+        } = await supabase.auth.signInWithPassword({
           email: email.trim(),
           password,
         });
@@ -40,19 +64,62 @@ export function AuthForm() {
           throw error;
         }
 
-        setMessage("Welcome back to SoulMirror");
-      } else {
-        const { error } = await supabase.auth.signUp({
-          email: email.trim(),
-          password,
-        });
-
-        if (error) {
-          throw error;
+        if (!data.user) {
+          throw new Error(
+            "Unable to create your session."
+          );
         }
 
-        setMessage("Check your email to confirm your account.");
+        /*
+         * User successfully authenticated.
+         * Enter the personal Dashboard.
+         */
+
+        router.push("/dashboard");
+        router.refresh();
+
+        return;
       }
+
+      /*
+       * =========================================
+       * REGISTER
+       * =========================================
+       */
+
+      const {
+        data,
+        error,
+      } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      /*
+       * If Supabase immediately creates a session,
+       * we can enter the Dashboard directly.
+       */
+
+      if (data.session && data.user) {
+        router.push("/dashboard");
+        router.refresh();
+
+        return;
+      }
+
+      /*
+       * If email confirmation is enabled,
+       * Supabase returns no session until the
+       * user confirms their email.
+       */
+
+      setMessage(
+        "Your account has been created. Check your email to confirm your account."
+      );
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error
@@ -71,13 +138,18 @@ export function AuthForm() {
     setMessage(null);
 
     setMode((current) =>
-      current === "login" ? "register" : "login"
+      current === "login"
+        ? "register"
+        : "login"
     );
   };
 
   return (
     <div className="w-full">
-      <AnimatePresence mode="wait" initial={false}>
+      <AnimatePresence
+        mode="wait"
+        initial={false}
+      >
         <motion.div
           key={mode}
           initial={{
@@ -103,9 +175,7 @@ export function AuthForm() {
             ease: [0.16, 1, 0.3, 1],
           }}
         >
-          {/* =========================================
-              TITLE
-          ========================================== */}
+          {/* TITLE */}
 
           <motion.div
             initial={{
@@ -168,13 +238,9 @@ export function AuthForm() {
             />
           </motion.div>
 
-          {/* =========================================
-              INPUTS
-          ========================================== */}
+          {/* INPUTS */}
 
           <div className="space-y-3">
-            {/* EMAIL */}
-
             <motion.div
               initial={{
                 opacity: 0,
@@ -199,7 +265,9 @@ export function AuthForm() {
             >
               <input
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) =>
+                  setEmail(e.target.value)
+                }
                 type="email"
                 placeholder="Email"
                 autoComplete="email"
@@ -249,8 +317,6 @@ export function AuthForm() {
               />
             </motion.div>
 
-            {/* PASSWORD */}
-
             <motion.div
               initial={{
                 opacity: 0,
@@ -275,11 +341,15 @@ export function AuthForm() {
             >
               <input
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) =>
+                  setPassword(e.target.value)
+                }
                 type="password"
                 placeholder="Password"
                 autoComplete={
-                  isLogin ? "current-password" : "new-password"
+                  isLogin
+                    ? "current-password"
+                    : "new-password"
                 }
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
@@ -333,9 +403,7 @@ export function AuthForm() {
             </motion.div>
           </div>
 
-          {/* =========================================
-              MAIN BUTTON
-          ========================================== */}
+          {/* BUTTON */}
 
           <motion.button
             type="button"
@@ -394,8 +462,6 @@ export function AuthForm() {
               disabled:opacity-40
             "
           >
-            {/* Moving light */}
-
             <span
               className="
                 pointer-events-none
@@ -421,9 +487,7 @@ export function AuthForm() {
             </span>
           </motion.button>
 
-          {/* =========================================
-              MODE SWITCH
-          ========================================== */}
+          {/* MODE SWITCH */}
 
           <motion.div
             initial={{
@@ -479,9 +543,7 @@ export function AuthForm() {
             </button>
           </motion.div>
 
-          {/* =========================================
-              MESSAGE
-          ========================================== */}
+          {/* MESSAGE */}
 
           <AnimatePresence mode="wait">
             {message && (
