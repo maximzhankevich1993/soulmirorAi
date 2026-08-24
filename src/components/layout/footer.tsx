@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 
 import { Container } from "@/components/ui/container";
@@ -9,28 +10,24 @@ const footerLinks = [
     links: [
       {
         label: "Features",
-        href: "#features",
+        href: "/#features",
       },
       {
         label: "Dreams",
-        href: "#dreams",
+        href: "/#dreams",
       },
       {
         label: "Journal",
-        href: "#journal",
-      },
-      {
-        label: "Pricing",
-        href: "/pricing",
+        href: "/#journal",
       },
     ],
   },
 
   {
-    title: "SoulMirror",
+    title: "Company",
     links: [
       {
-        label: "About",
+        label: "About SoulMirror",
         href: "/about",
       },
       {
@@ -38,25 +35,7 @@ const footerLinks = [
         href: "/contact",
       },
       {
-        label: "Ecosystem",
-        href: "#ecosystem",
-      },
-    ],
-  },
-
-  {
-    title: "EON AI",
-    links: [
-      {
-        label: "EON AI",
-        href: "#",
-      },
-      {
-        label: "Future Self",
-        href: "#",
-      },
-      {
-        label: "Memora",
+        label: "Careers",
         href: "#",
       },
     ],
@@ -88,7 +67,7 @@ export function Footer() {
         bg-[#050505]
       "
     >
-      {/* Top cinematic line */}
+      {/* Cinematic gold line */}
 
       <div
         className="
@@ -115,81 +94,45 @@ export function Footer() {
         >
           {/* BRAND */}
 
-          <div className="lg:col-span-4">
+          <div className="lg:col-span-6">
             <Link
               href="/"
               className="
                 inline-flex
-                flex-col
+                items-center
                 transition-opacity
                 duration-300
                 hover:opacity-80
               "
             >
-              <div
-                className="
-                  font-[family:var(--font-cormorant)]
-                  text-4xl
-                  font-light
-                  tracking-tight
-                  text-[#F4F1EA]
-                "
-              >
-                SoulMirror
-              </div>
-
-              <div
-                className="
-                  mt-1
-                  text-[10px]
-                  uppercase
-                  tracking-[0.45em]
-                  text-white/35
-                "
-              >
-                AI
-              </div>
+              <Logo />
             </Link>
 
-            <p
+            <div className="mt-7 max-w-md">
+              <p
+                className="
+                  text-sm
+                  leading-7
+                  text-[#F4F1EA]/55
+                "
+              >
+                SoulMirror AI is a personal intelligence
+                experience designed to help you explore
+                emotions, dreams, identity and the patterns
+                shaping your inner world.
+              </p>
+            </div>
+
+            <div
               className="
                 mt-7
-                max-w-sm
-                text-sm
-                leading-7
-                text-[#F4F1EA]/50
+                text-[10px]
+                uppercase
+                tracking-[0.4em]
+                text-[#D6B25E]/70
               "
             >
-              A personal AI intelligence experience
-              for exploring identity, emotions, dreams
-              and the patterns within your inner world.
-            </p>
-
-            {/* EON BRAND */}
-
-            <div className="mt-7">
-              <p
-                className="
-                  text-[9px]
-                  uppercase
-                  tracking-[0.4em]
-                  text-[#D6B25E]/70
-                "
-              >
-                A product by
-              </p>
-
-              <p
-                className="
-                  mt-2
-                  text-xs
-                  font-medium
-                  tracking-[0.2em]
-                  text-white/50
-                "
-              >
-                EON AI
-              </p>
+              A product by EON AI
             </div>
           </div>
 
@@ -199,49 +142,51 @@ export function Footer() {
             className="
               grid
               gap-10
-              sm:grid-cols-2
-              lg:col-span-8
-              lg:grid-cols-4
+              sm:grid-cols-3
+              lg:col-span-6
             "
           >
             {footerLinks.map((group) => (
               <div key={group.title}>
                 <h4
                   className="
-                    text-[11px]
+                    text-xs
+                    font-medium
                     uppercase
-                    tracking-[0.3em]
+                    tracking-[0.25em]
                     text-[#F4F1EA]
                   "
                 >
                   {group.title}
                 </h4>
 
-                <ul className="mt-5 space-y-3">
+                <ul className="mt-6 space-y-4">
                   {group.links.map((link) => (
                     <li key={link.label}>
-                      <Link
-                        href={link.href}
-                        className="
-                          group
-                          inline-flex
-                          text-sm
-                          text-[#F4F1EA]/45
-                          transition-all
-                          duration-300
-                          hover:text-[#D6B25E]
-                        "
-                      >
+                      {link.href === "#" ? (
                         <span
                           className="
-                            transition-transform
-                            duration-300
-                            group-hover:translate-x-1
+                            cursor-default
+                            text-sm
+                            text-[#F4F1EA]/25
                           "
                         >
                           {link.label}
                         </span>
-                      </Link>
+                      ) : (
+                        <Link
+                          href={link.href}
+                          className="
+                            text-sm
+                            text-[#F4F1EA]/45
+                            transition-all
+                            duration-300
+                            hover:text-[#D6B25E]
+                          "
+                        >
+                          {link.label}
+                        </Link>
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -270,10 +215,10 @@ export function Footer() {
             <p
               className="
                 text-xs
-                text-[#F4F1EA]/35
+                text-[#F4F1EA]/40
               "
             >
-              © {new Date().getFullYear()} SoulMirror AI.
+              © {new Date().getFullYear()} EON AI.
               All rights reserved.
             </p>
 
@@ -300,12 +245,12 @@ export function Footer() {
               text-[#F4F1EA]/25
             "
           >
-            <span>Personal Intelligence</span>
-
             <span>Conscious AI</span>
+            <span>Personal Intelligence</span>
           </div>
         </div>
       </Container>
     </footer>
   );
 }
+
