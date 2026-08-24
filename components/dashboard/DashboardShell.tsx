@@ -1,7 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+
+import { supabase } from "../../src/lib/supabaseClient";
 
 import { IdentityHeader } from "./IdentityHeader";
 import { SoulOrbPanel } from "./SoulOrbPanel";
@@ -23,7 +26,64 @@ interface DashboardShellProps {
 export function DashboardShell({
   usage,
 }: DashboardShellProps) {
+  const router = useRouter();
+
   const [showWelcome, setShowWelcome] = useState(true);
+  const [userName, setUserName] = useState("there");
+  const [closingWelcome, setClosingWelcome] = useState(false);
+
+  /*
+   * =========================================
+   * LOAD USER NAME
+   * =========================================
+   */
+
+  useEffect(() => {
+    async function loadUser() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        router.replace("/login");
+        return;
+      }
+
+      const metadataName =
+        user.user_metadata?.name ||
+        user.user_metadata?.full_name ||
+        "";
+
+      const firstName =
+        metadataName.trim().split(" ")[0] ||
+        user.email?.split("@")[0] ||
+        "there";
+
+      setUserName(firstName);
+    }
+
+    loadUser();
+  }, [router]);
+
+  /*
+   * =========================================
+   * WELCOME SCREEN TIMING
+   * =========================================
+   */
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setClosingWelcome(true);
+
+      window.setTimeout(() => {
+        setShowWelcome(false);
+      }, 900);
+    }, 3000);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, []);
 
   return (
     <main
@@ -64,7 +124,7 @@ export function DashboardShell({
           "
         />
 
-        {/* Secondary subtle light */}
+        {/* Right atmosphere */}
 
         <div
           className="
@@ -106,21 +166,15 @@ export function DashboardShell({
               opacity: 1,
             }}
             animate={{
-              opacity: 1,
-            }}
-            exit={{
-              opacity: 0,
-              scale: 1.015,
-              filter: "blur(12px)",
+              opacity: closingWelcome ? 0 : 1,
+              scale: closingWelcome ? 1.025 : 1,
+              filter: closingWelcome
+                ? "blur(14px)"
+                : "blur(0px)",
             }}
             transition={{
               duration: 0.9,
               ease: [0.16, 1, 0.3, 1],
-            }}
-            onAnimationComplete={() => {
-              setTimeout(() => {
-                setShowWelcome(false);
-              }, 1500);
             }}
             className="
               fixed
@@ -133,19 +187,21 @@ export function DashboardShell({
               bg-[#050505]
             "
           >
-            {/* Welcome atmosphere */}
+            {/* =================================================
+                CINEMATIC LIGHT
+            ================================================== */}
 
             <motion.div
               initial={{
                 opacity: 0,
-                scale: 0.7,
+                scale: 0.55,
               }}
               animate={{
                 opacity: 1,
                 scale: 1,
               }}
               transition={{
-                duration: 1.8,
+                duration: 2,
                 ease: [0.16, 1, 0.3, 1],
               }}
               className="
@@ -153,8 +209,8 @@ export function DashboardShell({
                 absolute
                 left-1/2
                 top-1/2
-                h-[600px]
-                w-[800px]
+                h-[650px]
+                w-[900px]
                 -translate-x-1/2
                 -translate-y-1/2
                 rounded-full
@@ -163,7 +219,40 @@ export function DashboardShell({
               "
             />
 
-            {/* Content */}
+            {/* Secondary light */}
+
+            <motion.div
+              initial={{
+                opacity: 0,
+                scale: 0.6,
+              }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+              }}
+              transition={{
+                delay: 0.35,
+                duration: 2.2,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="
+                pointer-events-none
+                absolute
+                left-1/2
+                top-[42%]
+                h-[350px]
+                w-[550px]
+                -translate-x-1/2
+                -translate-y-1/2
+                rounded-full
+                bg-white/[0.012]
+                blur-[120px]
+              "
+            />
+
+            {/* =================================================
+                CONTENT
+            ================================================== */}
 
             <div
               className="
@@ -172,9 +261,12 @@ export function DashboardShell({
                 flex
                 flex-col
                 items-center
+                px-6
                 text-center
               "
             >
+              {/* Brand */}
+
               <motion.p
                 initial={{
                   opacity: 0,
@@ -191,14 +283,17 @@ export function DashboardShell({
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 className="
-                  text-[11px]
+                  text-[10px]
                   uppercase
-                  tracking-[0.65em]
+                  tracking-[0.7em]
                   text-[#D6B25E]
+                  sm:text-[11px]
                 "
               >
                 SOULMIRROR
               </motion.p>
+
+              {/* Line */}
 
               <motion.div
                 initial={{
@@ -210,7 +305,7 @@ export function DashboardShell({
                   scaleX: 1,
                 }}
                 transition={{
-                  delay: 0.45,
+                  delay: 0.4,
                   duration: 1,
                   ease: [0.16, 1, 0.3, 1],
                 }}
@@ -226,11 +321,13 @@ export function DashboardShell({
                 "
               />
 
+              {/* Welcome */}
+
               <motion.h1
                 initial={{
                   opacity: 0,
-                  y: 30,
-                  filter: "blur(16px)",
+                  y: 35,
+                  filter: "blur(18px)",
                 }}
                 animate={{
                   opacity: 1,
@@ -244,17 +341,22 @@ export function DashboardShell({
                 }}
                 className="
                   mt-8
-                  px-6
                   font-[family:var(--font-cormorant)]
                   text-5xl
                   font-light
                   leading-tight
                   text-[#F4F1EA]
                   sm:text-6xl
+                  md:text-7xl
                 "
               >
-                Welcome back.
+                Welcome back,{" "}
+                <span className="text-[#D6B25E]">
+                  {userName}.
+                </span>
               </motion.h1>
+
+              {/* Subtitle */}
 
               <motion.p
                 initial={{
@@ -268,7 +370,7 @@ export function DashboardShell({
                   filter: "blur(0px)",
                 }}
                 transition={{
-                  delay: 0.9,
+                  delay: 1,
                   duration: 1,
                   ease: [0.16, 1, 0.3, 1],
                 }}
@@ -281,6 +383,58 @@ export function DashboardShell({
               >
                 Your personal intelligence space
               </motion.p>
+
+              {/* Bottom indicator */}
+
+              <motion.div
+                initial={{
+                  opacity: 0,
+                }}
+                animate={{
+                  opacity: 1,
+                }}
+                transition={{
+                  delay: 1.5,
+                  duration: 1,
+                }}
+                className="
+                  mt-12
+                  flex
+                  items-center
+                  gap-3
+                "
+              >
+                <span
+                  className="
+                    h-1
+                    w-1
+                    rounded-full
+                    bg-[#D6B25E]
+                    shadow-[0_0_10px_rgba(214,178,94,0.8)]
+                  "
+                />
+
+                <span
+                  className="
+                    text-[8px]
+                    uppercase
+                    tracking-[0.4em]
+                    text-white/20
+                  "
+                >
+                  Intelligence online
+                </span>
+
+                <span
+                  className="
+                    h-1
+                    w-1
+                    rounded-full
+                    bg-[#D6B25E]
+                    shadow-[0_0_10px_rgba(214,178,94,0.8)]
+                  "
+                />
+              </motion.div>
             </div>
           </motion.div>
         )}
@@ -290,7 +444,17 @@ export function DashboardShell({
           DASHBOARD CONTENT
       ====================================================== */}
 
-      <div
+      <motion.div
+        initial={{
+          opacity: 0,
+        }}
+        animate={{
+          opacity: showWelcome ? 0 : 1,
+        }}
+        transition={{
+          duration: 1,
+          ease: [0.16, 1, 0.3, 1],
+        }}
         className="
           relative
           z-10
@@ -324,7 +488,7 @@ export function DashboardShell({
             y: 0,
           }}
           transition={{
-            delay: 0.15,
+            delay: 0.1,
             duration: 0.8,
             ease: [0.16, 1, 0.3, 1],
           }}
@@ -347,7 +511,7 @@ export function DashboardShell({
             y: 0,
           }}
           transition={{
-            delay: 0.25,
+            delay: 0.2,
             duration: 0.8,
             ease: [0.16, 1, 0.3, 1],
           }}
@@ -370,7 +534,7 @@ export function DashboardShell({
             y: 0,
           }}
           transition={{
-            delay: 0.35,
+            delay: 0.3,
             duration: 0.8,
             ease: [0.16, 1, 0.3, 1],
           }}
@@ -393,7 +557,7 @@ export function DashboardShell({
             y: 0,
           }}
           transition={{
-            delay: 0.45,
+            delay: 0.4,
             duration: 0.8,
             ease: [0.16, 1, 0.3, 1],
           }}
@@ -416,7 +580,7 @@ export function DashboardShell({
             y: 0,
           }}
           transition={{
-            delay: 0.55,
+            delay: 0.5,
             duration: 0.8,
             ease: [0.16, 1, 0.3, 1],
           }}
@@ -424,7 +588,7 @@ export function DashboardShell({
         >
           <PremiumPanel />
         </motion.section>
-      </div>
+      </motion.div>
     </main>
   );
 }
