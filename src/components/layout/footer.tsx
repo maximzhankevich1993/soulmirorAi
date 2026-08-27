@@ -1,6 +1,4 @@
 
-import Link from "next/link";
-
 import { Container } from "@/components/ui/container";
 import { Logo } from "@/components/ui/logo";
 
@@ -95,18 +93,9 @@ export function Footer() {
           {/* BRAND */}
 
           <div className="lg:col-span-6">
-            <Link
-              href="/"
-              className="
-                inline-flex
-                items-center
-                transition-opacity
-                duration-300
-                hover:opacity-80
-              "
-            >
-              <Logo />
-            </Link>
+            {/* Logo already contains its own Link */}
+
+            <Logo />
 
             <div className="mt-7 max-w-md">
               <p
@@ -174,7 +163,7 @@ export function Footer() {
                           {link.label}
                         </span>
                       ) : (
-                        <Link
+                        <a
                           href={link.href}
                           className="
                             text-sm
@@ -185,7 +174,7 @@ export function Footer() {
                           "
                         >
                           {link.label}
-                        </Link>
+                        </a>
                       )}
                     </li>
                   ))}
