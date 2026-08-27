@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -47,10 +48,6 @@ export default function SettingsPage() {
           return;
         }
 
-        /*
-         * USER NAME
-         */
-
         const metadataName =
           user.user_metadata?.name ||
           user.user_metadata?.full_name ||
@@ -64,10 +61,6 @@ export default function SettingsPage() {
         setUserName(firstName);
         setName(metadataName || firstName);
         setEmail(user.email || "");
-
-        /*
-         * USER PLAN
-         */
 
         try {
           const response = await fetch("/api/profile", {
@@ -132,6 +125,27 @@ export default function SettingsPage() {
     window.setTimeout(() => {
       setSaved(false);
     }, 2200);
+  }
+
+  /*
+   * =========================================================
+   * GO TO PLANS
+   * =========================================================
+   */
+
+  function handleExplorePlans() {
+    router.push("/dashboard#plans");
+
+    window.setTimeout(() => {
+      const plansSection = document.getElementById("plans");
+
+      if (plansSection) {
+        plansSection.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    }, 450);
   }
 
   /*
@@ -217,8 +231,6 @@ export default function SettingsPage() {
           }}
           className="flex items-center justify-between border-b border-white/[0.07] py-7"
         >
-          {/* BACK */}
-
           <button
             type="button"
             onClick={() => router.push("/dashboard")}
@@ -234,8 +246,6 @@ export default function SettingsPage() {
               Back to SoulMirror
             </span>
           </button>
-
-          {/* BRAND */}
 
           <div className="text-right">
             <p className="text-[10px] uppercase tracking-[0.5em] text-[#D6B25E]">
@@ -348,8 +358,6 @@ export default function SettingsPage() {
           description="Your identity inside SoulMirror."
         >
           <div className="max-w-2xl">
-            {/* NAME */}
-
             <label className="block">
               <span className="text-[9px] uppercase tracking-[0.35em] text-white/25">
                 Name
@@ -366,8 +374,6 @@ export default function SettingsPage() {
               />
             </label>
 
-            {/* EMAIL */}
-
             <div className="mt-10">
               <p className="text-[9px] uppercase tracking-[0.35em] text-white/25">
                 Email
@@ -377,8 +383,6 @@ export default function SettingsPage() {
                 {email}
               </p>
             </div>
-
-            {/* SAVE */}
 
             <button
               type="button"
@@ -407,51 +411,87 @@ export default function SettingsPage() {
           description="Your experience should feel personal, quiet and intentional."
         >
           <div className="max-w-2xl">
-            <SettingRow
-              title="Cinematic experience"
-              description="Keep immersive transitions and atmospheric motion enabled."
-              control={<Toggle enabled />}
-            />
+            <motion.div
+              whileHover={{ x: 4 }}
+              transition={{ duration: 0.4, ease }}
+              className="border-t border-white/[0.08] py-7"
+            >
+              <div className="flex items-center gap-3">
+                <span className="h-1 w-1 rounded-full bg-[#D6B25E] shadow-[0_0_8px_rgba(214,178,94,0.7)]" />
 
-            <SettingRow
-              title="Intelligence memory"
-              description="Allow SoulMirror to build context from your journey."
-              control={<Toggle enabled />}
-            />
-
-            <SettingRow
-              title="Daily reflections"
-              description="Receive gentle prompts for deeper self-reflection."
-              control={<Toggle enabled />}
-            />
-          </div>
-        </SettingsSection>
-
-        {/* =================================================
-            APPEARANCE
-        ================================================== */}
-
-        <SettingsSection
-          eyebrow="Appearance"
-          title="Your atmosphere"
-          description="SoulMirror is designed around a quiet dark environment."
-        >
-          <div className="max-w-2xl">
-            <div className="flex items-center justify-between border-b border-white/[0.08] py-6">
-              <div>
-                <p className="text-sm text-white/65">
-                  Dark experience
-                </p>
-
-                <p className="mt-2 text-xs text-white/25">
-                  SoulMirror's signature environment.
+                <p className="text-sm text-white/70 transition-colors duration-500">
+                  Cinematic experience
                 </p>
               </div>
 
-              <div className="flex h-8 w-14 items-center rounded-full border border-[#D6B25E]/25 bg-[#D6B25E]/10 px-1">
-                <div className="ml-auto h-6 w-6 rounded-full bg-[#D6B25E]" />
+              <p className="mt-3 max-w-lg text-xs leading-6 text-white/25">
+                SoulMirror is designed around immersive
+                transitions, atmospheric motion and a quiet
+                personal environment.
+              </p>
+            </motion.div>
+
+            <motion.div
+              whileHover={{ x: 4 }}
+              transition={{ duration: 0.4, ease }}
+              className="border-t border-white/[0.08] py-7"
+            >
+              <div className="flex items-center gap-3">
+                <span className="h-1 w-1 rounded-full bg-[#D6B25E]/70" />
+
+                <p className="text-sm text-white/70 transition-colors duration-500">
+                  Intelligence memory
+                </p>
               </div>
-            </div>
+
+              <p className="mt-3 max-w-lg text-xs leading-6 text-white/25">
+                Your meaningful interactions can become part
+                of the evolving context behind your personal
+                intelligence system.
+              </p>
+            </motion.div>
+
+            <motion.div
+              whileHover={{ x: 4 }}
+              transition={{ duration: 0.4, ease }}
+              className="border-y border-white/[0.08] py-7"
+            >
+              <div className="flex items-center gap-3">
+                <span className="h-1 w-1 rounded-full bg-white/20" />
+
+                <p className="text-sm text-white/70 transition-colors duration-500">
+                  Daily reflections
+                </p>
+              </div>
+
+              <p className="mt-3 max-w-lg text-xs leading-6 text-white/25">
+                Gentle prompts can help you slow down,
+                reflect and notice patterns in your inner world.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{
+                opacity: 0,
+              }}
+              whileInView={{
+                opacity: 1,
+              }}
+              viewport={{
+                once: true,
+              }}
+              transition={{
+                delay: 0.2,
+                duration: 0.8,
+              }}
+              className="mt-8 flex items-center gap-3"
+            >
+              <span className="h-px w-8 bg-[#D6B25E]/30" />
+
+              <p className="text-[8px] uppercase tracking-[0.35em] text-white/20">
+                Designed for a quieter mind
+              </p>
+            </motion.div>
           </div>
         </SettingsSection>
 
@@ -465,31 +505,31 @@ export default function SettingsPage() {
           description="Choose how deeply you want to explore your inner world."
         >
           <div className="max-w-2xl">
-            <div className="flex flex-col justify-between gap-6 border-y border-white/[0.08] py-7 sm:flex-row sm:items-center">
+            <motion.button
+              type="button"
+              onClick={handleExplorePlans}
+              whileHover={{ x: 4 }}
+              transition={{ duration: 0.4, ease }}
+              className="group flex w-full cursor-pointer flex-col justify-between gap-6 border-y border-white/[0.08] py-7 text-left sm:flex-row sm:items-center"
+            >
               <div>
                 <p className="text-[9px] uppercase tracking-[0.35em] text-white/25">
                   Current plan
                 </p>
 
-                <h3 className="mt-3 font-[family:var(--font-cormorant)] text-4xl font-light text-[#F4F1EA]">
+                <h3 className="mt-3 font-[family:var(--font-cormorant)] text-4xl font-light text-[#F4F1EA] transition-colors duration-500 group-hover:text-[#D6B25E]">
                   {planLabels[plan]}
                 </h3>
               </div>
 
-              <button
-                type="button"
-                onClick={() => {
-                  router.push("/dashboard#plans");
-                }}
-                className="group flex cursor-pointer items-center gap-3 text-[9px] uppercase tracking-[0.3em] text-white/35 transition-colors duration-500 hover:text-[#D6B25E]"
-              >
+              <span className="flex items-center gap-3 text-[9px] uppercase tracking-[0.3em] text-white/35 transition-colors duration-500 group-hover:text-[#D6B25E]">
                 Explore plans
 
                 <span className="transition-transform duration-500 group-hover:translate-x-1">
                   →
                 </span>
-              </button>
-            </div>
+              </span>
+            </motion.button>
           </div>
         </SettingsSection>
 
@@ -587,8 +627,6 @@ function SettingsSection({
       className="border-t border-white/[0.07] py-24 sm:py-32"
     >
       <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
-        {/* LEFT */}
-
         <div>
           <p className="text-[10px] uppercase tracking-[0.5em] text-[#D6B25E]">
             {eyebrow}
@@ -603,68 +641,9 @@ function SettingsSection({
           </p>
         </div>
 
-        {/* RIGHT */}
-
         <div>{children}</div>
       </div>
     </motion.section>
   );
 }
 
-/* ============================================================
-   SETTING ROW
-============================================================ */
-
-function SettingRow({
-  title,
-  description,
-  control,
-}: {
-  title: string;
-  description: string;
-  control: React.ReactNode;
-}) {
-  return (
-    <div className="flex items-center justify-between gap-8 border-b border-white/[0.08] py-6">
-      <div>
-        <p className="text-sm text-white/65">
-          {title}
-        </p>
-
-        <p className="mt-2 max-w-lg text-xs leading-6 text-white/25">
-          {description}
-        </p>
-      </div>
-
-      {control}
-    </div>
-  );
-}
-
-/* ============================================================
-   TOGGLE
-============================================================ */
-
-function Toggle({
-  enabled,
-}: {
-  enabled: boolean;
-}) {
-  return (
-    <div
-      className={`flex h-8 w-14 shrink-0 items-center rounded-full border px-1 transition-all duration-500 ${
-        enabled
-          ? "border-[#D6B25E]/25 bg-[#D6B25E]/10"
-          : "border-white/10 bg-white/[0.03]"
-      }`}
-    >
-      <div
-        className={`h-6 w-6 rounded-full transition-all duration-500 ${
-          enabled
-            ? "ml-auto bg-[#D6B25E]"
-            : "bg-white/20"
-        }`}
-      />
-    </div>
-  );
-}
