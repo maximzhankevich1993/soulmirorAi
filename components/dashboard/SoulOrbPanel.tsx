@@ -2,14 +2,15 @@
 
 import { motion } from "framer-motion";
 import {
-  Activity,
-  Brain,
   Sparkles,
+  Brain,
+  Activity,
 } from "lucide-react";
 
 import type { LucideIcon } from "lucide-react";
 
 import { useSoulMemoryStore } from "../../src/store/soul-memory-store";
+import { GlassCard } from "../../src/components/ui/GlassCard";
 
 export function SoulOrbPanel() {
   const {
@@ -18,11 +19,17 @@ export function SoulOrbPanel() {
     insight,
   } = useSoulMemoryStore();
 
-  const currentEmotion = emotion || "Balanced";
-  const currentArchetype = archetype || "Explorer";
-
   return (
-    <div className="relative overflow-hidden">
+    <GlassCard
+      highlight
+      className="
+        relative
+        overflow-hidden
+        p-7
+        sm:p-9
+        md:p-11
+      "
+    >
       {/* =========================================
           CINEMATIC ATMOSPHERE
       ========================================== */}
@@ -31,14 +38,15 @@ export function SoulOrbPanel() {
         className="
           pointer-events-none
           absolute
-          -right-40
+          left-1/2
           top-1/2
           h-[500px]
-          w-[500px]
+          w-[700px]
+          -translate-x-1/2
           -translate-y-1/2
           rounded-full
-          bg-[#D6B25E]/[0.018]
-          blur-[160px]
+          bg-[#D6B25E]/[0.025]
+          blur-[180px]
         "
       />
 
@@ -49,345 +57,259 @@ export function SoulOrbPanel() {
       <div
         className="
           relative
-          grid
-          grid-cols-1
-          gap-16
-          lg:grid-cols-[1.15fr_0.85fr]
-          lg:gap-20
-          xl:gap-28
+          z-10
+          mx-auto
+          w-full
+          max-w-4xl
         "
       >
-        {/* =======================================
-            MAIN STATE
-        ======================================== */}
+        {/* LABEL */}
 
-        <motion.div
+        <motion.p
           initial={{
             opacity: 0,
-            y: 35,
-            filter: "blur(12px)",
+            y: 15,
           }}
-          whileInView={{
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 0.7,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+          className="
+            text-[10px]
+            uppercase
+            tracking-[0.5em]
+            text-[#D6B25E]
+          "
+        >
+          Current consciousness
+        </motion.p>
+
+        {/* MAIN TITLE */}
+
+        <motion.h2
+          initial={{
+            opacity: 0,
+            y: 20,
+            filter: "blur(10px)",
+          }}
+          animate={{
             opacity: 1,
             y: 0,
             filter: "blur(0px)",
           }}
-          viewport={{
-            once: true,
-            amount: 0.25,
-          }}
           transition={{
-            duration: 1,
+            delay: 0.1,
+            duration: 0.9,
             ease: [0.16, 1, 0.3, 1],
           }}
-          className="min-w-0"
+          className="
+            mt-5
+            max-w-3xl
+            font-[family:var(--font-cormorant)]
+            text-5xl
+            font-light
+            leading-[1.05]
+            text-[#F4F1EA]
+            sm:text-6xl
+          "
         >
-          {/* Label */}
+          {emotion || "Balanced"}
+        </motion.h2>
 
-          <div className="flex items-center gap-4">
-            <span
-              className="
-                h-px
-                w-10
-                shrink-0
-                bg-[#D6B25E]/60
-              "
-            />
+        {/* DESCRIPTION */}
 
-            <p
-              className="
-                text-[9px]
-                uppercase
-                tracking-[0.5em]
-                text-[#D6B25E]
-              "
-            >
-              Current state
-            </p>
-          </div>
+        <motion.p
+          initial={{
+            opacity: 0,
+            y: 15,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            delay: 0.2,
+            duration: 0.8,
+          }}
+          className="
+            mt-5
+            max-w-2xl
+            text-sm
+            leading-7
+            text-white/40
+          "
+        >
+          Your current emotional state and inner patterns,
+          interpreted through the intelligence of SoulMirror.
+        </motion.p>
 
-          {/* State */}
-
-          <h4
-            className="
-              mt-8
-              max-w-3xl
-              font-[family:var(--font-cormorant)]
-              text-6xl
-              font-light
-              leading-[0.95]
-              tracking-[-0.02em]
-              text-[#F4F1EA]
-              sm:text-7xl
-              md:text-8xl
-            "
-          >
-            {currentEmotion}
-          </h4>
-
-          {/* Description */}
-
-          <p
-            className="
-              mt-8
-              max-w-xl
-              text-sm
-              leading-8
-              text-white/40
-              sm:text-[15px]
-            "
-          >
-            SoulMirror observes the patterns emerging
-            across your reflections, emotions and
-            memories — helping you understand what is
-            happening beneath the surface.
-          </p>
-
-          {/* Small status */}
-
-          <div
-            className="
-              mt-10
-              flex
-              items-center
-              gap-3
-            "
-          >
-            <span
-              className="
-                h-1.5
-                w-1.5
-                shrink-0
-                rounded-full
-                bg-[#D6B25E]
-                shadow-[0_0_12px_rgba(214,178,94,0.7)]
-              "
-            />
-
-            <span
-              className="
-                text-[8px]
-                uppercase
-                tracking-[0.4em]
-                text-white/25
-              "
-            >
-              Intelligence active
-            </span>
-          </div>
-        </motion.div>
-
-        {/* =======================================
-            SIGNALS
-        ======================================== */}
+        {/* =========================================
+            DIVIDER
+        ========================================== */}
 
         <motion.div
           initial={{
             opacity: 0,
-            x: 30,
-            filter: "blur(10px)",
+            scaleX: 0,
           }}
-          whileInView={{
+          animate={{
             opacity: 1,
-            x: 0,
-            filter: "blur(0px)",
-          }}
-          viewport={{
-            once: true,
-            amount: 0.25,
+            scaleX: 1,
           }}
           transition={{
-            duration: 1,
-            delay: 0.15,
+            delay: 0.3,
+            duration: 0.8,
             ease: [0.16, 1, 0.3, 1],
           }}
           className="
-            min-w-0
-            flex
-            flex-col
-            justify-center
+            mt-10
+            h-px
+            w-full
+            origin-left
+            bg-gradient-to-r
+            from-[#D6B25E]/20
+            via-white/[0.06]
+            to-transparent
           "
-        >
-          <p
-            className="
-              mb-7
-              text-[8px]
-              uppercase
-              tracking-[0.45em]
-              text-white/25
-            "
-          >
-            Emerging signals
-          </p>
+        />
 
-          <div
-            className="
-              border-t
-              border-white/[0.08]
-            "
-          >
-            <StateRow
-              icon={Sparkles}
-              label="Archetype"
-              value={currentArchetype}
-            />
+        {/* =========================================
+            INTELLIGENCE STATE
+        ========================================== */}
 
-            <StateRow
-              icon={Brain}
-              label="Insight system"
-              value={
-                insight
-                  ? "Active"
-                  : "Awaiting your first scan"
-              }
-            />
-
-            <StateRow
-              icon={Activity}
-              label="Evolution"
-              value="Continuously learning"
-            />
-          </div>
-        </motion.div>
-      </div>
-
-      {/* =========================================
-          BOTTOM STATEMENT
-      ========================================== */}
-
-      <motion.div
-        initial={{
-          opacity: 0,
-          y: 20,
-        }}
-        whileInView={{
-          opacity: 1,
-          y: 0,
-        }}
-        viewport={{
-          once: true,
-          amount: 0.3,
-        }}
-        transition={{
-          duration: 0.8,
-          delay: 0.35,
-        }}
-        className="
-          mt-20
-          border-t
-          border-white/[0.06]
-          pt-7
-        "
-      >
-        <p
+        <div
           className="
-            max-w-2xl
-            text-[10px]
-            uppercase
-            leading-6
-            tracking-[0.25em]
-            text-white/20
+            mt-8
+            grid
+            grid-cols-1
+            gap-3
+            sm:grid-cols-3
           "
         >
-          Your inner world is not static.
-          <span className="text-[#D6B25E]/50">
-            {" "}
-            It evolves with every reflection.
-          </span>
-        </p>
-      </motion.div>
-    </div>
+          <OrbInfo
+            icon={Sparkles}
+            label="Archetype"
+            value={archetype || "Unknown"}
+            delay={0.35}
+          />
+
+          <OrbInfo
+            icon={Brain}
+            label="Insight system"
+            value={insight ? "Active" : "Awaiting scan"}
+            delay={0.45}
+          />
+
+          <OrbInfo
+            icon={Activity}
+            label="Evolution"
+            value="Continuous"
+            delay={0.55}
+          />
+        </div>
+      </div>
+    </GlassCard>
   );
 }
 
-/* =============================================
-   STATE ROW
-============================================= */
+/* =====================================================
+   INFO ITEM
+===================================================== */
 
-function StateRow({
+function OrbInfo({
   icon: Icon,
   label,
   value,
+  delay,
 }: {
   icon: LucideIcon;
   label: string;
   value: string;
+  delay: number;
 }) {
   return (
     <motion.div
-      whileHover={{
-        x: 5,
+      initial={{
+        opacity: 0,
+        y: 18,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
       }}
       transition={{
-        duration: 0.4,
+        delay,
+        duration: 0.7,
         ease: [0.16, 1, 0.3, 1],
       }}
       className="
         group
-        flex
-        min-h-[92px]
-        items-center
-        justify-between
-        gap-8
-        border-b
-        border-white/[0.08]
+        min-w-0
+        rounded-2xl
+        border
+        border-white/[0.07]
+        bg-white/[0.025]
+        px-5
+        py-4
+        transition-all
+        duration-500
+        hover:border-[#D6B25E]/20
+        hover:bg-white/[0.04]
       "
     >
-      {/* =======================================
-          LEFT
-      ======================================== */}
-
       <div
         className="
           flex
-          min-w-0
-          shrink-0
-          items-center
-          gap-4
+          items-start
+          gap-3
         "
       >
         <Icon
-          size={15}
-          strokeWidth={1.4}
+          size={17}
+          strokeWidth={1.5}
           className="
+            mt-0.5
             shrink-0
-            text-white/25
-            transition-colors
-            duration-500
-            group-hover:text-[#D6B25E]
+            text-[#D6B25E]
           "
         />
 
-        <p
+        <div
           className="
-            whitespace-nowrap
-            text-[9px]
-            uppercase
-            tracking-[0.32em]
-            text-white/30
+            min-w-0
+            flex-1
+            pr-2
           "
         >
-          {label}
-        </p>
+          <p
+            className="
+              text-[9px]
+              uppercase
+              tracking-[0.3em]
+              text-white/30
+            "
+          >
+            {label}
+          </p>
+
+          <p
+            className="
+              mt-2
+              break-words
+              pr-1
+              text-sm
+              leading-5
+              text-[#F4F1EA]
+            "
+          >
+            {value}
+          </p>
+        </div>
       </div>
-
-      {/* =======================================
-          RIGHT
-      ======================================== */}
-
-      <p
-        className="
-          min-w-0
-          max-w-[220px]
-          text-right
-          text-sm
-          leading-6
-          text-[#F4F1EA]/75
-          sm:max-w-[260px]
-        "
-      >
-        {value}
-      </p>
     </motion.div>
   );
 }
