@@ -5,14 +5,16 @@ import {
   Sparkles,
   Moon,
   Brain,
+  Infinity,
   ArrowUpRight,
   Check,
+  Crown,
 } from "lucide-react";
 
 import { useRouter } from "next/navigation";
 
 interface Plan {
-  id: "free" | "day" | "pro";
+  id: "free" | "day" | "monthly" | "yearly";
   name: string;
   description: string;
   price: string;
@@ -20,6 +22,7 @@ interface Plan {
   features: string[];
   icon: typeof Sparkles;
   featured?: boolean;
+  badge?: string;
 }
 
 const plans: Plan[] = [
@@ -37,12 +40,13 @@ const plans: Plan[] = [
       "Limited AI insights",
     ],
   },
+
   {
     id: "day",
     name: "Day Pass",
     description:
       "Go deeper when you need a moment of clarity.",
-    price: "$5",
+    price: "$2.99",
     period: "24 hours",
     icon: Moon,
     features: [
@@ -52,21 +56,41 @@ const plans: Plan[] = [
       "Tarot exploration",
     ],
   },
+
   {
-    id: "pro",
-    name: "Pro",
+    id: "monthly",
+    name: "Monthly",
     description:
       "Your complete personal intelligence system.",
-    price: "$19",
+    price: "$12.99",
     period: "per month",
     icon: Brain,
     featured: true,
+    badge: "Most popular",
     features: [
       "Unlimited Soul Analysis",
       "Advanced Dream Intelligence",
       "Unlimited insights",
       "Evolution Memory",
       "Full intelligence system",
+    ],
+  },
+
+  {
+    id: "yearly",
+    name: "Yearly",
+    description:
+      "A deeper commitment to your personal evolution.",
+    price: "$79",
+    period: "per year",
+    icon: Crown,
+    badge: "Best value",
+    features: [
+      "Everything in Monthly",
+      "Unlimited intelligence",
+      "Complete Evolution Memory",
+      "Long-term personal insights",
+      "Best yearly value",
     ],
   },
 ];
@@ -188,7 +212,8 @@ export function PremiumPanel() {
           gap-0
           border-t
           border-white/[0.07]
-          lg:grid-cols-3
+          md:grid-cols-2
+          xl:grid-cols-4
         "
       >
         {plans.map((plan, index) => {
@@ -211,20 +236,23 @@ export function PremiumPanel() {
               }}
               transition={{
                 duration: 0.8,
-                delay: index * 0.1,
+                delay: index * 0.08,
                 ease: [0.16, 1, 0.3, 1],
               }}
               className={`
                 group
                 relative
                 py-10
-                lg:px-8
-                lg:py-12
+                md:px-7
+                xl:px-7
+                xl:py-12
+
                 ${
                   index !== 0
-                    ? "border-t border-white/[0.07] lg:border-l lg:border-t-0"
+                    ? "border-t border-white/[0.07] md:border-l md:border-t-0"
                     : ""
                 }
+
                 ${
                   plan.featured
                     ? "bg-white/[0.018]"
@@ -232,7 +260,9 @@ export function PremiumPanel() {
                 }
               `}
             >
-              {/* Featured glow */}
+              {/* =================================================
+                  FEATURED GLOW
+              ================================================== */}
 
               {plan.featured && (
                 <div
@@ -241,8 +271,8 @@ export function PremiumPanel() {
                     absolute
                     left-1/2
                     top-1/2
-                    h-[300px]
-                    w-[300px]
+                    h-[320px]
+                    w-[320px]
                     -translate-x-1/2
                     -translate-y-1/2
                     rounded-full
@@ -253,13 +283,16 @@ export function PremiumPanel() {
               )}
 
               <div className="relative z-10">
-                {/* TOP */}
+                {/* =================================================
+                    TOP
+                ================================================== */}
 
                 <div
                   className="
                     flex
-                    items-center
+                    items-start
                     justify-between
+                    gap-4
                   "
                 >
                   <div
@@ -267,6 +300,7 @@ export function PremiumPanel() {
                       flex
                       h-10
                       w-10
+                      shrink-0
                       items-center
                       justify-center
                       rounded-full
@@ -290,21 +324,29 @@ export function PremiumPanel() {
                     />
                   </div>
 
-                  {plan.featured && (
+                  {plan.badge && (
                     <span
-                      className="
+                      className={`
+                        text-right
                         text-[8px]
                         uppercase
-                        tracking-[0.35em]
-                        text-[#D6B25E]
-                      "
+                        tracking-[0.25em]
+
+                        ${
+                          plan.featured
+                            ? "text-[#D6B25E]"
+                            : "text-white/25"
+                        }
+                      `}
                     >
-                      Recommended
+                      {plan.badge}
                     </span>
                   )}
                 </div>
 
-                {/* NAME */}
+                {/* =================================================
+                    NAME
+                ================================================== */}
 
                 <h3
                   className="
@@ -318,12 +360,14 @@ export function PremiumPanel() {
                   {plan.name}
                 </h3>
 
-                {/* DESCRIPTION */}
+                {/* =================================================
+                    DESCRIPTION
+                ================================================== */}
 
                 <p
                   className="
                     mt-3
-                    min-h-[56px]
+                    min-h-[72px]
                     max-w-xs
                     text-sm
                     leading-6
@@ -333,7 +377,9 @@ export function PremiumPanel() {
                   {plan.description}
                 </p>
 
-                {/* PRICE */}
+                {/* =================================================
+                    PRICE
+                ================================================== */}
 
                 <div className="mt-8">
                   <span
@@ -341,6 +387,7 @@ export function PremiumPanel() {
                       font-[family:var(--font-cormorant)]
                       text-5xl
                       font-light
+                      tracking-tight
                       text-[#F4F1EA]
                     "
                   >
@@ -352,7 +399,7 @@ export function PremiumPanel() {
                       ml-2
                       text-[9px]
                       uppercase
-                      tracking-[0.25em]
+                      tracking-[0.2em]
                       text-white/25
                     "
                   >
@@ -360,7 +407,9 @@ export function PremiumPanel() {
                   </span>
                 </div>
 
-                {/* LINE */}
+                {/* =================================================
+                    DIVIDER
+                ================================================== */}
 
                 <div
                   className="
@@ -371,7 +420,9 @@ export function PremiumPanel() {
                   "
                 />
 
-                {/* FEATURES */}
+                {/* =================================================
+                    FEATURES
+                ================================================== */}
 
                 <div className="space-y-4">
                   {plan.features.map((feature) => (
@@ -379,23 +430,29 @@ export function PremiumPanel() {
                       key={feature}
                       className="
                         flex
-                        items-center
+                        items-start
                         gap-3
                       "
                     >
                       <Check
                         size={13}
                         strokeWidth={1.5}
-                        className={
-                          plan.featured
-                            ? "text-[#D6B25E]"
-                            : "text-white/25"
-                        }
+                        className={`
+                          mt-0.5
+                          shrink-0
+
+                          ${
+                            plan.featured
+                              ? "text-[#D6B25E]"
+                              : "text-white/25"
+                          }
+                        `}
                       />
 
                       <span
                         className="
                           text-xs
+                          leading-5
                           text-white/45
                         "
                       >
@@ -405,7 +462,9 @@ export function PremiumPanel() {
                   ))}
                 </div>
 
-                {/* ACTION */}
+                {/* =================================================
+                    ACTION
+                ================================================== */}
 
                 <button
                   type="button"
@@ -431,13 +490,14 @@ export function PremiumPanel() {
                     border-white/[0.08]
                     pt-5
                     text-left
+                    outline-none
                   "
                 >
                   <span
                     className="
                       text-[9px]
                       uppercase
-                      tracking-[0.35em]
+                      tracking-[0.3em]
                       text-white/35
                       transition-colors
                       duration-500
@@ -454,6 +514,7 @@ export function PremiumPanel() {
                       flex
                       h-8
                       w-8
+                      shrink-0
                       items-center
                       justify-center
                       rounded-full
@@ -507,6 +568,7 @@ export function PremiumPanel() {
           className="
             h-1
             w-1
+            shrink-0
             rounded-full
             bg-[#D6B25E]
             shadow-[0_0_8px_rgba(214,178,94,0.7)]
