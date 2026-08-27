@@ -1,280 +1,529 @@
 "use client";
 
 import { motion } from "framer-motion";
-
 import {
-  Crown,
   Sparkles,
-  ArrowRight,
-  Infinity,
+  Moon,
+  Brain,
+  ArrowUpRight,
+  Check,
 } from "lucide-react";
 
-import { GlassCard } from "../../src/components/ui/GlassCard";
+import { useRouter } from "next/navigation";
 
-import { GradientButton } from "../../src/components/ui/GradientButton";
+interface Plan {
+  id: "free" | "day" | "pro";
+  name: string;
+  description: string;
+  price: string;
+  period: string;
+  features: string[];
+  icon: typeof Sparkles;
+  featured?: boolean;
+}
 
-
+const plans: Plan[] = [
+  {
+    id: "free",
+    name: "Free",
+    description:
+      "A quiet beginning for exploring your inner world.",
+    price: "$0",
+    period: "forever",
+    icon: Sparkles,
+    features: [
+      "Soul Scan",
+      "Dream Analysis",
+      "Limited AI insights",
+    ],
+  },
+  {
+    id: "day",
+    name: "Day Pass",
+    description:
+      "Go deeper when you need a moment of clarity.",
+    price: "$5",
+    period: "24 hours",
+    icon: Moon,
+    features: [
+      "Extended AI access",
+      "Deeper Soul Analysis",
+      "Dream Intelligence",
+      "Tarot exploration",
+    ],
+  },
+  {
+    id: "pro",
+    name: "Pro",
+    description:
+      "Your complete personal intelligence system.",
+    price: "$19",
+    period: "per month",
+    icon: Brain,
+    featured: true,
+    features: [
+      "Unlimited Soul Analysis",
+      "Advanced Dream Intelligence",
+      "Unlimited insights",
+      "Evolution Memory",
+      "Full intelligence system",
+    ],
+  },
+];
 
 export function PremiumPanel() {
-  return (
-    <motion.section
-      initial={{
-        opacity: 0,
-        y: 40,
-      }}
-      whileInView={{
-        opacity: 1,
-        y: 0,
-      }}
-      viewport={{
-        once: true,
-      }}
-      transition={{
-        duration: 0.8,
-      }}
-    >
+  const router = useRouter();
 
-      <GlassCard
-        highlight
+  return (
+    <section
+      id="plans"
+      className="
+        scroll-mt-24
+      "
+    >
+      {/* =====================================================
+          INTRO
+      ====================================================== */}
+
+      <div className="max-w-3xl">
+        <motion.p
+          initial={{
+            opacity: 0,
+            y: 12,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+          }}
+          transition={{
+            duration: 0.7,
+          }}
+          className="
+            text-[10px]
+            uppercase
+            tracking-[0.5em]
+            text-[#D6B25E]
+          "
+        >
+          Choose your depth
+        </motion.p>
+
+        <motion.h2
+          initial={{
+            opacity: 0,
+            y: 25,
+            filter: "blur(10px)",
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+          }}
+          viewport={{
+            once: true,
+          }}
+          transition={{
+            delay: 0.08,
+            duration: 0.9,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+          className="
+            mt-5
+            font-[family:var(--font-cormorant)]
+            text-5xl
+            font-light
+            leading-[1.05]
+            text-[#F4F1EA]
+            sm:text-6xl
+          "
+        >
+          Go deeper into
+          <br />
+          <span className="text-white/30">
+            yourself.
+          </span>
+        </motion.h2>
+
+        <motion.p
+          initial={{
+            opacity: 0,
+            y: 15,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+          }}
+          transition={{
+            delay: 0.16,
+            duration: 0.7,
+          }}
+          className="
+            mt-6
+            max-w-xl
+            text-sm
+            leading-7
+            text-white/40
+          "
+        >
+          Choose the experience that fits where you
+          are in your journey. You can change your
+          path whenever you want.
+        </motion.p>
+      </div>
+
+      {/* =====================================================
+          PLANS
+      ====================================================== */}
+
+      <div
         className="
-          relative
-          overflow-hidden
-          p-8
-          md:p-10
+          mt-16
+          grid
+          gap-0
+          border-t
+          border-white/[0.07]
+          lg:grid-cols-3
         "
       >
+        {plans.map((plan, index) => {
+          const Icon = plan.icon;
 
-        {/* Cinematic glow */}
+          return (
+            <motion.article
+              key={plan.id}
+              initial={{
+                opacity: 0,
+                y: 30,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              viewport={{
+                once: true,
+                margin: "-60px",
+              }}
+              transition={{
+                duration: 0.8,
+                delay: index * 0.1,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className={`
+                group
+                relative
+                py-10
+                lg:px-8
+                lg:py-12
+                ${
+                  index !== 0
+                    ? "border-t border-white/[0.07] lg:border-l lg:border-t-0"
+                    : ""
+                }
+                ${
+                  plan.featured
+                    ? "bg-white/[0.018]"
+                    : ""
+                }
+              `}
+            >
+              {/* Featured glow */}
 
-        <div
+              {plan.featured && (
+                <div
+                  className="
+                    pointer-events-none
+                    absolute
+                    left-1/2
+                    top-1/2
+                    h-[300px]
+                    w-[300px]
+                    -translate-x-1/2
+                    -translate-y-1/2
+                    rounded-full
+                    bg-[#D6B25E]/[0.025]
+                    blur-[110px]
+                  "
+                />
+              )}
+
+              <div className="relative z-10">
+                {/* TOP */}
+
+                <div
+                  className="
+                    flex
+                    items-center
+                    justify-between
+                  "
+                >
+                  <div
+                    className="
+                      flex
+                      h-10
+                      w-10
+                      items-center
+                      justify-center
+                      rounded-full
+                      border
+                      border-white/[0.08]
+                      bg-white/[0.025]
+                      transition-all
+                      duration-500
+                      group-hover:border-[#D6B25E]/30
+                    "
+                  >
+                    <Icon
+                      size={16}
+                      strokeWidth={1.5}
+                      className="
+                        text-white/40
+                        transition-colors
+                        duration-500
+                        group-hover:text-[#D6B25E]
+                      "
+                    />
+                  </div>
+
+                  {plan.featured && (
+                    <span
+                      className="
+                        text-[8px]
+                        uppercase
+                        tracking-[0.35em]
+                        text-[#D6B25E]
+                      "
+                    >
+                      Recommended
+                    </span>
+                  )}
+                </div>
+
+                {/* NAME */}
+
+                <h3
+                  className="
+                    mt-9
+                    font-[family:var(--font-cormorant)]
+                    text-3xl
+                    font-light
+                    text-[#F4F1EA]
+                  "
+                >
+                  {plan.name}
+                </h3>
+
+                {/* DESCRIPTION */}
+
+                <p
+                  className="
+                    mt-3
+                    min-h-[56px]
+                    max-w-xs
+                    text-sm
+                    leading-6
+                    text-white/35
+                  "
+                >
+                  {plan.description}
+                </p>
+
+                {/* PRICE */}
+
+                <div className="mt-8">
+                  <span
+                    className="
+                      font-[family:var(--font-cormorant)]
+                      text-5xl
+                      font-light
+                      text-[#F4F1EA]
+                    "
+                  >
+                    {plan.price}
+                  </span>
+
+                  <span
+                    className="
+                      ml-2
+                      text-[9px]
+                      uppercase
+                      tracking-[0.25em]
+                      text-white/25
+                    "
+                  >
+                    {plan.period}
+                  </span>
+                </div>
+
+                {/* LINE */}
+
+                <div
+                  className="
+                    my-8
+                    h-px
+                    w-full
+                    bg-white/[0.07]
+                  "
+                />
+
+                {/* FEATURES */}
+
+                <div className="space-y-4">
+                  {plan.features.map((feature) => (
+                    <div
+                      key={feature}
+                      className="
+                        flex
+                        items-center
+                        gap-3
+                      "
+                    >
+                      <Check
+                        size={13}
+                        strokeWidth={1.5}
+                        className={
+                          plan.featured
+                            ? "text-[#D6B25E]"
+                            : "text-white/25"
+                        }
+                      />
+
+                      <span
+                        className="
+                          text-xs
+                          text-white/45
+                        "
+                      >
+                        {feature}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* ACTION */}
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (plan.id === "free") {
+                      router.push("/");
+                      return;
+                    }
+
+                    router.push(
+                      `/checkout?plan=${plan.id}`
+                    );
+                  }}
+                  className="
+                    group/button
+                    mt-10
+                    flex
+                    w-full
+                    cursor-pointer
+                    items-center
+                    justify-between
+                    border-t
+                    border-white/[0.08]
+                    pt-5
+                    text-left
+                  "
+                >
+                  <span
+                    className="
+                      text-[9px]
+                      uppercase
+                      tracking-[0.35em]
+                      text-white/35
+                      transition-colors
+                      duration-500
+                      group-hover/button:text-[#D6B25E]
+                    "
+                  >
+                    {plan.id === "free"
+                      ? "Continue exploring"
+                      : "Choose experience"}
+                  </span>
+
+                  <span
+                    className="
+                      flex
+                      h-8
+                      w-8
+                      items-center
+                      justify-center
+                      rounded-full
+                      border
+                      border-white/[0.08]
+                      text-white/25
+                      transition-all
+                      duration-500
+                      group-hover/button:border-[#D6B25E]/30
+                      group-hover/button:text-[#D6B25E]
+                    "
+                  >
+                    <ArrowUpRight
+                      size={14}
+                      strokeWidth={1.5}
+                    />
+                  </span>
+                </button>
+              </div>
+            </motion.article>
+          );
+        })}
+      </div>
+
+      {/* =====================================================
+          FOOTNOTE
+      ====================================================== */}
+
+      <motion.div
+        initial={{
+          opacity: 0,
+        }}
+        whileInView={{
+          opacity: 1,
+        }}
+        viewport={{
+          once: true,
+        }}
+        transition={{
+          delay: 0.35,
+          duration: 0.8,
+        }}
+        className="
+          mt-10
+          flex
+          items-center
+          gap-3
+        "
+      >
+        <span
           className="
-            pointer-events-none
-            absolute
-            right-0
-            top-0
-            h-96
-            w-96
+            h-1
+            w-1
             rounded-full
-            bg-[#D6B25E]/10
-            blur-[140px]
+            bg-[#D6B25E]
+            shadow-[0_0_8px_rgba(214,178,94,0.7)]
           "
         />
 
-
-
-        <div
+        <p
           className="
-            relative
-            z-10
-            flex
-            flex-col
-            gap-10
-            lg:flex-row
-            lg:items-center
-            lg:justify-between
+            text-[8px]
+            uppercase
+            tracking-[0.35em]
+            text-white/20
           "
         >
-
-          <div className="max-w-2xl">
-
-            <div
-              className="
-                flex
-                items-center
-                gap-4
-              "
-            >
-
-              <div
-                className="
-                  flex
-                  h-12
-                  w-12
-                  items-center
-                  justify-center
-                  rounded-2xl
-                  border
-                  border-[#D6B25E]/30
-                  bg-[#D6B25E]/10
-                "
-              >
-                <Crown
-                  size={22}
-                  className="text-[#D6B25E]"
-                />
-              </div>
-
-
-
-              <div>
-
-                <p
-                  className="
-                    text-[10px]
-                    uppercase
-                    tracking-[0.5em]
-                    text-[#D6B25E]
-                  "
-                >
-                  EON Pro
-                </p>
-
-                <p
-                  className="
-                    mt-1
-                    text-sm
-                    text-white/40
-                  "
-                >
-                  Unlimited intelligence access
-                </p>
-
-              </div>
-
-            </div>
-
-
-
-            <h2
-              className="
-                mt-8
-                font-[family:var(--font-cormorant)]
-                text-5xl
-                font-light
-                leading-tight
-                text-[#F4F1EA]
-              "
-            >
-              Expand your personal
-              intelligence system.
-            </h2>
-
-
-
-            <p
-              className="
-                mt-5
-                leading-8
-                text-white/50
-              "
-            >
-              Unlock deeper Soul Analysis,
-              advanced dream interpretation,
-              unlimited insights and your complete
-              evolution memory.
-            </p>
-
-
-
-            <div
-              className="
-                mt-8
-                flex
-                flex-wrap
-                gap-3
-              "
-            >
-
-              <span
-                className="
-                  flex
-                  items-center
-                  gap-2
-                  rounded-full
-                  border
-                  border-white/10
-                  bg-white/[0.03]
-                  px-4
-                  py-2
-                  text-xs
-                  text-white/60
-                "
-              >
-                <Sparkles size={14} />
-                AI Insights
-              </span>
-
-
-
-              <span
-                className="
-                  flex
-                  items-center
-                  gap-2
-                  rounded-full
-                  border
-                  border-white/10
-                  bg-white/[0.03]
-                  px-4
-                  py-2
-                  text-xs
-                  text-white/60
-                "
-              >
-                <Infinity size={14} />
-                Evolution Memory
-              </span>
-
-            </div>
-
-          </div>
-
-
-
-          <div
-            className="
-              flex
-              flex-col
-              items-start
-              lg:items-end
-            "
-          >
-
-            <p
-              className="
-                text-[10px]
-                uppercase
-                tracking-[0.4em]
-                text-white/40
-              "
-            >
-              Membership
-            </p>
-
-
-
-            <h3
-              className="
-                mt-3
-                text-6xl
-                font-light
-                text-[#F4F1EA]
-              "
-            >
-              $19
-            </h3>
-
-
-
-            <p className="text-white/40">
-              per month
-            </p>
-
-
-
-            <GradientButton
-              className="mt-8 px-10"
-              icon={<ArrowRight size={18} />}
-            >
-              Upgrade Experience
-            </GradientButton>
-
-          </div>
-
-        </div>
-
-      </GlassCard>
-
-    </motion.section>
+          Your path remains yours
+        </p>
+      </motion.div>
+    </section>
   );
 }
