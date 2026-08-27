@@ -3,12 +3,6 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import {
-  ArrowUpRight,
-  LogOut,
-  Settings,
-  Sparkles,
-} from "lucide-react";
 
 import { supabase } from "../../src/lib/supabaseClient";
 
@@ -80,29 +74,16 @@ export function DashboardShell({
   useEffect(() => {
     const closeTimer = window.setTimeout(() => {
       setClosingWelcome(true);
-    }, 3000);
 
-    const removeTimer = window.setTimeout(() => {
-      setShowWelcome(false);
-    }, 3900);
+      window.setTimeout(() => {
+        setShowWelcome(false);
+      }, 1000);
+    }, 3200);
 
     return () => {
       window.clearTimeout(closeTimer);
-      window.clearTimeout(removeTimer);
     };
   }, []);
-
-  /*
-   * =====================================================
-   * LOGOUT
-   * =====================================================
-   */
-
-  async function handleLogout() {
-    await supabase.auth.signOut();
-    router.replace("/login");
-    router.refresh();
-  }
 
   return (
     <main
@@ -115,8 +96,8 @@ export function DashboardShell({
       "
     >
       {/* =====================================================
-          GLOBAL ATMOSPHERE
-      ====================================================== */}
+          GLOBAL BACKGROUND
+      ===================================================== */}
 
       <div
         className="
@@ -127,24 +108,29 @@ export function DashboardShell({
           overflow-hidden
         "
       >
-        <div
-          className="
-            absolute
-            left-[15%]
-            top-[-250px]
-            h-[650px]
-            w-[650px]
-            rounded-full
-            bg-[#D6B25E]/[0.025]
-            blur-[180px]
-          "
-        />
+        {/* Top cinematic glow */}
 
         <div
           className="
             absolute
-            right-[-300px]
-            top-[25%]
+            left-1/2
+            top-[-280px]
+            h-[700px]
+            w-[900px]
+            -translate-x-1/2
+            rounded-full
+            bg-[#D6B25E]/[0.035]
+            blur-[180px]
+          "
+        />
+
+        {/* Right glow */}
+
+        <div
+          className="
+            absolute
+            right-[-350px]
+            top-[30%]
             h-[650px]
             w-[650px]
             rounded-full
@@ -153,40 +139,42 @@ export function DashboardShell({
           "
         />
 
+        {/* Bottom glow */}
+
         <div
           className="
             absolute
             bottom-[-300px]
-            left-[30%]
-            h-[600px]
-            w-[600px]
+            left-[-300px]
+            h-[650px]
+            w-[650px]
             rounded-full
             bg-[#8B5CF6]/[0.012]
             blur-[180px]
           "
         />
 
-        {/* subtle vertical light */}
+        {/* Very subtle center light */}
 
         <div
           className="
             absolute
             left-1/2
-            top-0
-            h-full
-            w-px
+            top-[55%]
+            h-[500px]
+            w-[500px]
             -translate-x-1/2
-            bg-gradient-to-b
-            from-[#D6B25E]/[0.025]
-            via-transparent
-            to-transparent
+            -translate-y-1/2
+            rounded-full
+            bg-white/[0.006]
+            blur-[150px]
           "
         />
       </div>
 
       {/* =====================================================
           CINEMATIC WELCOME
-      ====================================================== */}
+      ===================================================== */}
 
       <AnimatePresence>
         {showWelcome && (
@@ -196,13 +184,13 @@ export function DashboardShell({
             }}
             animate={{
               opacity: closingWelcome ? 0 : 1,
-              scale: closingWelcome ? 1.02 : 1,
+              scale: closingWelcome ? 1.025 : 1,
               filter: closingWelcome
                 ? "blur(16px)"
                 : "blur(0px)",
             }}
             transition={{
-              duration: 0.9,
+              duration: 1,
               ease: [0.16, 1, 0.3, 1],
             }}
             className="
@@ -221,7 +209,7 @@ export function DashboardShell({
             <motion.div
               initial={{
                 opacity: 0,
-                scale: 0.65,
+                scale: 0.55,
               }}
               animate={{
                 opacity: 1,
@@ -241,10 +229,41 @@ export function DashboardShell({
                 -translate-x-1/2
                 -translate-y-1/2
                 rounded-full
-                bg-[#D6B25E]/[0.03]
-                blur-[190px]
+                bg-[#D6B25E]/[0.035]
+                blur-[180px]
               "
             />
+
+            <motion.div
+              initial={{
+                opacity: 0,
+                scale: 0.6,
+              }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+              }}
+              transition={{
+                delay: 0.25,
+                duration: 2,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="
+                pointer-events-none
+                absolute
+                left-1/2
+                top-[43%]
+                h-[350px]
+                w-[550px]
+                -translate-x-1/2
+                -translate-y-1/2
+                rounded-full
+                bg-white/[0.012]
+                blur-[120px]
+              "
+            />
+
+            {/* Intro content */}
 
             <div
               className="
@@ -259,7 +278,7 @@ export function DashboardShell({
             >
               {/* Brand */}
 
-              <motion.div
+              <motion.p
                 initial={{
                   opacity: 0,
                   y: 18,
@@ -271,48 +290,21 @@ export function DashboardShell({
                   filter: "blur(0px)",
                 }}
                 transition={{
-                  duration: 1.2,
+                  duration: 1.1,
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 className="
-                  flex
-                  items-center
-                  gap-3
+                  text-[10px]
+                  uppercase
+                  tracking-[0.7em]
+                  text-[#D6B25E]
+                  sm:text-[11px]
                 "
               >
-                <span
-                  className="
-                    h-1
-                    w-1
-                    rounded-full
-                    bg-[#D6B25E]
-                    shadow-[0_0_12px_rgba(214,178,94,0.8)]
-                  "
-                />
+                SOULMIRROR
+              </motion.p>
 
-                <span
-                  className="
-                    text-[10px]
-                    uppercase
-                    tracking-[0.7em]
-                    text-[#D6B25E]
-                  "
-                >
-                  SoulMirror
-                </span>
-
-                <span
-                  className="
-                    h-1
-                    w-1
-                    rounded-full
-                    bg-[#D6B25E]
-                    shadow-[0_0_12px_rgba(214,178,94,0.8)]
-                  "
-                />
-              </motion.div>
-
-              {/* Divider */}
+              {/* Line */}
 
               <motion.div
                 initial={{
@@ -324,14 +316,14 @@ export function DashboardShell({
                   scaleX: 1,
                 }}
                 transition={{
-                  delay: 0.45,
+                  delay: 0.4,
                   duration: 1,
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 className="
-                  mt-8
+                  mt-7
                   h-px
-                  w-16
+                  w-20
                   origin-center
                   bg-gradient-to-r
                   from-transparent
@@ -340,12 +332,12 @@ export function DashboardShell({
                 "
               />
 
-              {/* Welcome */}
+              {/* Greeting */}
 
               <motion.h1
                 initial={{
                   opacity: 0,
-                  y: 32,
+                  y: 35,
                   filter: "blur(18px)",
                 }}
                 animate={{
@@ -355,20 +347,20 @@ export function DashboardShell({
                 }}
                 transition={{
                   delay: 0.65,
-                  duration: 1.2,
+                  duration: 1.25,
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 className="
                   mt-8
-                  max-w-4xl
+                  max-w-[1000px]
                   font-[family:var(--font-cormorant)]
                   text-5xl
                   font-light
-                  leading-[0.95]
-                  tracking-[-0.02em]
+                  leading-[1.05]
                   text-[#F4F1EA]
                   sm:text-6xl
                   md:text-7xl
+                  lg:text-8xl
                 "
               >
                 Welcome back,{" "}
@@ -397,27 +389,28 @@ export function DashboardShell({
                 }}
                 className="
                   mt-6
-                  text-xs
-                  uppercase
-                  tracking-[0.35em]
-                  text-white/25
+                  text-sm
+                  tracking-wide
+                  text-white/35
                 "
               >
                 Your personal intelligence space
               </motion.p>
 
-              {/* Online */}
+              {/* Online indicator */}
 
               <motion.div
                 initial={{
                   opacity: 0,
+                  y: 10,
                 }}
                 animate={{
                   opacity: 1,
+                  y: 0,
                 }}
                 transition={{
                   delay: 1.5,
-                  duration: 1,
+                  duration: 0.8,
                 }}
                 className="
                   mt-12
@@ -428,11 +421,11 @@ export function DashboardShell({
               >
                 <span
                   className="
-                    h-1.5
-                    w-1.5
+                    h-1
+                    w-1
                     rounded-full
                     bg-[#D6B25E]
-                    shadow-[0_0_12px_rgba(214,178,94,0.7)]
+                    shadow-[0_0_12px_rgba(214,178,94,0.8)]
                   "
                 />
 
@@ -440,12 +433,22 @@ export function DashboardShell({
                   className="
                     text-[8px]
                     uppercase
-                    tracking-[0.4em]
+                    tracking-[0.45em]
                     text-white/20
                   "
                 >
                   Intelligence online
                 </span>
+
+                <span
+                  className="
+                    h-1
+                    w-1
+                    rounded-full
+                    bg-[#D6B25E]
+                    shadow-[0_0_12px_rgba(214,178,94,0.8)]
+                  "
+                />
               </motion.div>
             </div>
           </motion.div>
@@ -454,7 +457,7 @@ export function DashboardShell({
 
       {/* =====================================================
           DASHBOARD
-      ====================================================== */}
+      ===================================================== */}
 
       <motion.div
         initial={{
@@ -464,7 +467,7 @@ export function DashboardShell({
           opacity: showWelcome ? 0 : 1,
         }}
         transition={{
-          duration: 1,
+          duration: 1.1,
           ease: [0.16, 1, 0.3, 1],
         }}
         className="
@@ -474,417 +477,181 @@ export function DashboardShell({
           w-full
           max-w-[1440px]
           px-5
-          pb-28
+          pb-32
+          pt-6
           sm:px-8
           lg:px-12
+          xl:px-16
         "
       >
         {/* =================================================
-            TOP NAVIGATION
+            TOP SPACE
         ================================================== */}
 
-        <header
-          className="
-            flex
-            h-20
-            items-center
-            justify-between
-            border-b
-            border-white/[0.06]
-          "
-        >
-          {/* Logo */}
-
-          <button
-            type="button"
-            onClick={() => window.scrollTo({
-              top: 0,
-              behavior: "smooth",
-            })}
-            className="
-              group
-              flex
-              items-center
-              gap-3
-            "
-          >
-            <span
-              className="
-                relative
-                flex
-                h-7
-                w-7
-                items-center
-                justify-center
-              "
-            >
-              <span
-                className="
-                  absolute
-                  inset-0
-                  rounded-full
-                  border
-                  border-[#D6B25E]/40
-                  transition-transform
-                  duration-700
-                  group-hover:scale-125
-                "
-              />
-
-              <span
-                className="
-                  h-1
-                  w-1
-                  rounded-full
-                  bg-[#D6B25E]
-                  shadow-[0_0_10px_rgba(214,178,94,0.8)]
-                "
-              />
-            </span>
-
-            <span
-              className="
-                text-[10px]
-                uppercase
-                tracking-[0.5em]
-                text-[#F4F1EA]
-              "
-            >
-              SoulMirror
-            </span>
-          </button>
-
-          {/* Navigation */}
-
-          <nav
-            className="
-              hidden
-              items-center
-              gap-8
-              md:flex
-            "
-          >
-            <DashboardNavItem
-              label="Overview"
-              active
-            />
-
-            <DashboardNavItem label="Journey" />
-
-            <DashboardNavItem label="Intelligence" />
-
-            <DashboardNavItem label="Profile" />
-          </nav>
-
-          {/* Actions */}
-
-          <div
-            className="
-              flex
-              items-center
-              gap-2
-            "
-          >
-            <button
-              type="button"
-              onClick={() => router.push("/settings")}
-              className="
-                flex
-                h-10
-                w-10
-                items-center
-                justify-center
-                rounded-full
-                border
-                border-white/[0.07]
-                bg-white/[0.02]
-                text-white/40
-                transition-all
-                duration-500
-                hover:border-[#D6B25E]/25
-                hover:bg-[#D6B25E]/[0.05]
-                hover:text-[#D6B25E]
-              "
-              aria-label="Settings"
-            >
-              <Settings size={15} />
-            </button>
-
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="
-                hidden
-                h-10
-                items-center
-                gap-2
-                rounded-full
-                border
-                border-white/[0.07]
-                bg-white/[0.02]
-                px-4
-                text-[9px]
-                uppercase
-                tracking-[0.25em]
-                text-white/35
-                transition-all
-                duration-500
-                hover:border-white/[0.14]
-                hover:text-white/70
-                sm:flex
-              "
-            >
-              <LogOut size={13} />
-              Logout
-            </button>
-          </div>
-        </header>
-
-        {/* =================================================
-            PAGE INTRO
-        ================================================== */}
-
-        <section
-          className="
-            grid
-            gap-10
-            pb-10
-            pt-14
-            lg:grid-cols-[1fr_auto]
-            lg:items-end
-            lg:pt-20
-          "
-        >
-          <div>
-            <motion.p
-              initial={{
-                opacity: 0,
-                y: 15,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              transition={{
-                delay: 0.1,
-                duration: 0.7,
-              }}
-              className="
-                flex
-                items-center
-                gap-3
-                text-[9px]
-                uppercase
-                tracking-[0.45em]
-                text-[#D6B25E]
-              "
-            >
-              <Sparkles size={12} />
-              Personal intelligence
-            </motion.p>
-
-            <motion.h2
-              initial={{
-                opacity: 0,
-                y: 25,
-                filter: "blur(10px)",
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-                filter: "blur(0px)",
-              }}
-              transition={{
-                delay: 0.2,
-                duration: 0.9,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-              className="
-                mt-5
-                max-w-3xl
-                font-[family:var(--font-cormorant)]
-                text-5xl
-                font-light
-                leading-[0.95]
-                tracking-[-0.025em]
-                text-[#F4F1EA]
-                sm:text-6xl
-              "
-            >
-              Your inner world,
-              <br />
-              <span className="text-white/35">
-                continuously evolving.
-              </span>
-            </motion.h2>
-          </div>
-
-          <motion.button
-            initial={{
-              opacity: 0,
-              y: 15,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              delay: 0.35,
-              duration: 0.7,
-            }}
-            type="button"
-            onClick={() => router.push("/soul-scan")}
-            className="
-              group
-              flex
-              w-fit
-              items-center
-              gap-3
-              rounded-full
-              border
-              border-[#D6B25E]/20
-              bg-[#D6B25E]/[0.06]
-              px-5
-              py-3
-              text-[9px]
-              uppercase
-              tracking-[0.3em]
-              text-[#D6B25E]
-              transition-all
-              duration-500
-              hover:border-[#D6B25E]/40
-              hover:bg-[#D6B25E]/[0.1]
-            "
-          >
-            New Soul Scan
-
-            <ArrowUpRight
-              size={14}
-              className="
-                transition-transform
-                duration-500
-                group-hover:-translate-y-0.5
-                group-hover:translate-x-0.5
-              "
-            />
-          </motion.button>
-        </section>
+        <div className="h-4 sm:h-8" />
 
         {/* =================================================
             IDENTITY
         ================================================== */}
 
-        <DashboardSection delay={0.15}>
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 25,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            delay: 0.1,
+            duration: 0.9,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+        >
           <IdentityHeader />
-        </DashboardSection>
+        </motion.div>
 
         {/* =================================================
-            SOUL ORB / CURRENT STATE
+            SOUL STATE
         ================================================== */}
 
-        <DashboardSection delay={0.22}>
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 35,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            delay: 0.18,
+            duration: 0.9,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+          className="mt-20 sm:mt-28"
+        >
           <SoulOrbPanel />
-        </DashboardSection>
+        </motion.div>
+
+        {/* =================================================
+            DIVIDER
+        ================================================== */}
+
+        <DashboardDivider />
 
         {/* =================================================
             USAGE
         ================================================== */}
 
-        <DashboardSection delay={0.29}>
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 30,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            delay: 0.25,
+            duration: 0.9,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+        >
           <UsagePanel usage={usage} />
-        </DashboardSection>
+        </motion.div>
+
+        {/* =================================================
+            DIVIDER
+        ================================================== */}
+
+        <DashboardDivider />
 
         {/* =================================================
             INTELLIGENCE
         ================================================== */}
 
-        <DashboardSection delay={0.36}>
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 30,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            delay: 0.32,
+            duration: 0.9,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+        >
           <IntelligenceModules />
-        </DashboardSection>
+        </motion.div>
 
         {/* =================================================
-            JOURNEY
+            DIVIDER
         ================================================== */}
 
-        <DashboardSection delay={0.43}>
+        <DashboardDivider />
+
+        {/* =================================================
+            EVOLUTION
+        ================================================== */}
+
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 30,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            delay: 0.39,
+            duration: 0.9,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+        >
           <EvolutionTimeline />
-        </DashboardSection>
+        </motion.div>
+
+        {/* =================================================
+            DIVIDER
+        ================================================== */}
+
+        <DashboardDivider />
 
         {/* =================================================
             PREMIUM
         ================================================== */}
 
-        <DashboardSection delay={0.5}>
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 30,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            delay: 0.46,
+            duration: 0.9,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+        >
           <PremiumPanel />
-        </DashboardSection>
+        </motion.div>
 
         {/* =================================================
-            FOOTER
+            FOOT SPACE
         ================================================== */}
 
-        <footer
-          className="
-            mt-24
-            flex
-            flex-col
-            gap-4
-            border-t
-            border-white/[0.06]
-            pt-8
-            sm:flex-row
-            sm:items-center
-            sm:justify-between
-          "
-        >
-          <p
-            className="
-              text-[8px]
-              uppercase
-              tracking-[0.35em]
-              text-white/20
-            "
-          >
-            SoulMirror · EON AI
-          </p>
-
-          <div
-            className="
-              flex
-              items-center
-              gap-6
-            "
-          >
-            <button
-              type="button"
-              onClick={() => router.push("/settings")}
-              className="
-                text-[8px]
-                uppercase
-                tracking-[0.3em]
-                text-white/20
-                transition-colors
-                hover:text-[#D6B25E]
-              "
-            >
-              Settings
-            </button>
-
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="
-                text-[8px]
-                uppercase
-                tracking-[0.3em]
-                text-white/20
-                transition-colors
-                hover:text-white/60
-              "
-            >
-              Sign out
-            </button>
-          </div>
-        </footer>
+        <div className="h-10" />
       </motion.div>
     </main>
   );
@@ -892,85 +659,43 @@ export function DashboardShell({
 
 /*
  * =========================================================
- * DASHBOARD SECTION
+ * DASHBOARD DIVIDER
  * =========================================================
  */
 
-function DashboardSection({
-  children,
-  delay,
-}: {
-  children: React.ReactNode;
-  delay: number;
-}) {
+function DashboardDivider() {
   return (
-    <motion.section
-      initial={{
-        opacity: 0,
-        y: 30,
-      }}
-      animate={{
-        opacity: 1,
-        y: 0,
-      }}
-      transition={{
-        delay,
-        duration: 0.85,
-        ease: [0.16, 1, 0.3, 1],
-      }}
-      className="mt-14 sm:mt-20"
-    >
-      {children}
-    </motion.section>
-  );
-}
-
-/*
- * =========================================================
- * NAV ITEM
- * =========================================================
- */
-
-function DashboardNavItem({
-  label,
-  active = false,
-}: {
-  label: string;
-  active?: boolean;
-}) {
-  return (
-    <button
-      type="button"
-      className={`
+    <div
+      className="
         relative
-        py-2
-        text-[9px]
-        uppercase
-        tracking-[0.3em]
-        transition-colors
-        duration-500
-        ${
-          active
-            ? "text-[#F4F1EA]"
-            : "text-white/30 hover:text-white/65"
-        }
-      `}
+        my-20
+        flex
+        items-center
+        justify-center
+        sm:my-28
+      "
     >
-      {label}
+      <div
+        className="
+          h-px
+          w-full
+          bg-gradient-to-r
+          from-transparent
+          via-white/[0.08]
+          to-transparent
+        "
+      />
 
-      {active && (
-        <span
-          className="
-            absolute
-            -bottom-1
-            left-1/2
-            h-px
-            w-5
-            -translate-x-1/2
-            bg-[#D6B25E]
-          "
-        />
-      )}
-    </button>
+      <div
+        className="
+          absolute
+          h-1
+          w-1
+          rounded-full
+          bg-[#D6B25E]/50
+          shadow-[0_0_12px_rgba(214,178,94,0.35)]
+        "
+      />
+    </div>
   );
 }
