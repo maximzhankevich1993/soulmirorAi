@@ -1,7 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import {
+  useEffect,
+  useState,
+  type MouseEvent,
+} from "react";
+
+import {
+  AnimatePresence,
+  motion,
+  useInView,
+} from "framer-motion";
+
 import { useRouter } from "next/navigation";
 
 import { supabase } from "../../src/lib/supabaseClient";
@@ -24,24 +34,79 @@ interface DashboardShellProps {
 
 type UserPlan = "free" | "day" | "pro";
 
+type RevealSectionProps = {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+};
+
+function RevealSection({
+  children,
+  className = "",
+  delay = 0,
+}: RevealSectionProps) {
+  const ref = useState<HTMLDivElement | null>(null);
+  const [element, setElement] =
+    useState<HTMLDivElement | null>(null);
+
+  const isInView = useInView(element, {
+    once: true,
+    amount: 0.12,
+  });
+
+  return (
+    <motion.div
+      ref={setElement}
+      initial={{
+        opacity: 0,
+        y: 70,
+        filter: "blur(10px)",
+      }}
+      animate={
+        isInView
+          ? {
+              opacity: 1,
+              y: 0,
+              filter: "blur(0px)",
+            }
+          : undefined
+      }
+      transition={{
+        duration: 1.1,
+        delay,
+        ease: [0.16, 1, 0.3, 1],
+      }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 export function DashboardShell({
   usage,
 }: DashboardShellProps) {
   const router = useRouter();
 
-  const [showWelcome, setShowWelcome] = useState(true);
-  const [closingWelcome, setClosingWelcome] = useState(false);
+  const [showWelcome, setShowWelcome] =
+    useState(true);
 
-  const [userName, setUserName] = useState("there");
+  const [userName, setUserName] =
+    useState("there");
+
   const [userPlan, setUserPlan] =
     useState<UserPlan>("free");
 
-  const [showPlans, setShowPlans] = useState(false);
+  const [closingWelcome, setClosingWelcome] =
+    useState(false);
+
+  const [showPlans, setShowPlans] =
+    useState(false);
 
   /*
-   * =====================================================
+   * =========================================
    * LOAD USER
-   * =====================================================
+   * =========================================
    */
 
   useEffect(() => {
@@ -56,10 +121,6 @@ export function DashboardShell({
           return;
         }
 
-        /*
-         * USER NAME
-         */
-
         const metadataName =
           user.user_metadata?.name ||
           user.user_metadata?.full_name ||
@@ -71,10 +132,6 @@ export function DashboardShell({
           "there";
 
         setUserName(firstName);
-
-        /*
-         * USER PLAN
-         */
 
         try {
           const response = await fetch(
@@ -114,30 +171,48 @@ export function DashboardShell({
   }, [router]);
 
   /*
-   * =====================================================
-   * CINEMATIC WELCOME
-   * =====================================================
+   * =========================================
+   * WELCOME SCREEN
+   * =========================================
    */
 
   useEffect(() => {
-    const closeTimer = window.setTimeout(() => {
+    const timer = window.setTimeout(() => {
       setClosingWelcome(true);
+
+      window.setTimeout(() => {
+        setShowWelcome(false);
+      }, 1000);
     }, 3200);
 
-    const hideTimer = window.setTimeout(() => {
-      setShowWelcome(false);
-    }, 4200);
-
     return () => {
-      window.clearTimeout(closeTimer);
-      window.clearTimeout(hideTimer);
+      window.clearTimeout(timer);
     };
   }, []);
 
   /*
-   * =====================================================
-   * ESCAPE — CLOSE PLANS
-   * =====================================================
+   * =========================================
+   * LOCK BODY SCROLL WHEN PLANS OPEN
+   * =========================================
+   */
+
+  useEffect(() => {
+    if (!showPlans) {
+      document.body.style.overflow = "";
+      return;
+    }
+
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showPlans]);
+
+  /*
+   * =========================================
+   * ESC CLOSE
+   * =========================================
    */
 
   useEffect(() => {
@@ -163,29 +238,9 @@ export function DashboardShell({
   }, [showPlans]);
 
   /*
-   * =====================================================
-   * LOCK BODY SCROLL WHEN MODAL IS OPEN
-   * =====================================================
-   */
-
-  useEffect(() => {
-    if (!showPlans) return;
-
-    const previousOverflow =
-      document.body.style.overflow;
-
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.body.style.overflow =
-        previousOverflow;
-    };
-  }, [showPlans]);
-
-  /*
-   * =====================================================
+   * =========================================
    * PLAN LABEL
-   * =====================================================
+   * =========================================
    */
 
   const planLabel =
@@ -196,16 +251,17 @@ export function DashboardShell({
         : "Free";
 
   /*
-   * =====================================================
-   * LOGOUT
-   * =====================================================
+   * =========================================
+   * MODAL BACKDROP CLICK
+   * =========================================
    */
 
-  async function handleLogout() {
-    await supabase.auth.signOut();
-
-    router.push("/");
-    router.refresh();
+  function handleBackdropClick(
+    event: MouseEvent<HTMLDivElement>
+  ) {
+    if (event.target === event.currentTarget) {
+      setShowPlans(false);
+    }
   }
 
   return (
@@ -213,15 +269,15 @@ export function DashboardShell({
       className="
         relative
         min-h-screen
-        overflow-x-hidden
+        overflow-hidden
+        scroll-smooth
         bg-[#050505]
         text-[#F4F1EA]
-        [scroll-behavior:smooth]
       "
     >
-      {/* =====================================================
+      {/* =========================================
           GLOBAL ATMOSPHERE
-      ====================================================== */}
+      ========================================== */}
 
       <div
         className="
@@ -232,15 +288,13 @@ export function DashboardShell({
           overflow-hidden
         "
       >
-        {/* Top light */}
-
         <div
           className="
             absolute
             left-1/2
-            top-[-220px]
-            h-[720px]
-            w-[720px]
+            top-[-180px]
+            h-[700px]
+            w-[700px]
             -translate-x-1/2
             rounded-full
             bg-[#D6B25E]/[0.035]
@@ -248,13 +302,11 @@ export function DashboardShell({
           "
         />
 
-        {/* Right light */}
-
         <div
           className="
             absolute
-            right-[-320px]
-            top-[30%]
+            right-[-300px]
+            top-[35%]
             h-[650px]
             w-[650px]
             rounded-full
@@ -263,40 +315,23 @@ export function DashboardShell({
           "
         />
 
-        {/* Bottom violet atmosphere */}
-
         <div
           className="
             absolute
             bottom-[-300px]
-            left-[-300px]
-            h-[650px]
-            w-[650px]
+            left-[-250px]
+            h-[600px]
+            w-[600px]
             rounded-full
             bg-[#8B5CF6]/[0.012]
             blur-[180px]
           "
         />
-
-        {/* Very subtle vertical light */}
-
-        <div
-          className="
-            absolute
-            left-1/2
-            top-[55%]
-            h-[500px]
-            w-px
-            -translate-x-1/2
-            bg-[#D6B25E]/[0.025]
-            blur-[20px]
-          "
-        />
       </div>
 
-      {/* =====================================================
+      {/* =========================================
           CINEMATIC WELCOME
-      ====================================================== */}
+      ========================================== */}
 
       <AnimatePresence>
         {showWelcome && (
@@ -326,37 +361,7 @@ export function DashboardShell({
               bg-[#050505]
             "
           >
-            {/* Main cinematic glow */}
-
-            <motion.div
-              initial={{
-                opacity: 0,
-                scale: 0.45,
-              }}
-              animate={{
-                opacity: 1,
-                scale: 1,
-              }}
-              transition={{
-                duration: 2.3,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-              className="
-                pointer-events-none
-                absolute
-                left-1/2
-                top-1/2
-                h-[650px]
-                w-[950px]
-                -translate-x-1/2
-                -translate-y-1/2
-                rounded-full
-                bg-[#D6B25E]/[0.035]
-                blur-[180px]
-              "
-            />
-
-            {/* Secondary glow */}
+            {/* Atmosphere */}
 
             <motion.div
               initial={{
@@ -368,22 +373,21 @@ export function DashboardShell({
                 scale: 1,
               }}
               transition={{
-                delay: 0.35,
-                duration: 2.4,
+                duration: 2.2,
                 ease: [0.16, 1, 0.3, 1],
               }}
               className="
                 pointer-events-none
                 absolute
                 left-1/2
-                top-[42%]
-                h-[350px]
-                w-[600px]
+                top-1/2
+                h-[650px]
+                w-[900px]
                 -translate-x-1/2
                 -translate-y-1/2
                 rounded-full
-                bg-white/[0.012]
-                blur-[130px]
+                bg-[#D6B25E]/[0.035]
+                blur-[180px]
               "
             />
 
@@ -400,8 +404,6 @@ export function DashboardShell({
                 text-center
               "
             >
-              {/* Brand */}
-
               <motion.p
                 initial={{
                   opacity: 0,
@@ -428,8 +430,6 @@ export function DashboardShell({
                 SOULMIRROR
               </motion.p>
 
-              {/* Line */}
-
               <motion.div
                 initial={{
                   opacity: 0,
@@ -455,8 +455,6 @@ export function DashboardShell({
                   to-transparent
                 "
               />
-
-              {/* Greeting */}
 
               <motion.h1
                 initial={{
@@ -493,8 +491,6 @@ export function DashboardShell({
                 </span>
               </motion.h1>
 
-              {/* Subtitle */}
-
               <motion.p
                 initial={{
                   opacity: 0,
@@ -517,8 +513,6 @@ export function DashboardShell({
               >
                 Your personal intelligence space
               </motion.p>
-
-              {/* Online */}
 
               <motion.div
                 initial={{
@@ -574,9 +568,307 @@ export function DashboardShell({
         )}
       </AnimatePresence>
 
-      {/* =====================================================
-          DASHBOARD
-      ====================================================== */}
+      {/* =========================================
+          PLANS MODAL
+      ========================================== */}
+
+      <AnimatePresence>
+        {showPlans && (
+          <motion.div
+            initial={{
+              opacity: 0,
+              backdropFilter: "blur(0px)",
+            }}
+            animate={{
+              opacity: 1,
+              backdropFilter: "blur(18px)",
+            }}
+            exit={{
+              opacity: 0,
+              backdropFilter: "blur(0px)",
+            }}
+            transition={{
+              duration: 0.45,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            onMouseDown={handleBackdropClick}
+            className="
+              fixed
+              inset-0
+              z-[200]
+              flex
+              items-center
+              justify-center
+              overflow-y-auto
+              bg-black/75
+              p-4
+              sm:p-6
+            "
+          >
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 35,
+                scale: 0.96,
+                filter: "blur(12px)",
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                filter: "blur(0px)",
+              }}
+              exit={{
+                opacity: 0,
+                y: 20,
+                scale: 0.97,
+                filter: "blur(10px)",
+              }}
+              transition={{
+                duration: 0.6,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              onMouseDown={(event) =>
+                event.stopPropagation()
+              }
+              className="
+                relative
+                w-full
+                max-w-5xl
+                overflow-hidden
+                rounded-[2rem]
+                border
+                border-white/[0.09]
+                bg-[#090909]/95
+                shadow-[0_40px_120px_rgba(0,0,0,0.65)]
+              "
+            >
+              {/* Modal atmosphere */}
+
+              <div
+                className="
+                  pointer-events-none
+                  absolute
+                  left-1/2
+                  top-[-250px]
+                  h-[500px]
+                  w-[700px]
+                  -translate-x-1/2
+                  rounded-full
+                  bg-[#D6B25E]/[0.045]
+                  blur-[140px]
+                "
+              />
+
+              <div
+                className="
+                  relative
+                  z-10
+                  max-h-[90vh]
+                  overflow-y-auto
+                  overscroll-contain
+                "
+              >
+                {/* Modal header */}
+
+                <div
+                  className="
+                    flex
+                    items-start
+                    justify-between
+                    gap-6
+                    px-6
+                    pb-8
+                    pt-7
+                    sm:px-10
+                    sm:pt-9
+                  "
+                >
+                  <div>
+                    <p
+                      className="
+                        text-[9px]
+                        uppercase
+                        tracking-[0.5em]
+                        text-[#D6B25E]
+                      "
+                    >
+                      SoulMirror
+                    </p>
+
+                    <h2
+                      className="
+                        mt-3
+                        font-[family:var(--font-cormorant)]
+                        text-4xl
+                        font-light
+                        text-[#F4F1EA]
+                        sm:text-5xl
+                      "
+                    >
+                      Choose your path.
+                    </h2>
+
+                    <p
+                      className="
+                        mt-3
+                        max-w-xl
+                        text-sm
+                        leading-6
+                        text-white/35
+                      "
+                    >
+                      Choose the level of intelligence
+                      that fits your journey.
+                    </p>
+                  </div>
+
+                  {/* Close */}
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setShowPlans(false)
+                    }
+                    aria-label="Close plans"
+                    className="
+                      group
+                      flex
+                      h-10
+                      w-10
+                      shrink-0
+                      cursor-pointer
+                      items-center
+                      justify-center
+                      rounded-full
+                      border
+                      border-white/[0.08]
+                      bg-white/[0.025]
+                      text-white/40
+                      transition-all
+                      duration-300
+                      hover:border-white/[0.16]
+                      hover:bg-white/[0.05]
+                      hover:text-[#F4F1EA]
+                    "
+                  >
+                    <span className="text-lg leading-none">
+                      ×
+                    </span>
+                  </button>
+                </div>
+
+                {/* Plans */}
+
+                <div
+                  className="
+                    grid
+                    gap-3
+                    px-6
+                    pb-7
+                    sm:px-10
+                    sm:pb-10
+                    lg:grid-cols-3
+                  "
+                >
+                  {/* FREE */}
+
+                  <PlanCard
+                    name="Free"
+                    eyebrow="Begin"
+                    price="$0"
+                    period="/ forever"
+                    description="A quiet beginning for exploring your inner world."
+                    features={[
+                      "Soul Scan",
+                      "Dream reflection",
+                      "Tarot experience",
+                    ]}
+                    current={
+                      userPlan === "free"
+                    }
+                    onSelect={() => {
+                      setShowPlans(false);
+                    }}
+                  />
+
+                  {/* DAY PASS */}
+
+                  <PlanCard
+                    name="Day Pass"
+                    eyebrow="One day"
+                    price="$4.99"
+                    period="/ day"
+                    description="Full access when you want to go deeper for a single day."
+                    features={[
+                      "Extended intelligence",
+                      "Full daily access",
+                      "Deeper reflections",
+                    ]}
+                    current={
+                      userPlan === "day"
+                    }
+                    onSelect={() => {
+                      setShowPlans(false);
+                    }}
+                  />
+
+                  {/* PRO */}
+
+                  <PlanCard
+                    name="Pro"
+                    eyebrow="Continuous"
+                    price="$19"
+                    period="/ month"
+                    description="The complete SoulMirror experience for an evolving intelligence."
+                    features={[
+                      "Unlimited core experiences",
+                      "Long-term memory",
+                      "Evolution insights",
+                      "Priority intelligence",
+                    ]}
+                    current={
+                      userPlan === "pro"
+                    }
+                    featured
+                    onSelect={() => {
+                      setShowPlans(false);
+                    }}
+                  />
+                </div>
+
+                {/* Bottom */}
+
+                <div
+                  className="
+                    border-t
+                    border-white/[0.06]
+                    px-6
+                    py-5
+                    text-center
+                    sm:px-10
+                  "
+                >
+                  <p
+                    className="
+                      text-[9px]
+                      uppercase
+                      tracking-[0.32em]
+                      text-white/20
+                    "
+                  >
+                    Your journey remains yours.
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* =========================================
+          MAIN CONTENT
+      ========================================== */}
 
       <motion.div
         initial={{
@@ -586,7 +878,7 @@ export function DashboardShell({
           opacity: showWelcome ? 0 : 1,
         }}
         transition={{
-          duration: 1.15,
+          duration: 1.1,
           ease: [0.16, 1, 0.3, 1],
         }}
         className="
@@ -602,9 +894,9 @@ export function DashboardShell({
           lg:px-12
         "
       >
-        {/* =================================================
+        {/* =========================================
             HEADER
-        ================================================== */}
+        ========================================== */}
 
         <header
           className="
@@ -616,7 +908,7 @@ export function DashboardShell({
             pb-6
           "
         >
-          {/* SOULMIRROR */}
+          {/* BRAND */}
 
           <button
             type="button"
@@ -636,7 +928,7 @@ export function DashboardShell({
                 text-[#D6B25E]
                 transition-opacity
                 duration-500
-                group-hover:opacity-70
+                group-hover:opacity-75
               "
             >
               SoulMirror
@@ -651,14 +943,14 @@ export function DashboardShell({
                 text-white/25
                 transition-colors
                 duration-500
-                group-hover:text-white/45
+                group-hover:text-white/40
               "
             >
               Personal Intelligence
             </p>
           </button>
 
-          {/* USER */}
+          {/* USER AREA */}
 
           <div
             className="
@@ -668,7 +960,7 @@ export function DashboardShell({
               sm:gap-7
             "
           >
-            {/* NAME */}
+            {/* USER */}
 
             <div className="text-right">
               <p
@@ -694,8 +986,6 @@ export function DashboardShell({
                 Personal space
               </p>
             </div>
-
-            {/* DIVIDER */}
 
             <div
               className="
@@ -740,7 +1030,6 @@ export function DashboardShell({
                   transition-all
                   duration-500
                   group-hover:text-[#F4F1EA]
-                  group-hover:tracking-[0.36em]
                 "
               >
                 {planLabel}
@@ -751,17 +1040,20 @@ export function DashboardShell({
 
             <button
               type="button"
-              onClick={() => router.push("/settings")}
+              onClick={() =>
+                router.push("/settings")
+              }
               className="
+                hidden
                 cursor-pointer
                 text-[9px]
                 uppercase
                 tracking-[0.3em]
                 text-white/30
-                transition-all
+                transition-colors
                 duration-500
                 hover:text-[#D6B25E]
-                hover:tracking-[0.36em]
+                sm:block
               "
             >
               Settings
@@ -769,15 +1061,15 @@ export function DashboardShell({
           </div>
         </header>
 
-        {/* =================================================
+        {/* =========================================
             INTRO
-        ================================================== */}
+        ========================================== */}
 
         <section
           className="
             relative
             flex
-            min-h-[60vh]
+            min-h-[55vh]
             flex-col
             justify-center
             py-20
@@ -789,17 +1081,13 @@ export function DashboardShell({
               opacity: 0,
               y: 20,
             }}
-            whileInView={{
+            animate={{
               opacity: 1,
               y: 0,
             }}
-            viewport={{
-              once: true,
-              amount: 0.4,
-            }}
             transition={{
-              duration: 0.9,
-              ease: [0.16, 1, 0.3, 1],
+              delay: 0.2,
+              duration: 0.8,
             }}
             className="
               text-[10px]
@@ -814,21 +1102,17 @@ export function DashboardShell({
           <motion.h2
             initial={{
               opacity: 0,
-              y: 45,
-              filter: "blur(14px)",
+              y: 30,
+              filter: "blur(12px)",
             }}
-            whileInView={{
+            animate={{
               opacity: 1,
               y: 0,
               filter: "blur(0px)",
             }}
-            viewport={{
-              once: true,
-              amount: 0.35,
-            }}
             transition={{
-              delay: 0.1,
-              duration: 1.15,
+              delay: 0.3,
+              duration: 1,
               ease: [0.16, 1, 0.3, 1],
             }}
             className="
@@ -853,19 +1137,13 @@ export function DashboardShell({
           <motion.p
             initial={{
               opacity: 0,
-              y: 25,
             }}
-            whileInView={{
+            animate={{
               opacity: 1,
-              y: 0,
-            }}
-            viewport={{
-              once: true,
-              amount: 0.4,
             }}
             transition={{
-              delay: 0.25,
-              duration: 0.9,
+              delay: 0.7,
+              duration: 0.8,
             }}
             className="
               mt-8
@@ -879,73 +1157,13 @@ export function DashboardShell({
             helps you see patterns that are difficult
             to notice alone.
           </motion.p>
-
-          {/* subtle scroll indicator */}
-
-          <motion.div
-            initial={{
-              opacity: 0,
-            }}
-            animate={{
-              opacity: showWelcome ? 0 : 1,
-            }}
-            transition={{
-              delay: 1.4,
-              duration: 1,
-            }}
-            className="
-              absolute
-              bottom-8
-              left-0
-              flex
-              items-center
-              gap-3
-            "
-          >
-            <span
-              className="
-                h-px
-                w-10
-                bg-gradient-to-r
-                from-[#D6B25E]/60
-                to-transparent
-              "
-            />
-
-            <span
-              className="
-                text-[8px]
-                uppercase
-                tracking-[0.4em]
-                text-white/20
-              "
-            >
-              Explore
-            </span>
-          </motion.div>
         </section>
 
-        {/* =================================================
+        {/* =========================================
             CURRENT STATE
-        ================================================== */}
+        ========================================== */}
 
-        <motion.section
-          initial={{
-            opacity: 0,
-            y: 70,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          viewport={{
-            once: true,
-            amount: 0.12,
-          }}
-          transition={{
-            duration: 1,
-            ease: [0.16, 1, 0.3, 1],
-          }}
+        <RevealSection
           className="
             border-t
             border-white/[0.06]
@@ -979,35 +1197,20 @@ export function DashboardShell({
           </div>
 
           <SoulOrbPanel />
-        </motion.section>
+        </RevealSection>
 
-        {/* =================================================
+        {/* =========================================
             EXPLORE
-        ================================================== */}
+        ========================================== */}
 
-        <motion.section
-          initial={{
-            opacity: 0,
-            y: 70,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          viewport={{
-            once: true,
-            amount: 0.12,
-          }}
-          transition={{
-            duration: 1,
-            ease: [0.16, 1, 0.3, 1],
-          }}
+        <RevealSection
           className="
             border-t
             border-white/[0.06]
             py-24
             sm:py-32
           "
+          delay={0.05}
         >
           <div className="mb-14">
             <p
@@ -1035,35 +1238,20 @@ export function DashboardShell({
           </div>
 
           <IntelligenceModules />
-        </motion.section>
+        </RevealSection>
 
-        {/* =================================================
+        {/* =========================================
             JOURNEY
-        ================================================== */}
+        ========================================== */}
 
-        <motion.section
-          initial={{
-            opacity: 0,
-            y: 70,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          viewport={{
-            once: true,
-            amount: 0.12,
-          }}
-          transition={{
-            duration: 1,
-            ease: [0.16, 1, 0.3, 1],
-          }}
+        <RevealSection
           className="
             border-t
             border-white/[0.06]
             py-24
             sm:py-32
           "
+          delay={0.05}
         >
           <div className="mb-14">
             <p
@@ -1091,73 +1279,43 @@ export function DashboardShell({
           </div>
 
           <EvolutionTimeline />
-        </motion.section>
+        </RevealSection>
 
-        {/* =================================================
+        {/* =========================================
             USAGE
-        ================================================== */}
+        ========================================== */}
 
-        <motion.section
-          initial={{
-            opacity: 0,
-            y: 60,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          viewport={{
-            once: true,
-            amount: 0.15,
-          }}
-          transition={{
-            duration: 1,
-            ease: [0.16, 1, 0.3, 1],
-          }}
+        <RevealSection
           className="
             border-t
             border-white/[0.06]
             py-20
             sm:py-24
           "
+          delay={0.05}
         >
           <UsagePanel usage={usage} />
-        </motion.section>
+        </RevealSection>
 
-        {/* =================================================
+        {/* =========================================
             PRO
-        ================================================== */}
+        ========================================== */}
 
-        <motion.section
-          initial={{
-            opacity: 0,
-            y: 70,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          viewport={{
-            once: true,
-            amount: 0.12,
-          }}
-          transition={{
-            duration: 1,
-            ease: [0.16, 1, 0.3, 1],
-          }}
+        <RevealSection
           className="
             border-t
             border-white/[0.06]
             py-24
             sm:py-32
           "
+          delay={0.05}
         >
           <PremiumPanel />
-        </motion.section>
+        </RevealSection>
 
-        {/* =================================================
+        {/* =========================================
             FOOTER
-        ================================================== */}
+        ========================================== */}
 
         <footer
           className="
@@ -1186,7 +1344,7 @@ export function DashboardShell({
                 uppercase
                 tracking-[0.4em]
                 text-white/20
-                transition-all
+                transition-colors
                 duration-500
                 hover:text-[#D6B25E]
               "
@@ -1212,10 +1370,9 @@ export function DashboardShell({
                   uppercase
                   tracking-[0.3em]
                   text-white/25
-                  transition-all
+                  transition-colors
                   duration-500
                   hover:text-[#D6B25E]
-                  hover:tracking-[0.36em]
                 "
               >
                 Settings
@@ -1223,17 +1380,21 @@ export function DashboardShell({
 
               <button
                 type="button"
-                onClick={handleLogout}
+                onClick={async () => {
+                  await supabase.auth.signOut();
+
+                  router.push("/");
+                  router.refresh();
+                }}
                 className="
                   cursor-pointer
                   text-[9px]
                   uppercase
                   tracking-[0.3em]
                   text-white/25
-                  transition-all
+                  transition-colors
                   duration-500
                   hover:text-[#D6B25E]
-                  hover:tracking-[0.36em]
                 "
               >
                 Logout
@@ -1242,318 +1403,37 @@ export function DashboardShell({
           </div>
         </footer>
       </motion.div>
-
-      {/* =====================================================
-          PLANS MODAL
-      ====================================================== */}
-
-      <AnimatePresence>
-        {showPlans && (
-          <motion.div
-            initial={{
-              opacity: 0,
-            }}
-            animate={{
-              opacity: 1,
-            }}
-            exit={{
-              opacity: 0,
-            }}
-            transition={{
-              duration: 0.35,
-              ease: [0.16, 1, 0.3, 1],
-            }}
-            className="
-              fixed
-              inset-0
-              z-[200]
-              flex
-              items-center
-              justify-center
-              overflow-y-auto
-              bg-black/70
-              px-5
-              py-10
-              backdrop-blur-xl
-            "
-            onMouseDown={(event) => {
-              if (event.target === event.currentTarget) {
-                setShowPlans(false);
-              }
-            }}
-          >
-            {/* Modal */}
-
-            <motion.div
-              initial={{
-                opacity: 0,
-                y: 35,
-                scale: 0.96,
-                filter: "blur(12px)",
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                filter: "blur(0px)",
-              }}
-              exit={{
-                opacity: 0,
-                y: 25,
-                scale: 0.97,
-                filter: "blur(10px)",
-              }}
-              transition={{
-                duration: 0.65,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-              className="
-                relative
-                w-full
-                max-w-5xl
-                overflow-hidden
-                rounded-[32px]
-                border
-                border-white/[0.09]
-                bg-[#0A0A0A]/95
-                p-7
-                shadow-[0_30px_120px_rgba(0,0,0,0.7)]
-                backdrop-blur-2xl
-                sm:p-10
-              "
-            >
-              {/* Modal atmosphere */}
-
-              <div
-                className="
-                  pointer-events-none
-                  absolute
-                  left-1/2
-                  top-[-250px]
-                  h-[500px]
-                  w-[700px]
-                  -translate-x-1/2
-                  rounded-full
-                  bg-[#D6B25E]/[0.045]
-                  blur-[150px]
-                "
-              />
-
-              {/* Close */}
-
-              <button
-                type="button"
-                onClick={() => setShowPlans(false)}
-                aria-label="Close plans"
-                className="
-                  absolute
-                  right-6
-                  top-6
-                  z-20
-                  flex
-                  h-10
-                  w-10
-                  cursor-pointer
-                  items-center
-                  justify-center
-                  rounded-full
-                  border
-                  border-white/[0.08]
-                  bg-white/[0.025]
-                  text-lg
-                  text-white/35
-                  transition-all
-                  duration-500
-                  hover:border-[#D6B25E]/30
-                  hover:bg-[#D6B25E]/[0.06]
-                  hover:text-[#D6B25E]
-                "
-              >
-                ×
-              </button>
-
-              {/* Heading */}
-
-              <div
-                className="
-                  relative
-                  z-10
-                  max-w-2xl
-                "
-              >
-                <p
-                  className="
-                    text-[9px]
-                    uppercase
-                    tracking-[0.5em]
-                    text-[#D6B25E]
-                  "
-                >
-                  SoulMirror
-                </p>
-
-                <h2
-                  className="
-                    mt-4
-                    font-[family:var(--font-cormorant)]
-                    text-4xl
-                    font-light
-                    text-[#F4F1EA]
-                    sm:text-5xl
-                  "
-                >
-                  Choose your experience.
-                </h2>
-
-                <p
-                  className="
-                    mt-4
-                    max-w-xl
-                    text-sm
-                    leading-7
-                    text-white/40
-                  "
-                >
-                  Go deeper into your inner world with
-                  more intelligence, memory and
-                  reflection.
-                </p>
-              </div>
-
-              {/* Plans */}
-
-              <div
-                className="
-                  relative
-                  z-10
-                  mt-10
-                  grid
-                  gap-4
-                  md:grid-cols-3
-                "
-              >
-                {/* FREE */}
-
-                <PlanCard
-                  name="Free"
-                  eyebrow="Begin"
-                  price="$0"
-                  description="A quiet introduction to SoulMirror."
-                  features={[
-                    "Soul Scan",
-                    "Dream Analysis",
-                    "Tarot reflection",
-                    "Personal memory",
-                  ]}
-                  current={
-                    userPlan === "free"
-                  }
-                  onSelect={() => {
-                    setShowPlans(false);
-                  }}
-                />
-
-                {/* DAY PASS */}
-
-                <PlanCard
-                  name="Day Pass"
-                  eyebrow="One day"
-                  price="$4"
-                  description="A deeper experience when you need it."
-                  features={[
-                    "Extended intelligence",
-                    "Deeper reflections",
-                    "Dream analysis",
-                    "Tarot sessions",
-                  ]}
-                  current={
-                    userPlan === "day"
-                  }
-                  onSelect={() => {
-                    setShowPlans(false);
-                  }}
-                />
-
-                {/* PRO */}
-
-                <PlanCard
-                  name="Pro"
-                  eyebrow="Continuous"
-                  price="$19"
-                  description="Your complete personal intelligence space."
-                  features={[
-                    "Unlimited intelligence",
-                    "Long-term memory",
-                    "Advanced reflections",
-                    "Full SoulMirror experience",
-                  ]}
-                  current={
-                    userPlan === "pro"
-                  }
-                  featured
-                  onSelect={() => {
-                    setShowPlans(false);
-                  }}
-                />
-              </div>
-
-              {/* Bottom */}
-
-              <div
-                className="
-                  relative
-                  z-10
-                  mt-8
-                  flex
-                  items-center
-                  justify-center
-                "
-              >
-                <p
-                  className="
-                    text-center
-                    text-[9px]
-                    uppercase
-                    tracking-[0.25em]
-                    text-white/20
-                  "
-                >
-                  Your journey remains yours.
-                </p>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </main>
   );
 }
 
-/*
- * =========================================================
- * PLAN CARD
- * =========================================================
- */
+/* =========================================================
+   PLAN CARD
+========================================================= */
+
+interface PlanCardProps {
+  name: string;
+  eyebrow: string;
+  price: string;
+  period: string;
+  description: string;
+  features: string[];
+  current?: boolean;
+  featured?: boolean;
+  onSelect: () => void;
+}
 
 function PlanCard({
   name,
   eyebrow,
   price,
+  period,
   description,
   features,
-  current,
+  current = false,
   featured = false,
   onSelect,
-}: {
-  name: string;
-  eyebrow: string;
-  price: string;
-  description: string;
-  features: string[];
-  current: boolean;
-  featured?: boolean;
-  onSelect: () => void;
-}) {
+}: PlanCardProps) {
   return (
     <motion.div
       whileHover={{
@@ -1567,86 +1447,100 @@ function PlanCard({
         group
         relative
         overflow-hidden
-        rounded-[26px]
+        rounded-[1.65rem]
         border
         p-6
-        transition-all
-        duration-500
+        sm:p-7
         ${
           featured
             ? "border-[#D6B25E]/25 bg-[#D6B25E]/[0.055]"
-            : "border-white/[0.08] bg-white/[0.018]"
+            : "border-white/[0.08] bg-white/[0.025]"
         }
       `}
     >
-      {/* Hover glow */}
-
-      <div
-        className="
-          pointer-events-none
-          absolute
-          -right-20
-          -top-20
-          h-40
-          w-40
-          rounded-full
-          bg-[#D6B25E]/[0.045]
-          opacity-0
-          blur-[70px]
-          transition-opacity
-          duration-700
-          group-hover:opacity-100
-        "
-      />
-
-      {/* Featured */}
+      {/* Glow */}
 
       {featured && (
         <div
           className="
+            pointer-events-none
             absolute
-            right-5
-            top-5
+            -right-24
+            -top-24
+            h-56
+            w-56
             rounded-full
-            border
-            border-[#D6B25E]/20
-            bg-[#D6B25E]/[0.06]
-            px-3
-            py-1
+            bg-[#D6B25E]/[0.09]
+            blur-[90px]
           "
-        >
-          <span
-            className="
-              text-[7px]
-              uppercase
-              tracking-[0.3em]
-              text-[#D6B25E]
-            "
-          >
-            Recommended
-          </span>
-        </div>
+        />
       )}
 
-      {/* Content */}
-
       <div className="relative z-10">
-        <p
-          className="
-            text-[8px]
-            uppercase
-            tracking-[0.4em]
-            text-white/25
-          "
-        >
-          {eyebrow}
-        </p>
+        {/* Top */}
+
+        <div className="flex items-center justify-between">
+          <p
+            className={`
+              text-[9px]
+              uppercase
+              tracking-[0.4em]
+              ${
+                featured
+                  ? "text-[#D6B25E]"
+                  : "text-white/30"
+              }
+            `}
+          >
+            {eyebrow}
+          </p>
+
+          {current && (
+            <span
+              className="
+                rounded-full
+                border
+                border-[#D6B25E]/20
+                bg-[#D6B25E]/[0.07]
+                px-3
+                py-1
+                text-[8px]
+                uppercase
+                tracking-[0.25em]
+                text-[#D6B25E]
+              "
+            >
+              Current
+            </span>
+          )}
+
+          {!current && featured && (
+            <span
+              className="
+                rounded-full
+                border
+                border-[#D6B25E]/20
+                bg-[#D6B25E]/[0.07]
+                px-3
+                py-1
+                text-[8px]
+                uppercase
+                tracking-[0.25em]
+                text-[#D6B25E]
+              "
+            >
+              Recommended
+            </span>
+          )}
+        </div>
+
+        {/* Name */}
 
         <h3
           className="
-            mt-3
+            mt-7
             font-[family:var(--font-cormorant)]
-            text-3xl
+            text-4xl
             font-light
             text-[#F4F1EA]
           "
@@ -1654,47 +1548,60 @@ function PlanCard({
           {name}
         </h3>
 
-        <div className="mt-5 flex items-baseline gap-2">
+        {/* Price */}
+
+        <div className="mt-5 flex items-baseline">
           <span
             className="
-              font-[family:var(--font-cormorant)]
-              text-4xl
+              text-3xl
               font-light
-              text-[#D6B25E]
+              tracking-tight
+              text-[#F4F1EA]
             "
           >
             {price}
           </span>
 
-          {price !== "$0" && (
-            <span
-              className="
-                text-[8px]
-                uppercase
-                tracking-[0.25em]
-                text-white/25
-              "
-            >
-              USD
-            </span>
-          )}
+          <span
+            className="
+              ml-2
+              text-[10px]
+              uppercase
+              tracking-[0.2em]
+              text-white/25
+            "
+          >
+            {period}
+          </span>
         </div>
+
+        {/* Description */}
 
         <p
           className="
-            mt-4
+            mt-5
             min-h-[48px]
-            text-xs
+            text-sm
             leading-6
-            text-white/35
+            text-white/40
           "
         >
           {description}
         </p>
 
+        {/* Divider */}
+
+        <div
+          className="
+            my-6
+            h-px
+            bg-white/[0.06]
+          "
+        />
+
         {/* Features */}
 
-        <div className="mt-7 space-y-3">
+        <div className="space-y-3">
           {features.map((feature) => (
             <div
               key={feature}
@@ -1703,7 +1610,7 @@ function PlanCard({
                 items-center
                 gap-3
                 text-xs
-                text-white/45
+                text-white/55
               "
             >
               <span
@@ -1725,34 +1632,38 @@ function PlanCard({
 
         <button
           type="button"
+          disabled={current}
           onClick={onSelect}
           className={`
-            mt-8
+            mt-7
             flex
             h-12
             w-full
             cursor-pointer
             items-center
             justify-center
-            rounded-2xl
+            rounded-xl
             border
-            text-[9px]
+            text-[10px]
             uppercase
-            tracking-[0.3em]
+            tracking-[0.28em]
             transition-all
             duration-500
+            disabled:cursor-default
             ${
               current
-                ? "border-[#D6B25E]/20 bg-[#D6B25E]/[0.06] text-[#D6B25E]"
-                : "border-white/[0.08] bg-white/[0.025] text-white/40 hover:border-[#D6B25E]/25 hover:bg-[#D6B25E]/[0.05] hover:text-[#D6B25E]"
+                ? "border-white/[0.06] bg-white/[0.02] text-white/20"
+                : featured
+                  ? "border-[#D6B25E]/25 bg-[#D6B25E]/[0.09] text-[#D6B25E] hover:border-[#D6B25E]/45 hover:bg-[#D6B25E]/[0.14]"
+                  : "border-white/[0.08] bg-white/[0.025] text-white/45 hover:border-white/[0.16] hover:bg-white/[0.05] hover:text-[#F4F1EA]"
             }
           `}
         >
           {current
             ? "Current plan"
-            : name === "Free"
-              ? "Continue"
-              : "Choose plan"}
+            : featured
+              ? "Enter Pro"
+              : `Choose ${name}`}
         </button>
       </div>
     </motion.div>
