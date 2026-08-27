@@ -22,6 +22,8 @@ interface DashboardShellProps {
   usage: Usage;
 }
 
+type UserPlan = "free" | "day" | "pro";
+
 export function DashboardShell({
   usage,
 }: DashboardShellProps) {
@@ -29,6 +31,7 @@ export function DashboardShell({
 
   const [showWelcome, setShowWelcome] = useState(true);
   const [userName, setUserName] = useState("there");
+  const [userPlan, setUserPlan] = useState<UserPlan>("free");
   const [closingWelcome, setClosingWelcome] = useState(false);
 
   /*
@@ -39,26 +42,68 @@ export function DashboardShell({
 
   useEffect(() => {
     async function loadUser() {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
 
-      if (!user) {
-        router.replace("/login");
-        return;
+        if (!user) {
+          router.replace("/login");
+          return;
+        }
+
+        /*
+         * USER NAME
+         */
+
+        const metadataName =
+          user.user_metadata?.name ||
+          user.user_metadata?.full_name ||
+          "";
+
+        const firstName =
+          metadataName.trim().split(" ")[0] ||
+          user.email?.split("@")[0] ||
+          "there";
+
+        setUserName(firstName);
+
+        /*
+         * USER PLAN
+         *
+         * План берём из нашего API,
+         * который в свою очередь читает Prisma.
+         */
+
+        try {
+          const response = await fetch("/api/profile", {
+            method: "GET",
+            cache: "no-store",
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+
+            if (
+              data.plan === "free" ||
+              data.plan === "day" ||
+              data.plan === "pro"
+            ) {
+              setUserPlan(data.plan);
+            }
+          }
+        } catch (error) {
+          console.error(
+            "Failed to load user plan:",
+            error
+          );
+        }
+      } catch (error) {
+        console.error(
+          "Failed to load dashboard user:",
+          error
+        );
       }
-
-      const metadataName =
-        user.user_metadata?.name ||
-        user.user_metadata?.full_name ||
-        "";
-
-      const firstName =
-        metadataName.trim().split(" ")[0] ||
-        user.email?.split("@")[0] ||
-        "there";
-
-      setUserName(firstName);
     }
 
     loadUser();
@@ -66,7 +111,7 @@ export function DashboardShell({
 
   /*
    * =========================================
-   * WELCOME TIMING
+   * WELCOME SCREEN
    * =========================================
    */
 
@@ -83,6 +128,19 @@ export function DashboardShell({
       window.clearTimeout(timer);
     };
   }, []);
+
+  /*
+   * =========================================
+   * PLAN LABEL
+   * =========================================
+   */
+
+  const planLabel =
+    userPlan === "pro"
+      ? "Pro"
+      : userPlan === "day"
+        ? "Day Pass"
+        : "Free";
 
   return (
     <main
@@ -180,7 +238,7 @@ export function DashboardShell({
               bg-[#050505]
             "
           >
-            {/* atmospheric light */}
+            {/* LIGHT */}
 
             <motion.div
               initial={{
@@ -210,6 +268,8 @@ export function DashboardShell({
               "
             />
 
+            {/* CONTENT */}
+
             <div
               className="
                 relative
@@ -221,7 +281,7 @@ export function DashboardShell({
                 text-center
               "
             >
-              {/* brand */}
+              {/* BRAND */}
 
               <motion.p
                 initial={{
@@ -249,7 +309,7 @@ export function DashboardShell({
                 SOULMIRROR
               </motion.p>
 
-              {/* line */}
+              {/* LINE */}
 
               <motion.div
                 initial={{
@@ -277,7 +337,7 @@ export function DashboardShell({
                 "
               />
 
-              {/* greeting */}
+              {/* GREETING */}
 
               <motion.h1
                 initial={{
@@ -297,7 +357,7 @@ export function DashboardShell({
                 }}
                 className="
                   mt-8
-                  max-w-[900px]
+                  max-w-[1000px]
                   font-[family:var(--font-cormorant)]
                   text-5xl
                   font-light
@@ -313,6 +373,8 @@ export function DashboardShell({
                   {userName}.
                 </span>
               </motion.h1>
+
+              {/* SUBTITLE */}
 
               <motion.p
                 initial={{
@@ -336,6 +398,8 @@ export function DashboardShell({
               >
                 Your personal intelligence space
               </motion.p>
+
+              {/* ONLINE */}
 
               <motion.div
                 initial={{
@@ -420,7 +484,7 @@ export function DashboardShell({
         "
       >
         {/* =========================================
-            TOP NAVIGATION
+            HEADER
         ========================================== */}
 
         <header
@@ -433,13 +497,29 @@ export function DashboardShell({
             pb-6
           "
         >
-          <div>
+          {/* =====================================
+              SOULMIRROR BRAND
+          ====================================== */}
+
+          <button
+            type="button"
+            onClick={() => router.push("/")}
+            className="
+              group
+              cursor-pointer
+              text-left
+              outline-none
+            "
+          >
             <p
               className="
                 text-[10px]
                 uppercase
                 tracking-[0.5em]
                 text-[#D6B25E]
+                transition-opacity
+                duration-500
+                group-hover:opacity-75
               "
             >
               SoulMirror
@@ -448,32 +528,127 @@ export function DashboardShell({
             <p
               className="
                 mt-2
-                text-[10px]
+                text-[9px]
                 uppercase
-                tracking-[0.25em]
+                tracking-[0.28em]
                 text-white/25
+                transition-colors
+                duration-500
+                group-hover:text-white/40
               "
             >
               Personal Intelligence
             </p>
-          </div>
+          </button>
 
-          <button
-            type="button"
-            onClick={() => router.push("/settings")}
+          {/* =====================================
+              USER AREA
+          ====================================== */}
+
+          <div
             className="
-              cursor-pointer
-              text-[10px]
-              uppercase
-              tracking-[0.3em]
-              text-white/35
-              transition-colors
-              duration-500
-              hover:text-[#D6B25E]
+              flex
+              items-center
+              gap-4
+              sm:gap-7
             "
           >
-            Settings
-          </button>
+            {/* USER */}
+
+            <div className="text-right">
+              <p
+                className="
+                  text-[11px]
+                  uppercase
+                  tracking-[0.25em]
+                  text-white/70
+                "
+              >
+                {userName}
+              </p>
+
+              <p
+                className="
+                  mt-1
+                  text-[8px]
+                  uppercase
+                  tracking-[0.3em]
+                  text-white/25
+                "
+              >
+                Personal space
+              </p>
+            </div>
+
+            {/* DIVIDER */}
+
+            <div
+              className="
+                hidden
+                h-8
+                w-px
+                bg-white/[0.08]
+                sm:block
+              "
+            />
+
+            {/* PLAN */}
+
+            <button
+              type="button"
+              onClick={() => router.push("/settings")}
+              className="
+                group
+                cursor-pointer
+                text-right
+              "
+            >
+              <p
+                className="
+                  text-[8px]
+                  uppercase
+                  tracking-[0.35em]
+                  text-white/25
+                "
+              >
+                Plan
+              </p>
+
+              <p
+                className="
+                  mt-1
+                  text-[10px]
+                  uppercase
+                  tracking-[0.3em]
+                  text-[#D6B25E]
+                  transition-opacity
+                  duration-500
+                  group-hover:opacity-70
+                "
+              >
+                {planLabel}
+              </p>
+            </button>
+
+            {/* SETTINGS */}
+
+            <button
+              type="button"
+              onClick={() => router.push("/settings")}
+              className="
+                cursor-pointer
+                text-[9px]
+                uppercase
+                tracking-[0.3em]
+                text-white/30
+                transition-colors
+                duration-500
+                hover:text-[#D6B25E]
+              "
+            >
+              Settings
+            </button>
+          </div>
         </header>
 
         {/* =========================================
@@ -578,40 +753,37 @@ export function DashboardShell({
             CURRENT STATE
         ========================================== */}
 
-        <section className="border-t border-white/[0.06] py-24 sm:py-32">
-          <div
-            className="
-              mb-12
-              flex
-              items-end
-              justify-between
-              gap-6
-            "
-          >
-            <div>
-              <p
-                className="
-                  text-[10px]
-                  uppercase
-                  tracking-[0.5em]
-                  text-[#D6B25E]
-                "
-              >
-                Current state
-              </p>
+        <section
+          className="
+            border-t
+            border-white/[0.06]
+            py-24
+            sm:py-32
+          "
+        >
+          <div className="mb-12">
+            <p
+              className="
+                text-[10px]
+                uppercase
+                tracking-[0.5em]
+                text-[#D6B25E]
+              "
+            >
+              Current state
+            </p>
 
-              <h3
-                className="
-                  mt-4
-                  font-[family:var(--font-cormorant)]
-                  text-4xl
-                  font-light
-                  sm:text-5xl
-                "
-              >
-                Your consciousness
-              </h3>
-            </div>
+            <h3
+              className="
+                mt-4
+                font-[family:var(--font-cormorant)]
+                text-4xl
+                font-light
+                sm:text-5xl
+              "
+            >
+              Your consciousness
+            </h3>
           </div>
 
           <SoulOrbPanel />
@@ -621,7 +793,14 @@ export function DashboardShell({
             EXPLORE
         ========================================== */}
 
-        <section className="border-t border-white/[0.06] py-24 sm:py-32">
+        <section
+          className="
+            border-t
+            border-white/[0.06]
+            py-24
+            sm:py-32
+          "
+        >
           <div className="mb-14">
             <p
               className="
@@ -654,7 +833,14 @@ export function DashboardShell({
             JOURNEY
         ========================================== */}
 
-        <section className="border-t border-white/[0.06] py-24 sm:py-32">
+        <section
+          className="
+            border-t
+            border-white/[0.06]
+            py-24
+            sm:py-32
+          "
+        >
           <div className="mb-14">
             <p
               className="
@@ -684,10 +870,17 @@ export function DashboardShell({
         </section>
 
         {/* =========================================
-            USAGE — QUIET / SECONDARY
+            USAGE
         ========================================== */}
 
-        <section className="border-t border-white/[0.06] py-20 sm:py-24">
+        <section
+          className="
+            border-t
+            border-white/[0.06]
+            py-20
+            sm:py-24
+          "
+        >
           <UsagePanel usage={usage} />
         </section>
 
@@ -695,7 +888,14 @@ export function DashboardShell({
             PRO
         ========================================== */}
 
-        <section className="border-t border-white/[0.06] py-24 sm:py-32">
+        <section
+          className="
+            border-t
+            border-white/[0.06]
+            py-24
+            sm:py-32
+          "
+        >
           <PremiumPanel />
         </section>
 
@@ -720,18 +920,31 @@ export function DashboardShell({
               sm:justify-between
             "
           >
-            <p
+            <button
+              type="button"
+              onClick={() => router.push("/")}
               className="
+                w-fit
+                cursor-pointer
                 text-[9px]
                 uppercase
                 tracking-[0.4em]
                 text-white/20
+                transition-colors
+                duration-500
+                hover:text-[#D6B25E]
               "
             >
               SOULMIRROR — PERSONAL INTELLIGENCE
-            </p>
+            </button>
 
-            <div className="flex items-center gap-6">
+            <div
+              className="
+                flex
+                items-center
+                gap-6
+              "
+            >
               <button
                 type="button"
                 onClick={() => router.push("/settings")}
@@ -742,6 +955,7 @@ export function DashboardShell({
                   tracking-[0.3em]
                   text-white/25
                   transition-colors
+                  duration-500
                   hover:text-[#D6B25E]
                 "
               >
@@ -752,6 +966,7 @@ export function DashboardShell({
                 type="button"
                 onClick={async () => {
                   await supabase.auth.signOut();
+
                   router.push("/");
                   router.refresh();
                 }}
@@ -762,6 +977,7 @@ export function DashboardShell({
                   tracking-[0.3em]
                   text-white/25
                   transition-colors
+                  duration-500
                   hover:text-[#D6B25E]
                 "
               >
