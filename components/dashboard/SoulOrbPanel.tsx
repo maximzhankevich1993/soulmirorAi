@@ -53,7 +53,8 @@ export function SoulOrbPanel() {
           grid-cols-1
           gap-16
           lg:grid-cols-[1.15fr_0.85fr]
-          lg:gap-24
+          lg:gap-20
+          xl:gap-28
         "
       >
         {/* =======================================
@@ -79,6 +80,7 @@ export function SoulOrbPanel() {
             duration: 1,
             ease: [0.16, 1, 0.3, 1],
           }}
+          className="min-w-0"
         >
           {/* Label */}
 
@@ -87,6 +89,7 @@ export function SoulOrbPanel() {
               className="
                 h-px
                 w-10
+                shrink-0
                 bg-[#D6B25E]/60
               "
             />
@@ -154,6 +157,7 @@ export function SoulOrbPanel() {
               className="
                 h-1.5
                 w-1.5
+                shrink-0
                 rounded-full
                 bg-[#D6B25E]
                 shadow-[0_0_12px_rgba(214,178,94,0.7)]
@@ -198,6 +202,7 @@ export function SoulOrbPanel() {
             ease: [0.16, 1, 0.3, 1],
           }}
           className="
+            min-w-0
             flex
             flex-col
             justify-center
@@ -323,18 +328,29 @@ function StateRow({
         min-h-[92px]
         items-center
         justify-between
-        gap-6
+        gap-8
         border-b
         border-white/[0.08]
       "
     >
-      {/* Left */}
+      {/* =======================================
+          LEFT
+      ======================================== */}
 
-      <div className="flex items-center gap-4">
+      <div
+        className="
+          flex
+          min-w-0
+          shrink-0
+          items-center
+          gap-4
+        "
+      >
         <Icon
           size={15}
           strokeWidth={1.4}
           className="
+            shrink-0
             text-white/25
             transition-colors
             duration-500
@@ -344,6 +360,7 @@ function StateRow({
 
         <p
           className="
+            whitespace-nowrap
             text-[9px]
             uppercase
             tracking-[0.32em]
@@ -354,15 +371,19 @@ function StateRow({
         </p>
       </div>
 
-      {/* Right */}
+      {/* =======================================
+          RIGHT
+      ======================================== */}
 
       <p
         className="
-          max-w-[180px]
-          truncate
+          min-w-0
+          max-w-[220px]
           text-right
           text-sm
+          leading-6
           text-[#F4F1EA]/75
+          sm:max-w-[260px]
         "
       >
         {value}
