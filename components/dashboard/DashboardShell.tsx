@@ -128,24 +128,6 @@ export function DashboardShell({
 
   /*
    * =========================================
-   * SCROLL TO PLANS
-   * =========================================
-   */
-
-  function scrollToPlans() {
-    const plansSection =
-      document.getElementById("plans");
-
-    if (!plansSection) return;
-
-    plansSection.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-  }
-
-  /*
-   * =========================================
    * PLAN LABEL
    * =========================================
    */
@@ -180,7 +162,7 @@ export function DashboardShell({
           overflow-hidden
         "
       >
-        {/* Main golden atmosphere */}
+        {/* Main atmosphere */}
 
         <div
           className="
@@ -259,7 +241,7 @@ export function DashboardShell({
               bg-[#050505]
             "
           >
-            {/* Cinematic light */}
+            {/* Welcome light */}
 
             <motion.div
               initial={{
@@ -432,10 +414,12 @@ export function DashboardShell({
                 initial={{
                   opacity: 0,
                   y: 18,
+                  filter: "blur(8px)",
                 }}
                 animate={{
                   opacity: 1,
                   y: 0,
+                  filter: "blur(0px)",
                 }}
                 transition={{
                   delay: 1,
@@ -451,7 +435,7 @@ export function DashboardShell({
                 Your personal intelligence space
               </motion.p>
 
-              {/* Online */}
+              {/* Online indicator */}
 
               <motion.div
                 initial={{
@@ -644,7 +628,14 @@ export function DashboardShell({
 
             <button
               type="button"
-              onClick={scrollToPlans}
+              onClick={() => {
+                document
+                  .getElementById("plans")
+                  ?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                  });
+              }}
               className="
                 group
                 cursor-pointer
@@ -670,9 +661,9 @@ export function DashboardShell({
                   uppercase
                   tracking-[0.3em]
                   text-[#D6B25E]
-                  transition-colors
+                  transition-opacity
                   duration-500
-                  group-hover:text-[#F4F1EA]
+                  group-hover:opacity-70
                 "
               >
                 {planLabel}
@@ -701,101 +692,296 @@ export function DashboardShell({
         </header>
 
         {/* =========================================
-            INTRO
+            CINEMATIC INTRO
         ========================================== */}
 
         <section
           className="
             relative
             flex
-            min-h-[55vh]
+            min-h-[72vh]
             flex-col
             justify-center
-            py-20
-            sm:py-28
+            overflow-hidden
+            py-24
+            sm:min-h-[78vh]
+            sm:py-32
           "
         >
-          <motion.p
-            initial={{
-              opacity: 0,
-              y: 20,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              delay: 0.2,
-              duration: 0.8,
-            }}
-            className="
-              text-[10px]
-              uppercase
-              tracking-[0.5em]
-              text-[#D6B25E]
-            "
-          >
-            Your inner world
-          </motion.p>
+          {/* INTRO ATMOSPHERE */}
 
-          <motion.h2
+          <motion.div
             initial={{
               opacity: 0,
-              y: 30,
-              filter: "blur(12px)",
+              scale: 0.7,
             }}
-            animate={{
+            whileInView={{
               opacity: 1,
-              y: 0,
-              filter: "blur(0px)",
+              scale: 1,
+            }}
+            viewport={{
+              once: true,
+              amount: 0.35,
             }}
             transition={{
-              delay: 0.3,
-              duration: 1,
+              duration: 1.8,
               ease: [0.16, 1, 0.3, 1],
             }}
             className="
-              mt-6
-              max-w-5xl
-              font-[family:var(--font-cormorant)]
-              text-5xl
-              font-light
-              leading-[1.05]
-              sm:text-6xl
-              md:text-7xl
-              lg:text-8xl
+              pointer-events-none
+              absolute
+              left-[42%]
+              top-1/2
+              h-[500px]
+              w-[700px]
+              -translate-x-1/2
+              -translate-y-1/2
+              rounded-full
+              bg-[#D6B25E]/[0.025]
+              blur-[150px]
             "
-          >
-            Understand yourself.
-            <br />
-            <span className="text-white/30">
-              Evolve consciously.
-            </span>
-          </motion.h2>
+          />
 
-          <motion.p
+          {/* CONTENT */}
+
+          <div className="relative z-10 max-w-6xl">
+            {/* EYEBROW */}
+
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 20,
+                filter: "blur(10px)",
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+                filter: "blur(0px)",
+              }}
+              viewport={{
+                once: true,
+                amount: 0.5,
+              }}
+              transition={{
+                duration: 0.9,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="
+                flex
+                items-center
+                gap-4
+              "
+            >
+              <span
+                className="
+                  h-px
+                  w-10
+                  bg-gradient-to-r
+                  from-transparent
+                  to-[#D6B25E]/60
+                  sm:w-14
+                "
+              />
+
+              <span
+                className="
+                  text-[9px]
+                  uppercase
+                  tracking-[0.55em]
+                  text-[#D6B25E]
+                  sm:text-[10px]
+                "
+              >
+                Your inner world
+              </span>
+            </motion.div>
+
+            {/* MAIN TITLE */}
+
+            <motion.h2
+              initial={{
+                opacity: 0,
+                y: 45,
+                filter: "blur(18px)",
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+                filter: "blur(0px)",
+              }}
+              viewport={{
+                once: true,
+                amount: 0.35,
+              }}
+              transition={{
+                delay: 0.12,
+                duration: 1.2,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="
+                mt-8
+                max-w-5xl
+                font-[family:var(--font-cormorant)]
+                text-[3.4rem]
+                font-light
+                leading-[0.95]
+                tracking-[-0.025em]
+                text-[#F4F1EA]
+                sm:text-6xl
+                md:text-7xl
+                lg:text-[6.8rem]
+              "
+            >
+              Understand yourself.
+              <br />
+
+              <span className="text-white/[0.24]">
+                Evolve consciously.
+              </span>
+            </motion.h2>
+
+            {/* DESCRIPTION */}
+
+            <motion.p
+              initial={{
+                opacity: 0,
+                y: 25,
+                filter: "blur(8px)",
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+                filter: "blur(0px)",
+              }}
+              viewport={{
+                once: true,
+                amount: 0.35,
+              }}
+              transition={{
+                delay: 0.35,
+                duration: 1,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="
+                mt-9
+                max-w-xl
+                text-sm
+                leading-7
+                text-white/40
+                sm:text-[15px]
+                sm:leading-8
+              "
+            >
+              SoulMirror remembers your journey and
+              helps you see patterns that are difficult
+              to notice alone.
+            </motion.p>
+
+            {/* META */}
+
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 20,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              viewport={{
+                once: true,
+                amount: 0.35,
+              }}
+              transition={{
+                delay: 0.55,
+                duration: 0.9,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="
+                mt-12
+                flex
+                items-center
+                gap-5
+              "
+            >
+              <span
+                className="
+                  h-px
+                  w-16
+                  bg-white/[0.08]
+                  sm:w-24
+                "
+              />
+
+              <span
+                className="
+                  text-[8px]
+                  uppercase
+                  tracking-[0.45em]
+                  text-white/20
+                "
+              >
+                A space for reflection
+              </span>
+            </motion.div>
+          </div>
+
+          {/* SCROLL INDICATOR */}
+
+          <motion.div
             initial={{
               opacity: 0,
             }}
-            animate={{
+            whileInView={{
               opacity: 1,
             }}
+            viewport={{
+              once: true,
+              amount: 0.4,
+            }}
             transition={{
-              delay: 0.7,
-              duration: 0.8,
+              delay: 0.8,
+              duration: 1,
             }}
             className="
-              mt-8
-              max-w-lg
-              text-sm
-              leading-7
-              text-white/40
+              absolute
+              bottom-10
+              left-0
+              flex
+              items-center
+              gap-4
+              sm:bottom-12
             "
           >
-            SoulMirror remembers your journey and
-            helps you see patterns that are difficult
-            to notice alone.
-          </motion.p>
+            <span
+              className="
+                text-[8px]
+                uppercase
+                tracking-[0.4em]
+                text-white/20
+              "
+            >
+              Explore
+            </span>
+
+            <motion.span
+              animate={{
+                y: [0, 5, 0],
+                opacity: [0.3, 0.8, 0.3],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className="
+                text-xs
+                text-[#D6B25E]/60
+              "
+            >
+              ↓
+            </motion.span>
+          </motion.div>
         </section>
 
         {/* =========================================
@@ -940,52 +1126,13 @@ export function DashboardShell({
         <section
           id="plans"
           className="
-            scroll-mt-8
+            scroll-mt-10
             border-t
             border-white/[0.06]
             py-24
             sm:py-32
           "
         >
-          <div className="mb-14">
-            <p
-              className="
-                text-[10px]
-                uppercase
-                tracking-[0.5em]
-                text-[#D6B25E]
-              "
-            >
-              Your plan
-            </p>
-
-            <h3
-              className="
-                mt-4
-                font-[family:var(--font-cormorant)]
-                text-4xl
-                font-light
-                sm:text-5xl
-              "
-            >
-              Choose your depth
-            </h3>
-
-            <p
-              className="
-                mt-5
-                max-w-xl
-                text-sm
-                leading-7
-                text-white/35
-              "
-            >
-              Continue exploring your inner world with
-              the level of intelligence that feels right
-              for you.
-            </p>
-          </div>
-
           <PremiumPanel />
         </section>
 
@@ -1030,7 +1177,7 @@ export function DashboardShell({
               SOULMIRROR — PERSONAL INTELLIGENCE
             </button>
 
-            {/* FOOTER ACTIONS */}
+            {/* LINKS */}
 
             <div
               className="
@@ -1039,23 +1186,6 @@ export function DashboardShell({
                 gap-6
               "
             >
-              <button
-                type="button"
-                onClick={scrollToPlans}
-                className="
-                  cursor-pointer
-                  text-[9px]
-                  uppercase
-                  tracking-[0.3em]
-                  text-white/25
-                  transition-colors
-                  duration-500
-                  hover:text-[#D6B25E]
-                "
-              >
-                Plans
-              </button>
-
               <button
                 type="button"
                 onClick={() => router.push("/settings")}
