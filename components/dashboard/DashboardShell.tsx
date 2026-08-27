@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import { useRouter } from "next/navigation";
 
 import { supabase } from "../../src/lib/supabaseClient";
@@ -30,14 +35,37 @@ export function DashboardShell({
   const router = useRouter();
 
   const [showWelcome, setShowWelcome] = useState(true);
-  const [userName, setUserName] = useState("there");
-  const [userPlan, setUserPlan] = useState<UserPlan>("free");
   const [closingWelcome, setClosingWelcome] = useState(false);
 
+  const [userName, setUserName] = useState("there");
+  const [userPlan, setUserPlan] = useState<UserPlan>("free");
+
+  const [showPlans, setShowPlans] = useState(false);
+
   /*
-   * =========================================
+   * =========================================================
+   * CINEMATIC PAGE SCROLL
+   * =========================================================
+   */
+
+  const { scrollY } = useScroll();
+
+  const backgroundY = useTransform(
+    scrollY,
+    [0, 1800],
+    [0, -140]
+  );
+
+  const backgroundScale = useTransform(
+    scrollY,
+    [0, 1800],
+    [1, 1.08]
+  );
+
+  /*
+   * =========================================================
    * LOAD USER
-   * =========================================
+   * =========================================================
    */
 
   useEffect(() => {
@@ -52,10 +80,6 @@ export function DashboardShell({
           return;
         }
 
-        /*
-         * USER NAME
-         */
-
         const metadataName =
           user.user_metadata?.name ||
           user.user_metadata?.full_name ||
@@ -69,10 +93,7 @@ export function DashboardShell({
         setUserName(firstName);
 
         /*
-         * USER PLAN
-         *
-         * План берём из нашего API,
-         * который в свою очередь читает Prisma.
+         * Load current plan.
          */
 
         try {
@@ -110,29 +131,78 @@ export function DashboardShell({
   }, [router]);
 
   /*
-   * =========================================
+   * =========================================================
    * WELCOME SCREEN
-   * =========================================
+   * =========================================================
    */
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
+    const closeTimer = window.setTimeout(() => {
       setClosingWelcome(true);
-
-      window.setTimeout(() => {
-        setShowWelcome(false);
-      }, 1000);
     }, 3200);
 
+    const removeTimer = window.setTimeout(() => {
+      setShowWelcome(false);
+    }, 4200);
+
     return () => {
-      window.clearTimeout(timer);
+      window.clearTimeout(closeTimer);
+      window.clearTimeout(removeTimer);
     };
   }, []);
 
   /*
-   * =========================================
+   * =========================================================
+   * LOCK BODY WHEN PLANS MODAL IS OPEN
+   * =========================================================
+   */
+
+  useEffect(() => {
+    if (!showPlans) return;
+
+    const previousOverflow =
+      document.body.style.overflow;
+
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow =
+        previousOverflow;
+    };
+  }, [showPlans]);
+
+  /*
+   * =========================================================
+   * ESCAPE TO CLOSE MODAL
+   * =========================================================
+   */
+
+  useEffect(() => {
+    if (!showPlans) return;
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setShowPlans(false);
+      }
+    }
+
+    window.addEventListener(
+      "keydown",
+      handleKeyDown
+    );
+
+    return () => {
+      window.removeEventListener(
+        "keydown",
+        handleKeyDown
+      );
+    };
+  }, [showPlans]);
+
+  /*
+   * =========================================================
    * PLAN LABEL
-   * =========================================
+   * =========================================================
    */
 
   const planLabel =
@@ -147,16 +217,22 @@ export function DashboardShell({
       className="
         relative
         min-h-screen
-        overflow-hidden
+        overflow-x-hidden
         bg-[#050505]
         text-[#F4F1EA]
+        selection:bg-[#D6B25E]/20
+        selection:text-[#F4F1EA]
       "
     >
-      {/* =========================================
+      {/* =====================================================
           GLOBAL ATMOSPHERE
-      ========================================== */}
+      ====================================================== */}
 
-      <div
+      <motion.div
+        style={{
+          y: backgroundY,
+          scale: backgroundScale,
+        }}
         className="
           pointer-events-none
           fixed
@@ -165,50 +241,74 @@ export function DashboardShell({
           overflow-hidden
         "
       >
+        {/* Primary light */}
+
         <div
           className="
             absolute
             left-1/2
-            top-[-180px]
-            h-[700px]
-            w-[700px]
+            top-[-260px]
+            h-[760px]
+            w-[760px]
             -translate-x-1/2
             rounded-full
             bg-[#D6B25E]/[0.035]
-            blur-[180px]
+            blur-[190px]
           "
         />
+
+        {/* Secondary light */}
 
         <div
           className="
             absolute
-            right-[-300px]
-            top-[35%]
-            h-[650px]
-            w-[650px]
+            right-[-320px]
+            top-[30%]
+            h-[680px]
+            w-[680px]
             rounded-full
             bg-[#D6B25E]/[0.018]
-            blur-[180px]
+            blur-[190px]
           "
         />
+
+        {/* Bottom atmosphere */}
 
         <div
           className="
             absolute
-            bottom-[-300px]
-            left-[-250px]
-            h-[600px]
-            w-[600px]
+            bottom-[-320px]
+            left-[-280px]
+            h-[680px]
+            w-[680px]
             rounded-full
             bg-[#8B5CF6]/[0.012]
-            blur-[180px]
+            blur-[200px]
           "
         />
-      </div>
+      </motion.div>
 
-      {/* =========================================
+      {/* =====================================================
+          SUBTLE GRAIN
+      ====================================================== */}
+
+      <div
+        className="
+          pointer-events-none
+          fixed
+          inset-0
+          z-[1]
+          opacity-[0.025]
+        "
+        style={{
+          backgroundImage:
+            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E\")",
+        }}
+      />
+
+      {/* =====================================================
           CINEMATIC WELCOME
-      ========================================== */}
+      ====================================================== */}
 
       <AnimatePresence>
         {showWelcome && (
@@ -238,7 +338,7 @@ export function DashboardShell({
               bg-[#050505]
             "
           >
-            {/* LIGHT */}
+            {/* Main glow */}
 
             <motion.div
               initial={{
@@ -268,7 +368,7 @@ export function DashboardShell({
               "
             />
 
-            {/* CONTENT */}
+            {/* Content */}
 
             <div
               className="
@@ -281,8 +381,6 @@ export function DashboardShell({
                 text-center
               "
             >
-              {/* BRAND */}
-
               <motion.p
                 initial={{
                   opacity: 0,
@@ -308,8 +406,6 @@ export function DashboardShell({
               >
                 SOULMIRROR
               </motion.p>
-
-              {/* LINE */}
 
               <motion.div
                 initial={{
@@ -337,8 +433,6 @@ export function DashboardShell({
                 "
               />
 
-              {/* GREETING */}
-
               <motion.h1
                 initial={{
                   opacity: 0,
@@ -357,7 +451,7 @@ export function DashboardShell({
                 }}
                 className="
                   mt-8
-                  max-w-[1000px]
+                  max-w-[1100px]
                   font-[family:var(--font-cormorant)]
                   text-5xl
                   font-light
@@ -373,8 +467,6 @@ export function DashboardShell({
                   {userName}.
                 </span>
               </motion.h1>
-
-              {/* SUBTITLE */}
 
               <motion.p
                 initial={{
@@ -398,8 +490,6 @@ export function DashboardShell({
               >
                 Your personal intelligence space
               </motion.p>
-
-              {/* ONLINE */}
 
               <motion.div
                 initial={{
@@ -449,15 +539,16 @@ export function DashboardShell({
                     shadow-[0_0_12px_rgba(214,178,94,0.9)]
                   "
                 />
+
               </motion.div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* =========================================
+      {/* =====================================================
           MAIN SPACE
-      ========================================== */}
+      ====================================================== */}
 
       <motion.div
         initial={{
@@ -483,9 +574,9 @@ export function DashboardShell({
           lg:px-12
         "
       >
-        {/* =========================================
+        {/* ===================================================
             HEADER
-        ========================================== */}
+        ==================================================== */}
 
         <header
           className="
@@ -497,9 +588,7 @@ export function DashboardShell({
             pb-6
           "
         >
-          {/* =====================================
-              SOULMIRROR BRAND
-          ====================================== */}
+          {/* BRAND */}
 
           <button
             type="button"
@@ -519,7 +608,7 @@ export function DashboardShell({
                 text-[#D6B25E]
                 transition-opacity
                 duration-500
-                group-hover:opacity-75
+                group-hover:opacity-70
               "
             >
               SoulMirror
@@ -541,9 +630,7 @@ export function DashboardShell({
             </p>
           </button>
 
-          {/* =====================================
-              USER AREA
-          ====================================== */}
+          {/* USER */}
 
           <div
             className="
@@ -553,8 +640,6 @@ export function DashboardShell({
               sm:gap-7
             "
           >
-            {/* USER */}
-
             <div className="text-right">
               <p
                 className="
@@ -580,8 +665,6 @@ export function DashboardShell({
               </p>
             </div>
 
-            {/* DIVIDER */}
-
             <div
               className="
                 hidden
@@ -596,11 +679,12 @@ export function DashboardShell({
 
             <button
               type="button"
-              onClick={() => router.push("/settings")}
+              onClick={() => setShowPlans(true)}
               className="
                 group
                 cursor-pointer
                 text-right
+                outline-none
               "
             >
               <p
@@ -636,14 +720,17 @@ export function DashboardShell({
               type="button"
               onClick={() => router.push("/settings")}
               className="
+                hidden
                 cursor-pointer
                 text-[9px]
                 uppercase
                 tracking-[0.3em]
                 text-white/30
+                outline-none
                 transition-colors
                 duration-500
                 hover:text-[#D6B25E]
+                sm:block
               "
             >
               Settings
@@ -651,32 +738,25 @@ export function DashboardShell({
           </div>
         </header>
 
-        {/* =========================================
+        {/* ===================================================
             INTRO
-        ========================================== */}
+        ==================================================== */}
 
-        <section
-          className="
-            relative
-            flex
-            min-h-[55vh]
-            flex-col
-            justify-center
-            py-20
-            sm:py-28
-          "
-        >
+        <CinematicSection className="min-h-[70vh]">
           <motion.p
             initial={{
               opacity: 0,
               y: 20,
             }}
-            animate={{
+            whileInView={{
               opacity: 1,
               y: 0,
             }}
+            viewport={{
+              once: true,
+              margin: "-15%",
+            }}
             transition={{
-              delay: 0.2,
               duration: 0.8,
             }}
             className="
@@ -692,26 +772,30 @@ export function DashboardShell({
           <motion.h2
             initial={{
               opacity: 0,
-              y: 30,
+              y: 40,
               filter: "blur(12px)",
             }}
-            animate={{
+            whileInView={{
               opacity: 1,
               y: 0,
               filter: "blur(0px)",
             }}
+            viewport={{
+              once: true,
+              margin: "-15%",
+            }}
             transition={{
-              delay: 0.3,
-              duration: 1,
+              delay: 0.1,
+              duration: 1.1,
               ease: [0.16, 1, 0.3, 1],
             }}
             className="
               mt-6
-              max-w-5xl
+              max-w-6xl
               font-[family:var(--font-cormorant)]
               text-5xl
               font-light
-              leading-[1.05]
+              leading-[1.03]
               sm:text-6xl
               md:text-7xl
               lg:text-8xl
@@ -719,7 +803,7 @@ export function DashboardShell({
           >
             Understand yourself.
             <br />
-            <span className="text-white/30">
+            <span className="text-white/25">
               Evolve consciously.
             </span>
           </motion.h2>
@@ -727,13 +811,19 @@ export function DashboardShell({
           <motion.p
             initial={{
               opacity: 0,
+              y: 25,
             }}
-            animate={{
+            whileInView={{
               opacity: 1,
+              y: 0,
+            }}
+            viewport={{
+              once: true,
+              margin: "-15%",
             }}
             transition={{
-              delay: 0.7,
-              duration: 0.8,
+              delay: 0.25,
+              duration: 0.9,
             }}
             className="
               mt-8
@@ -747,161 +837,110 @@ export function DashboardShell({
             helps you see patterns that are difficult
             to notice alone.
           </motion.p>
-        </section>
 
-        {/* =========================================
+          <motion.div
+            initial={{
+              opacity: 0,
+              width: 0,
+            }}
+            whileInView={{
+              opacity: 1,
+              width: 120,
+            }}
+            viewport={{
+              once: true,
+              margin: "-15%",
+            }}
+            transition={{
+              delay: 0.45,
+              duration: 1,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="
+              mt-14
+              h-px
+              bg-gradient-to-r
+              from-[#D6B25E]/50
+              to-transparent
+            "
+          />
+        </CinematicSection>
+
+        {/* ===================================================
             CURRENT STATE
-        ========================================== */}
+        ==================================================== */}
 
-        <section
-          className="
-            border-t
-            border-white/[0.06]
-            py-24
-            sm:py-32
-          "
-        >
-          <div className="mb-12">
-            <p
-              className="
-                text-[10px]
-                uppercase
-                tracking-[0.5em]
-                text-[#D6B25E]
-              "
-            >
-              Current state
-            </p>
+        <CinematicSection>
+          <SectionHeading
+            eyebrow="Current state"
+            title="Your consciousness"
+            description="A living reflection of your current inner state."
+          />
 
-            <h3
-              className="
-                mt-4
-                font-[family:var(--font-cormorant)]
-                text-4xl
-                font-light
-                sm:text-5xl
-              "
-            >
-              Your consciousness
-            </h3>
+          <div className="mt-14">
+            <SoulOrbPanel />
           </div>
+        </CinematicSection>
 
-          <SoulOrbPanel />
-        </section>
-
-        {/* =========================================
+        {/* ===================================================
             EXPLORE
-        ========================================== */}
+        ==================================================== */}
 
-        <section
-          className="
-            border-t
-            border-white/[0.06]
-            py-24
-            sm:py-32
-          "
-        >
-          <div className="mb-14">
-            <p
-              className="
-                text-[10px]
-                uppercase
-                tracking-[0.5em]
-                text-[#D6B25E]
-              "
-            >
-              Explore yourself
-            </p>
+        <CinematicSection>
+          <SectionHeading
+            eyebrow="Explore yourself"
+            title="Your intelligence tools"
+            description="Explore the different dimensions of your inner world."
+          />
 
-            <h3
-              className="
-                mt-4
-                font-[family:var(--font-cormorant)]
-                text-4xl
-                font-light
-                sm:text-5xl
-              "
-            >
-              Your intelligence tools
-            </h3>
+          <div className="mt-14">
+            <IntelligenceModules />
           </div>
+        </CinematicSection>
 
-          <IntelligenceModules />
-        </section>
-
-        {/* =========================================
+        {/* ===================================================
             JOURNEY
-        ========================================== */}
+        ==================================================== */}
 
-        <section
-          className="
-            border-t
-            border-white/[0.06]
-            py-24
-            sm:py-32
-          "
-        >
-          <div className="mb-14">
-            <p
-              className="
-                text-[10px]
-                uppercase
-                tracking-[0.5em]
-                text-[#D6B25E]
-              "
-            >
-              Your journey
-            </p>
+        <CinematicSection>
+          <SectionHeading
+            eyebrow="Your journey"
+            title="A memory of becoming"
+            description="Your experiences gradually become part of a deeper personal memory."
+          />
 
-            <h3
-              className="
-                mt-4
-                font-[family:var(--font-cormorant)]
-                text-4xl
-                font-light
-                sm:text-5xl
-              "
-            >
-              A memory of becoming
-            </h3>
+          <div className="mt-14">
+            <EvolutionTimeline />
           </div>
+        </CinematicSection>
 
-          <EvolutionTimeline />
-        </section>
-
-        {/* =========================================
+        {/* ===================================================
             USAGE
-        ========================================== */}
+        ==================================================== */}
 
-        <section
-          className="
-            border-t
-            border-white/[0.06]
-            py-20
-            sm:py-24
-          "
-        >
-          <UsagePanel usage={usage} />
-        </section>
+        <CinematicSection>
+          <SectionHeading
+            eyebrow="Your access"
+            title="Available today"
+            description="Your current access to SoulMirror intelligence."
+          />
 
-        {/* =========================================
+          <div className="mt-14">
+            <UsagePanel usage={usage} />
+          </div>
+        </CinematicSection>
+
+        {/* ===================================================
             PRO
-        ========================================== */}
+        ==================================================== */}
 
-        <section
-          className="
-            border-t
-            border-white/[0.06]
-            py-24
-            sm:py-32
-          "
-        >
+        <CinematicSection>
           <PremiumPanel />
-        </section>
+        </CinematicSection>
 
-        {/* =========================================
+        {/* ===================================================
             FOOTER
-        ========================================== */}
+        ==================================================== */}
 
         <footer
           className="
@@ -930,6 +969,7 @@ export function DashboardShell({
                 uppercase
                 tracking-[0.4em]
                 text-white/20
+                outline-none
                 transition-colors
                 duration-500
                 hover:text-[#D6B25E]
@@ -954,6 +994,7 @@ export function DashboardShell({
                   uppercase
                   tracking-[0.3em]
                   text-white/25
+                  outline-none
                   transition-colors
                   duration-500
                   hover:text-[#D6B25E]
@@ -976,6 +1017,7 @@ export function DashboardShell({
                   uppercase
                   tracking-[0.3em]
                   text-white/25
+                  outline-none
                   transition-colors
                   duration-500
                   hover:text-[#D6B25E]
@@ -987,6 +1029,652 @@ export function DashboardShell({
           </div>
         </footer>
       </motion.div>
+
+      {/* =====================================================
+          PLANS MODAL
+      ====================================================== */}
+
+      <PlansModal
+        open={showPlans}
+        currentPlan={userPlan}
+        onClose={() => setShowPlans(false)}
+      />
     </main>
   );
+}
+
+/*
+ * ===========================================================
+ * CINEMATIC SECTION
+ * ===========================================================
+ */
+
+function CinematicSection({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <section
+      className={`
+        relative
+        border-t
+        border-white/[0.06]
+        py-24
+        sm:py-32
+        ${className}
+      `}
+    >
+      {children}
+    </section>
+  );
+}
+
+/*
+ * ===========================================================
+ * SECTION HEADING
+ * ===========================================================
+ */
+
+function SectionHeading({
+  eyebrow,
+  title,
+  description,
+}: {
+  eyebrow: string;
+  title: string;
+  description?: string;
+}) {
+  return (
+    <motion.div
+      initial={{
+        opacity: 0,
+        y: 25,
+        filter: "blur(8px)",
+      }}
+      whileInView={{
+        opacity: 1,
+        y: 0,
+        filter: "blur(0px)",
+      }}
+      viewport={{
+        once: true,
+        margin: "-15%",
+      }}
+      transition={{
+        duration: 0.9,
+        ease: [0.16, 1, 0.3, 1],
+      }}
+    >
+      <p
+        className="
+          text-[10px]
+          uppercase
+          tracking-[0.5em]
+          text-[#D6B25E]
+        "
+      >
+        {eyebrow}
+      </p>
+
+      <h3
+        className="
+          mt-4
+          font-[family:var(--font-cormorant)]
+          text-4xl
+          font-light
+          leading-tight
+          sm:text-5xl
+          md:text-6xl
+        "
+      >
+        {title}
+      </h3>
+
+      {description && (
+        <p
+          className="
+            mt-5
+            max-w-xl
+            text-sm
+            leading-7
+            text-white/35
+          "
+        >
+          {description}
+        </p>
+      )}
+    </motion.div>
+  );
+}
+
+/*
+ * ===========================================================
+ * PLANS MODAL
+ * ===========================================================
+ */
+
+function PlansModal({
+  open,
+  currentPlan,
+  onClose,
+}: {
+  open: boolean;
+  currentPlan: UserPlan;
+  onClose: () => void;
+}) {
+  return (
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          exit={{
+            opacity: 0,
+          }}
+          className="
+            fixed
+            inset-0
+            z-[200]
+            flex
+            items-center
+            justify-center
+            overflow-y-auto
+            bg-[#050505]/80
+            px-5
+            py-10
+            backdrop-blur-2xl
+            sm:px-8
+          "
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              onClose();
+            }
+          }}
+        >
+          {/* Atmosphere */}
+
+          <motion.div
+            initial={{
+              opacity: 0,
+              scale: 0.7,
+            }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+            }}
+            exit={{
+              opacity: 0,
+              scale: 0.8,
+            }}
+            transition={{
+              duration: 1,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="
+              pointer-events-none
+              absolute
+              left-1/2
+              top-1/2
+              h-[600px]
+              w-[900px]
+              -translate-x-1/2
+              -translate-y-1/2
+              rounded-full
+              bg-[#D6B25E]/[0.025]
+              blur-[180px]
+            "
+          />
+
+          {/* Modal */}
+
+          <motion.div
+            initial={{
+              opacity: 0,
+              y: 45,
+              scale: 0.96,
+              filter: "blur(12px)",
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              filter: "blur(0px)",
+            }}
+            exit={{
+              opacity: 0,
+              y: 25,
+              scale: 0.97,
+              filter: "blur(10px)",
+            }}
+            transition={{
+              duration: 0.8,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="
+              relative
+              z-10
+              w-full
+              max-w-6xl
+              overflow-hidden
+              rounded-[32px]
+              border
+              border-white/[0.09]
+              bg-[#0a0a0a]/95
+              shadow-[0_40px_120px_rgba(0,0,0,0.65)]
+            "
+          >
+            {/* Modal top */}
+
+            <div
+              className="
+                flex
+                items-start
+                justify-between
+                border-b
+                border-white/[0.06]
+                px-6
+                py-7
+                sm:px-10
+              "
+            >
+              <div>
+                <p
+                  className="
+                    text-[9px]
+                    uppercase
+                    tracking-[0.5em]
+                    text-[#D6B25E]
+                  "
+                >
+                  SoulMirror
+                </p>
+
+                <h2
+                  className="
+                    mt-3
+                    font-[family:var(--font-cormorant)]
+                    text-4xl
+                    font-light
+                    sm:text-5xl
+                  "
+                >
+                  Choose your depth.
+                </h2>
+
+                <p
+                  className="
+                    mt-3
+                    max-w-xl
+                    text-sm
+                    leading-6
+                    text-white/35
+                  "
+                >
+                  Go deeper into your personal
+                  intelligence and continue exploring
+                  yourself.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label="Close plans"
+                className="
+                  flex
+                  h-10
+                  w-10
+                  shrink-0
+                  cursor-pointer
+                  items-center
+                  justify-center
+                  rounded-full
+                  border
+                  border-white/[0.08]
+                  bg-white/[0.025]
+                  text-white/40
+                  outline-none
+                  transition-all
+                  duration-500
+                  hover:border-[#D6B25E]/30
+                  hover:bg-[#D6B25E]/[0.06]
+                  hover:text-[#D6B25E]
+                "
+              >
+                <span className="text-lg leading-none">
+                  ×
+                </span>
+              </button>
+            </div>
+
+            {/* Plans */}
+
+            <div
+              className="
+                grid
+                gap-px
+                bg-white/[0.05]
+                md:grid-cols-3
+              "
+            >
+              <PlanOption
+                name="Free"
+                eyebrow="Begin"
+                price="$0"
+                description="A quiet introduction to your inner world."
+                features={[
+                  "Soul Scan",
+                  "Dream Analysis",
+                  "Tarot reflections",
+                  "Personal memory",
+                ]}
+                current={currentPlan === "free"}
+              />
+
+              <PlanOption
+                name="Day Pass"
+                eyebrow="Go deeper"
+                price="One day"
+                description="Full access when you want to explore without commitment."
+                features={[
+                  "Expanded intelligence",
+                  "Deeper reflections",
+                  "Dream intelligence",
+                  "Full daily access",
+                ]}
+                current={currentPlan === "day"}
+                featured
+              />
+
+              <PlanOption
+                name="Pro"
+                eyebrow="Continuous"
+                price="$19"
+                description="A continuously evolving intelligence built around you."
+                features={[
+                  "Unlimited exploration",
+                  "Long-term memory",
+                  "Advanced reflections",
+                  "Full SoulMirror experience",
+                ]}
+                current={currentPlan === "pro"}
+              />
+            </div>
+
+            {/* Bottom */}
+
+            <div
+              className="
+                flex
+                flex-col
+                gap-4
+                border-t
+                border-white/[0.06]
+                px-6
+                py-6
+                sm:flex-row
+                sm:items-center
+                sm:justify-between
+                sm:px-10
+              "
+            >
+              <p
+                className="
+                  text-[9px]
+                  uppercase
+                  tracking-[0.3em]
+                  text-white/20
+                "
+              >
+                Your current plan:{" "}
+                <span className="text-[#D6B25E]">
+                  {currentPlan === "pro"
+                    ? "Pro"
+                    : currentPlan === "day"
+                      ? "Day Pass"
+                      : "Free"}
+                </span>
+              </p>
+
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  routerSafePush("/settings");
+                }}
+                className="
+                  cursor-pointer
+                  text-[9px]
+                  uppercase
+                  tracking-[0.35em]
+                  text-white/35
+                  outline-none
+                  transition-colors
+                  duration-500
+                  hover:text-[#D6B25E]
+                "
+              >
+                Manage subscription
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/*
+ * ===========================================================
+ * PLAN OPTION
+ * ===========================================================
+ */
+
+function PlanOption({
+  name,
+  eyebrow,
+  price,
+  description,
+  features,
+  current,
+  featured = false,
+}: {
+  name: string;
+  eyebrow: string;
+  price: string;
+  description: string;
+  features: string[];
+  current: boolean;
+  featured?: boolean;
+}) {
+  return (
+    <motion.div
+      initial={{
+        opacity: 0,
+        y: 20,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
+      transition={{
+        duration: 0.7,
+        ease: [0.16, 1, 0.3, 1],
+      }}
+      className={`
+        relative
+        bg-[#090909]
+        p-7
+        sm:p-9
+        ${
+          featured
+            ? "bg-[#D6B25E]/[0.025]"
+            : ""
+        }
+      `}
+    >
+      {featured && (
+        <div
+          className="
+            absolute
+            right-6
+            top-6
+            text-[8px]
+            uppercase
+            tracking-[0.35em]
+            text-[#D6B25E]
+          "
+        >
+          Recommended
+        </div>
+      )}
+
+      <p
+        className="
+          text-[9px]
+          uppercase
+          tracking-[0.4em]
+          text-white/25
+        "
+      >
+        {eyebrow}
+      </p>
+
+      <h3
+        className="
+          mt-5
+          font-[family:var(--font-cormorant)]
+          text-4xl
+          font-light
+          text-[#F4F1EA]
+        "
+      >
+        {name}
+      </h3>
+
+      <p
+        className="
+          mt-3
+          text-2xl
+          font-light
+          text-[#D6B25E]
+        "
+      >
+        {price}
+      </p>
+
+      <p
+        className="
+          mt-5
+          min-h-[56px]
+          text-sm
+          leading-6
+          text-white/35
+        "
+      >
+        {description}
+      </p>
+
+      <div
+        className="
+          my-7
+          h-px
+          bg-white/[0.06]
+        "
+      />
+
+      <div className="space-y-3">
+        {features.map((feature) => (
+          <div
+            key={feature}
+            className="
+              flex
+              items-center
+              gap-3
+              text-xs
+              text-white/45
+            "
+          >
+            <span
+              className="
+                h-1
+                w-1
+                shrink-0
+                rounded-full
+                bg-[#D6B25E]/70
+              "
+            />
+
+            {feature}
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-8">
+        {current ? (
+          <div
+            className="
+              border
+              border-[#D6B25E]/20
+              bg-[#D6B25E]/[0.05]
+              px-5
+              py-3
+              text-center
+              text-[9px]
+              uppercase
+              tracking-[0.35em]
+              text-[#D6B25E]
+            "
+          >
+            Current plan
+          </div>
+        ) : (
+          <button
+            type="button"
+            className="
+              w-full
+              cursor-pointer
+              border
+              border-white/[0.08]
+              bg-white/[0.025]
+              px-5
+              py-3
+              text-[9px]
+              uppercase
+              tracking-[0.35em]
+              text-white/45
+              outline-none
+              transition-all
+              duration-500
+              hover:border-[#D6B25E]/30
+              hover:bg-[#D6B25E]/[0.06]
+              hover:text-[#D6B25E]
+            "
+          >
+            Explore plan
+          </button>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
+/*
+ * ===========================================================
+ * SMALL HELPER
+ * ===========================================================
+ *
+ * We keep navigation outside the modal's props so the modal
+ * stays visually self-contained.
+ */
+
+function routerSafePush(path: string) {
+  window.location.href = path;
 }
