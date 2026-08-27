@@ -5,14 +5,11 @@ import {
   Activity,
   Brain,
   Sparkles,
-  ArrowUpRight,
 } from "lucide-react";
 
 import type { LucideIcon } from "lucide-react";
 
-import { SoulOrb3D } from "../../src/components/soul-space/SoulOrb3D";
 import { useSoulMemoryStore } from "../../src/store/soul-memory-store";
-import { GlassCard } from "../../src/components/ui/GlassCard";
 
 export function SoulOrbPanel() {
   const {
@@ -21,269 +18,216 @@ export function SoulOrbPanel() {
     insight,
   } = useSoulMemoryStore();
 
+  const currentEmotion = emotion || "Balanced";
+  const currentArchetype = archetype || "Explorer";
+
   return (
-    <GlassCard
-      highlight
-      className="
-        relative
-        overflow-hidden
-        p-6
-        sm:p-8
-        lg:p-12
-      "
-    >
-      {/* =====================================================
-          ATMOSPHERE
-      ====================================================== */}
+    <div className="relative overflow-hidden">
+      {/* =========================================
+          CINEMATIC ATMOSPHERE
+      ========================================== */}
 
       <div
         className="
           pointer-events-none
           absolute
-          left-1/2
+          -right-40
           top-1/2
-          h-[420px]
-          w-[420px]
-          -translate-x-1/2
+          h-[500px]
+          w-[500px]
           -translate-y-1/2
           rounded-full
-          bg-[#D6B25E]/[0.055]
-          blur-[150px]
-          sm:h-[520px]
-          sm:w-[520px]
+          bg-[#D6B25E]/[0.018]
+          blur-[160px]
         "
       />
 
-      <div
-        className="
-          pointer-events-none
-          absolute
-          right-[-180px]
-          top-[-180px]
-          h-[360px]
-          w-[360px]
-          rounded-full
-          bg-white/[0.018]
-          blur-[120px]
-        "
-      />
-
-      {/* =====================================================
-          HEADER
-      ====================================================== */}
+      {/* =========================================
+          CONTENT
+      ========================================== */}
 
       <div
         className="
           relative
-          z-10
-          flex
-          items-center
-          justify-between
-        "
-      >
-        <div>
-          <p
-            className="
-              text-[9px]
-              uppercase
-              tracking-[0.5em]
-              text-[#D6B25E]/80
-            "
-          >
-            SoulMirror Intelligence
-          </p>
-
-          <h2
-            className="
-              mt-3
-              font-[family:var(--font-cormorant)]
-              text-3xl
-              font-light
-              text-[#F4F1EA]
-              sm:text-4xl
-            "
-          >
-            Your inner state
-          </h2>
-        </div>
-
-        <div
-          className="
-            hidden
-            items-center
-            gap-2
-            rounded-full
-            border
-            border-white/10
-            bg-white/[0.025]
-            px-3
-            py-2
-            sm:flex
-          "
-        >
-          <span
-            className="
-              h-1.5
-              w-1.5
-              rounded-full
-              bg-[#D6B25E]
-              shadow-[0_0_12px_rgba(214,178,94,0.6)]
-            "
-          />
-
-          <span
-            className="
-              text-[9px]
-              uppercase
-              tracking-[0.25em]
-              text-white/35
-            "
-          >
-            Active
-          </span>
-        </div>
-      </div>
-
-      {/* =====================================================
-          MAIN CONTENT
-      ====================================================== */}
-
-      <div
-        className="
-          relative
-          z-10
-          mt-8
           grid
-          gap-10
-          lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.85fr)]
-          lg:items-center
-          lg:gap-14
+          grid-cols-1
+          gap-16
+          lg:grid-cols-[1.15fr_0.85fr]
+          lg:gap-24
         "
       >
-        {/* =================================================
-            SOUL ORB
-        ================================================== */}
+        {/* =======================================
+            MAIN STATE
+        ======================================== */}
 
         <motion.div
           initial={{
             opacity: 0,
-            scale: 0.82,
+            y: 35,
             filter: "blur(12px)",
           }}
-          animate={{
+          whileInView={{
             opacity: 1,
-            scale: 1,
+            y: 0,
             filter: "blur(0px)",
           }}
+          viewport={{
+            once: true,
+            amount: 0.25,
+          }}
           transition={{
-            duration: 1.1,
+            duration: 1,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+        >
+          {/* Label */}
+
+          <div className="flex items-center gap-4">
+            <span
+              className="
+                h-px
+                w-10
+                bg-[#D6B25E]/60
+              "
+            />
+
+            <p
+              className="
+                text-[9px]
+                uppercase
+                tracking-[0.5em]
+                text-[#D6B25E]
+              "
+            >
+              Current state
+            </p>
+          </div>
+
+          {/* State */}
+
+          <h4
+            className="
+              mt-8
+              max-w-3xl
+              font-[family:var(--font-cormorant)]
+              text-6xl
+              font-light
+              leading-[0.95]
+              tracking-[-0.02em]
+              text-[#F4F1EA]
+              sm:text-7xl
+              md:text-8xl
+            "
+          >
+            {currentEmotion}
+          </h4>
+
+          {/* Description */}
+
+          <p
+            className="
+              mt-8
+              max-w-xl
+              text-sm
+              leading-8
+              text-white/40
+              sm:text-[15px]
+            "
+          >
+            SoulMirror observes the patterns emerging
+            across your reflections, emotions and
+            memories — helping you understand what is
+            happening beneath the surface.
+          </p>
+
+          {/* Small status */}
+
+          <div
+            className="
+              mt-10
+              flex
+              items-center
+              gap-3
+            "
+          >
+            <span
+              className="
+                h-1.5
+                w-1.5
+                rounded-full
+                bg-[#D6B25E]
+                shadow-[0_0_12px_rgba(214,178,94,0.7)]
+              "
+            />
+
+            <span
+              className="
+                text-[8px]
+                uppercase
+                tracking-[0.4em]
+                text-white/25
+              "
+            >
+              Intelligence active
+            </span>
+          </div>
+        </motion.div>
+
+        {/* =======================================
+            SIGNALS
+        ======================================== */}
+
+        <motion.div
+          initial={{
+            opacity: 0,
+            x: 30,
+            filter: "blur(10px)",
+          }}
+          whileInView={{
+            opacity: 1,
+            x: 0,
+            filter: "blur(0px)",
+          }}
+          viewport={{
+            once: true,
+            amount: 0.25,
+          }}
+          transition={{
+            duration: 1,
+            delay: 0.15,
             ease: [0.16, 1, 0.3, 1],
           }}
           className="
-            relative
             flex
-            min-h-[320px]
-            items-center
+            flex-col
             justify-center
-            sm:min-h-[380px]
           "
         >
-          {/* Orb halo */}
-
-          <motion.div
-            animate={{
-              scale: [0.92, 1.06, 0.92],
-              opacity: [0.25, 0.4, 0.25],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            className="
-              pointer-events-none
-              absolute
-              h-56
-              w-56
-              rounded-full
-              bg-[#D6B25E]/[0.045]
-              blur-[80px]
-              sm:h-72
-              sm:w-72
-            "
-          />
-
-          <SoulOrb3D />
-        </motion.div>
-
-        {/* =================================================
-            INTELLIGENCE STATE
-        ================================================== */}
-
-        <div className="w-full">
           <p
             className="
-              text-[9px]
+              mb-7
+              text-[8px]
               uppercase
               tracking-[0.45em]
-              text-white/35
+              text-white/25
             "
           >
-            Current consciousness
+            Emerging signals
           </p>
 
-          <motion.h3
-            initial={{
-              opacity: 0,
-              y: 15,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              delay: 0.25,
-              duration: 0.7,
-            }}
+          <div
             className="
-              mt-4
-              font-[family:var(--font-cormorant)]
-              text-5xl
-              font-light
-              leading-none
-              text-[#F4F1EA]
-              sm:text-6xl
+              border-t
+              border-white/[0.08]
             "
           >
-            {emotion || "Balanced"}
-          </motion.h3>
-
-          <p
-            className="
-              mt-5
-              max-w-lg
-              text-sm
-              leading-7
-              text-white/40
-            "
-          >
-            SoulMirror continuously observes the patterns
-            emerging across your reflections, emotions and
-            experiences.
-          </p>
-
-          {/* =================================================
-              STATE METRICS
-          ================================================== */}
-
-          <div className="mt-8 space-y-3">
-            <OrbInfo
+            <StateRow
               icon={Sparkles}
               label="Archetype"
-              value={archetype || "Explorer"}
+              value={currentArchetype}
             />
 
-            <OrbInfo
+            <StateRow
               icon={Brain}
               label="Insight system"
               value={
@@ -293,89 +237,69 @@ export function SoulOrbPanel() {
               }
             />
 
-            <OrbInfo
+            <StateRow
               icon={Activity}
               label="Evolution"
               value="Continuously learning"
             />
           </div>
-
-          {/* =================================================
-              ACTION
-          ================================================== */}
-
-          <motion.button
-            type="button"
-            whileHover={{
-              y: -2,
-            }}
-            whileTap={{
-              scale: 0.98,
-            }}
-            className="
-              group
-              mt-6
-              flex
-              w-full
-              items-center
-              justify-between
-              rounded-2xl
-              border
-              border-white/10
-              bg-white/[0.025]
-              px-5
-              py-4
-              text-left
-              transition-all
-              duration-500
-              hover:border-[#D6B25E]/20
-              hover:bg-white/[0.04]
-            "
-          >
-            <span>
-              <span
-                className="
-                  block
-                  text-[9px]
-                  uppercase
-                  tracking-[0.35em]
-                  text-white/30
-                "
-              >
-                Explore
-              </span>
-
-              <span
-                className="
-                  mt-1
-                  block
-                  text-sm
-                  text-[#F4F1EA]
-                "
-              >
-                Discover your patterns
-              </span>
-            </span>
-
-            <ArrowUpRight
-              size={17}
-              className="
-                text-white/25
-                transition-all
-                duration-500
-                group-hover:-translate-y-0.5
-                group-hover:translate-x-0.5
-                group-hover:text-[#D6B25E]
-              "
-            />
-          </motion.button>
-        </div>
+        </motion.div>
       </div>
-    </GlassCard>
+
+      {/* =========================================
+          BOTTOM STATEMENT
+      ========================================== */}
+
+      <motion.div
+        initial={{
+          opacity: 0,
+          y: 20,
+        }}
+        whileInView={{
+          opacity: 1,
+          y: 0,
+        }}
+        viewport={{
+          once: true,
+          amount: 0.3,
+        }}
+        transition={{
+          duration: 0.8,
+          delay: 0.35,
+        }}
+        className="
+          mt-20
+          border-t
+          border-white/[0.06]
+          pt-7
+        "
+      >
+        <p
+          className="
+            max-w-2xl
+            text-[10px]
+            uppercase
+            leading-6
+            tracking-[0.25em]
+            text-white/20
+          "
+        >
+          Your inner world is not static.
+          <span className="text-[#D6B25E]/50">
+            {" "}
+            It evolves with every reflection.
+          </span>
+        </p>
+      </motion.div>
+    </div>
   );
 }
 
-function OrbInfo({
+/* =============================================
+   STATE ROW
+============================================= */
+
+function StateRow({
   icon: Icon,
   label,
   value,
@@ -387,70 +311,62 @@ function OrbInfo({
   return (
     <motion.div
       whileHover={{
-        x: 3,
+        x: 5,
       }}
       transition={{
-        duration: 0.3,
+        duration: 0.4,
+        ease: [0.16, 1, 0.3, 1],
       }}
       className="
+        group
         flex
+        min-h-[92px]
         items-center
-        gap-4
-        rounded-2xl
-        border
-        border-white/[0.07]
-        bg-white/[0.02]
-        px-4
-        py-3.5
-        transition-colors
-        duration-500
-        hover:border-white/[0.12]
-        hover:bg-white/[0.035]
+        justify-between
+        gap-6
+        border-b
+        border-white/[0.08]
       "
     >
-      <div
-        className="
-          flex
-          h-9
-          w-9
-          shrink-0
-          items-center
-          justify-center
-          rounded-xl
-          border
-          border-[#D6B25E]/15
-          bg-[#D6B25E]/[0.035]
-        "
-      >
-        <Icon
-          size={16}
-          className="text-[#D6B25E]"
-        />
-      </div>
+      {/* Left */}
 
-      <div className="min-w-0">
+      <div className="flex items-center gap-4">
+        <Icon
+          size={15}
+          strokeWidth={1.4}
+          className="
+            text-white/25
+            transition-colors
+            duration-500
+            group-hover:text-[#D6B25E]
+          "
+        />
+
         <p
           className="
-            text-[8px]
+            text-[9px]
             uppercase
-            tracking-[0.3em]
+            tracking-[0.32em]
             text-white/30
           "
         >
           {label}
         </p>
-
-        <p
-          className="
-            mt-1
-            truncate
-            text-sm
-            text-[#F4F1EA]/80
-          "
-        >
-          {value}
-        </p>
       </div>
+
+      {/* Right */}
+
+      <p
+        className="
+          max-w-[180px]
+          truncate
+          text-right
+          text-sm
+          text-[#F4F1EA]/75
+        "
+      >
+        {value}
+      </p>
     </motion.div>
   );
 }
