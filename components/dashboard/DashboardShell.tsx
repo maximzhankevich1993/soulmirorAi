@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 
 import { supabase } from "../../src/lib/supabaseClient";
 
-import { IdentityHeader } from "./IdentityHeader";
 import { SoulOrbPanel } from "./SoulOrbPanel";
 import { IntelligenceModules } from "./IntelligenceModules";
 import { EvolutionTimeline } from "./EvolutionTimeline";
@@ -33,9 +32,9 @@ export function DashboardShell({
   const [closingWelcome, setClosingWelcome] = useState(false);
 
   /*
-   * =====================================================
+   * =========================================
    * LOAD USER
-   * =====================================================
+   * =========================================
    */
 
   useEffect(() => {
@@ -66,13 +65,13 @@ export function DashboardShell({
   }, [router]);
 
   /*
-   * =====================================================
-   * CINEMATIC INTRO
-   * =====================================================
+   * =========================================
+   * WELCOME TIMING
+   * =========================================
    */
 
   useEffect(() => {
-    const closeTimer = window.setTimeout(() => {
+    const timer = window.setTimeout(() => {
       setClosingWelcome(true);
 
       window.setTimeout(() => {
@@ -81,7 +80,7 @@ export function DashboardShell({
     }, 3200);
 
     return () => {
-      window.clearTimeout(closeTimer);
+      window.clearTimeout(timer);
     };
   }, []);
 
@@ -95,9 +94,9 @@ export function DashboardShell({
         text-[#F4F1EA]
       "
     >
-      {/* =====================================================
-          GLOBAL BACKGROUND
-      ===================================================== */}
+      {/* =========================================
+          GLOBAL ATMOSPHERE
+      ========================================== */}
 
       <div
         className="
@@ -108,15 +107,13 @@ export function DashboardShell({
           overflow-hidden
         "
       >
-        {/* Top cinematic glow */}
-
         <div
           className="
             absolute
             left-1/2
-            top-[-280px]
+            top-[-180px]
             h-[700px]
-            w-[900px]
+            w-[700px]
             -translate-x-1/2
             rounded-full
             bg-[#D6B25E]/[0.035]
@@ -124,13 +121,11 @@ export function DashboardShell({
           "
         />
 
-        {/* Right glow */}
-
         <div
           className="
             absolute
-            right-[-350px]
-            top-[30%]
+            right-[-300px]
+            top-[35%]
             h-[650px]
             w-[650px]
             rounded-full
@@ -139,42 +134,23 @@ export function DashboardShell({
           "
         />
 
-        {/* Bottom glow */}
-
         <div
           className="
             absolute
             bottom-[-300px]
-            left-[-300px]
-            h-[650px]
-            w-[650px]
+            left-[-250px]
+            h-[600px]
+            w-[600px]
             rounded-full
             bg-[#8B5CF6]/[0.012]
             blur-[180px]
           "
         />
-
-        {/* Very subtle center light */}
-
-        <div
-          className="
-            absolute
-            left-1/2
-            top-[55%]
-            h-[500px]
-            w-[500px]
-            -translate-x-1/2
-            -translate-y-1/2
-            rounded-full
-            bg-white/[0.006]
-            blur-[150px]
-          "
-        />
       </div>
 
-      {/* =====================================================
+      {/* =========================================
           CINEMATIC WELCOME
-      ===================================================== */}
+      ========================================== */}
 
       <AnimatePresence>
         {showWelcome && (
@@ -204,12 +180,12 @@ export function DashboardShell({
               bg-[#050505]
             "
           >
-            {/* Intro glow */}
+            {/* atmospheric light */}
 
             <motion.div
               initial={{
                 opacity: 0,
-                scale: 0.55,
+                scale: 0.5,
               }}
               animate={{
                 opacity: 1,
@@ -234,37 +210,6 @@ export function DashboardShell({
               "
             />
 
-            <motion.div
-              initial={{
-                opacity: 0,
-                scale: 0.6,
-              }}
-              animate={{
-                opacity: 1,
-                scale: 1,
-              }}
-              transition={{
-                delay: 0.25,
-                duration: 2,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-              className="
-                pointer-events-none
-                absolute
-                left-1/2
-                top-[43%]
-                h-[350px]
-                w-[550px]
-                -translate-x-1/2
-                -translate-y-1/2
-                rounded-full
-                bg-white/[0.012]
-                blur-[120px]
-              "
-            />
-
-            {/* Intro content */}
-
             <div
               className="
                 relative
@@ -276,7 +221,7 @@ export function DashboardShell({
                 text-center
               "
             >
-              {/* Brand */}
+              {/* brand */}
 
               <motion.p
                 initial={{
@@ -304,7 +249,7 @@ export function DashboardShell({
                 SOULMIRROR
               </motion.p>
 
-              {/* Line */}
+              {/* line */}
 
               <motion.div
                 initial={{
@@ -332,7 +277,7 @@ export function DashboardShell({
                 "
               />
 
-              {/* Greeting */}
+              {/* greeting */}
 
               <motion.h1
                 initial={{
@@ -347,12 +292,12 @@ export function DashboardShell({
                 }}
                 transition={{
                   delay: 0.65,
-                  duration: 1.25,
+                  duration: 1.2,
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 className="
                   mt-8
-                  max-w-[1000px]
+                  max-w-[900px]
                   font-[family:var(--font-cormorant)]
                   text-5xl
                   font-light
@@ -369,23 +314,18 @@ export function DashboardShell({
                 </span>
               </motion.h1>
 
-              {/* Subtitle */}
-
               <motion.p
                 initial={{
                   opacity: 0,
                   y: 18,
-                  filter: "blur(10px)",
                 }}
                 animate={{
                   opacity: 1,
                   y: 0,
-                  filter: "blur(0px)",
                 }}
                 transition={{
                   delay: 1,
                   duration: 1,
-                  ease: [0.16, 1, 0.3, 1],
                 }}
                 className="
                   mt-6
@@ -397,20 +337,16 @@ export function DashboardShell({
                 Your personal intelligence space
               </motion.p>
 
-              {/* Online indicator */}
-
               <motion.div
                 initial={{
                   opacity: 0,
-                  y: 10,
                 }}
                 animate={{
                   opacity: 1,
-                  y: 0,
                 }}
                 transition={{
                   delay: 1.5,
-                  duration: 0.8,
+                  duration: 1,
                 }}
                 className="
                   mt-12
@@ -425,7 +361,7 @@ export function DashboardShell({
                     w-1
                     rounded-full
                     bg-[#D6B25E]
-                    shadow-[0_0_12px_rgba(214,178,94,0.8)]
+                    shadow-[0_0_12px_rgba(214,178,94,0.9)]
                   "
                 />
 
@@ -446,7 +382,7 @@ export function DashboardShell({
                     w-1
                     rounded-full
                     bg-[#D6B25E]
-                    shadow-[0_0_12px_rgba(214,178,94,0.8)]
+                    shadow-[0_0_12px_rgba(214,178,94,0.9)]
                   "
                 />
               </motion.div>
@@ -455,9 +391,9 @@ export function DashboardShell({
         )}
       </AnimatePresence>
 
-      {/* =====================================================
-          DASHBOARD
-      ===================================================== */}
+      {/* =========================================
+          MAIN SPACE
+      ========================================== */}
 
       <motion.div
         initial={{
@@ -475,227 +411,366 @@ export function DashboardShell({
           z-10
           mx-auto
           w-full
-          max-w-[1440px]
+          max-w-[1400px]
           px-5
           pb-32
-          pt-6
+          pt-8
           sm:px-8
           lg:px-12
-          xl:px-16
         "
       >
-        {/* =================================================
-            TOP SPACE
-        ================================================== */}
+        {/* =========================================
+            TOP NAVIGATION
+        ========================================== */}
 
-        <div className="h-4 sm:h-8" />
-
-        {/* =================================================
-            IDENTITY
-        ================================================== */}
-
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 25,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            delay: 0.1,
-            duration: 0.9,
-            ease: [0.16, 1, 0.3, 1],
-          }}
+        <header
+          className="
+            flex
+            items-center
+            justify-between
+            border-b
+            border-white/[0.06]
+            pb-6
+          "
         >
-          <IdentityHeader />
-        </motion.div>
+          <div>
+            <p
+              className="
+                text-[10px]
+                uppercase
+                tracking-[0.5em]
+                text-[#D6B25E]
+              "
+            >
+              SoulMirror
+            </p>
 
-        {/* =================================================
-            SOUL STATE
-        ================================================== */}
+            <p
+              className="
+                mt-2
+                text-[10px]
+                uppercase
+                tracking-[0.25em]
+                text-white/25
+              "
+            >
+              Personal Intelligence
+            </p>
+          </div>
 
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 35,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            delay: 0.18,
-            duration: 0.9,
-            ease: [0.16, 1, 0.3, 1],
-          }}
-          className="mt-20 sm:mt-28"
+          <button
+            type="button"
+            onClick={() => router.push("/settings")}
+            className="
+              cursor-pointer
+              text-[10px]
+              uppercase
+              tracking-[0.3em]
+              text-white/35
+              transition-colors
+              duration-500
+              hover:text-[#D6B25E]
+            "
+          >
+            Settings
+          </button>
+        </header>
+
+        {/* =========================================
+            INTRO
+        ========================================== */}
+
+        <section
+          className="
+            relative
+            flex
+            min-h-[55vh]
+            flex-col
+            justify-center
+            py-20
+            sm:py-28
+          "
         >
+          <motion.p
+            initial={{
+              opacity: 0,
+              y: 20,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{
+              delay: 0.2,
+              duration: 0.8,
+            }}
+            className="
+              text-[10px]
+              uppercase
+              tracking-[0.5em]
+              text-[#D6B25E]
+            "
+          >
+            Your inner world
+          </motion.p>
+
+          <motion.h2
+            initial={{
+              opacity: 0,
+              y: 30,
+              filter: "blur(12px)",
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              filter: "blur(0px)",
+            }}
+            transition={{
+              delay: 0.3,
+              duration: 1,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="
+              mt-6
+              max-w-5xl
+              font-[family:var(--font-cormorant)]
+              text-5xl
+              font-light
+              leading-[1.05]
+              sm:text-6xl
+              md:text-7xl
+              lg:text-8xl
+            "
+          >
+            Understand yourself.
+            <br />
+            <span className="text-white/30">
+              Evolve consciously.
+            </span>
+          </motion.h2>
+
+          <motion.p
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            transition={{
+              delay: 0.7,
+              duration: 0.8,
+            }}
+            className="
+              mt-8
+              max-w-lg
+              text-sm
+              leading-7
+              text-white/40
+            "
+          >
+            SoulMirror remembers your journey and
+            helps you see patterns that are difficult
+            to notice alone.
+          </motion.p>
+        </section>
+
+        {/* =========================================
+            CURRENT STATE
+        ========================================== */}
+
+        <section className="border-t border-white/[0.06] py-24 sm:py-32">
+          <div
+            className="
+              mb-12
+              flex
+              items-end
+              justify-between
+              gap-6
+            "
+          >
+            <div>
+              <p
+                className="
+                  text-[10px]
+                  uppercase
+                  tracking-[0.5em]
+                  text-[#D6B25E]
+                "
+              >
+                Current state
+              </p>
+
+              <h3
+                className="
+                  mt-4
+                  font-[family:var(--font-cormorant)]
+                  text-4xl
+                  font-light
+                  sm:text-5xl
+                "
+              >
+                Your consciousness
+              </h3>
+            </div>
+          </div>
+
           <SoulOrbPanel />
-        </motion.div>
+        </section>
 
-        {/* =================================================
-            DIVIDER
-        ================================================== */}
+        {/* =========================================
+            EXPLORE
+        ========================================== */}
 
-        <DashboardDivider />
+        <section className="border-t border-white/[0.06] py-24 sm:py-32">
+          <div className="mb-14">
+            <p
+              className="
+                text-[10px]
+                uppercase
+                tracking-[0.5em]
+                text-[#D6B25E]
+              "
+            >
+              Explore yourself
+            </p>
 
-        {/* =================================================
-            USAGE
-        ================================================== */}
+            <h3
+              className="
+                mt-4
+                font-[family:var(--font-cormorant)]
+                text-4xl
+                font-light
+                sm:text-5xl
+              "
+            >
+              Your intelligence tools
+            </h3>
+          </div>
 
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 30,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            delay: 0.25,
-            duration: 0.9,
-            ease: [0.16, 1, 0.3, 1],
-          }}
-        >
-          <UsagePanel usage={usage} />
-        </motion.div>
-
-        {/* =================================================
-            DIVIDER
-        ================================================== */}
-
-        <DashboardDivider />
-
-        {/* =================================================
-            INTELLIGENCE
-        ================================================== */}
-
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 30,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            delay: 0.32,
-            duration: 0.9,
-            ease: [0.16, 1, 0.3, 1],
-          }}
-        >
           <IntelligenceModules />
-        </motion.div>
+        </section>
 
-        {/* =================================================
-            DIVIDER
-        ================================================== */}
+        {/* =========================================
+            JOURNEY
+        ========================================== */}
 
-        <DashboardDivider />
+        <section className="border-t border-white/[0.06] py-24 sm:py-32">
+          <div className="mb-14">
+            <p
+              className="
+                text-[10px]
+                uppercase
+                tracking-[0.5em]
+                text-[#D6B25E]
+              "
+            >
+              Your journey
+            </p>
 
-        {/* =================================================
-            EVOLUTION
-        ================================================== */}
+            <h3
+              className="
+                mt-4
+                font-[family:var(--font-cormorant)]
+                text-4xl
+                font-light
+                sm:text-5xl
+              "
+            >
+              A memory of becoming
+            </h3>
+          </div>
 
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 30,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            delay: 0.39,
-            duration: 0.9,
-            ease: [0.16, 1, 0.3, 1],
-          }}
-        >
           <EvolutionTimeline />
-        </motion.div>
+        </section>
 
-        {/* =================================================
-            DIVIDER
-        ================================================== */}
+        {/* =========================================
+            USAGE — QUIET / SECONDARY
+        ========================================== */}
 
-        <DashboardDivider />
+        <section className="border-t border-white/[0.06] py-20 sm:py-24">
+          <UsagePanel usage={usage} />
+        </section>
 
-        {/* =================================================
-            PREMIUM
-        ================================================== */}
+        {/* =========================================
+            PRO
+        ========================================== */}
 
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 30,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            delay: 0.46,
-            duration: 0.9,
-            ease: [0.16, 1, 0.3, 1],
-          }}
-        >
+        <section className="border-t border-white/[0.06] py-24 sm:py-32">
           <PremiumPanel />
-        </motion.div>
+        </section>
 
-        {/* =================================================
-            FOOT SPACE
-        ================================================== */}
+        {/* =========================================
+            FOOTER
+        ========================================== */}
 
-        <div className="h-10" />
+        <footer
+          className="
+            border-t
+            border-white/[0.06]
+            pt-8
+          "
+        >
+          <div
+            className="
+              flex
+              flex-col
+              gap-5
+              sm:flex-row
+              sm:items-center
+              sm:justify-between
+            "
+          >
+            <p
+              className="
+                text-[9px]
+                uppercase
+                tracking-[0.4em]
+                text-white/20
+              "
+            >
+              SOULMIRROR — PERSONAL INTELLIGENCE
+            </p>
+
+            <div className="flex items-center gap-6">
+              <button
+                type="button"
+                onClick={() => router.push("/settings")}
+                className="
+                  cursor-pointer
+                  text-[9px]
+                  uppercase
+                  tracking-[0.3em]
+                  text-white/25
+                  transition-colors
+                  hover:text-[#D6B25E]
+                "
+              >
+                Settings
+              </button>
+
+              <button
+                type="button"
+                onClick={async () => {
+                  await supabase.auth.signOut();
+                  router.push("/");
+                  router.refresh();
+                }}
+                className="
+                  cursor-pointer
+                  text-[9px]
+                  uppercase
+                  tracking-[0.3em]
+                  text-white/25
+                  transition-colors
+                  hover:text-[#D6B25E]
+                "
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </footer>
       </motion.div>
     </main>
-  );
-}
-
-/*
- * =========================================================
- * DASHBOARD DIVIDER
- * =========================================================
- */
-
-function DashboardDivider() {
-  return (
-    <div
-      className="
-        relative
-        my-20
-        flex
-        items-center
-        justify-center
-        sm:my-28
-      "
-    >
-      <div
-        className="
-          h-px
-          w-full
-          bg-gradient-to-r
-          from-transparent
-          via-white/[0.08]
-          to-transparent
-        "
-      />
-
-      <div
-        className="
-          absolute
-          h-1
-          w-1
-          rounded-full
-          bg-[#D6B25E]/50
-          shadow-[0_0_12px_rgba(214,178,94,0.35)]
-        "
-      />
-    </div>
   );
 }
