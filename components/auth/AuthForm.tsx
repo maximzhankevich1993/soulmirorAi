@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { supabase } from "../../src/lib/supabaseClient";
+import { supabase } from "../../src/lib/supabase/client";
 
 interface AuthFormProps {
   initialMode?: "login" | "register";
