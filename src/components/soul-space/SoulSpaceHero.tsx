@@ -16,7 +16,7 @@ import {
 
 import { useRouter } from "next/navigation";
 
-import { supabase } from "../../lib/supabaseClient";
+import { supabase } from "@/lib/supabase/client";
 
 interface SoulSpaceHeroProps {
   onOpenAuth?: (mode: "login" | "register") => void;
