@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 
-import { supabase } from "../../src/lib/supabaseClient";
+import { supabase } from "../../src/lib/supabase/client";
 
 import { SoulOrbPanel } from "./SoulOrbPanel";
 import { IntelligenceModules } from "./IntelligenceModules";
