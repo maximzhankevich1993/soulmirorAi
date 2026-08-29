@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -14,6 +15,9 @@ import {
   useState,
 } from "react";
 
+import { useRouter } from "next/navigation";
+
+import { supabase } from "../../lib/supabase/client";
 
 interface SoulSpaceHeroProps {
   onOpenAuth?: (mode: "login" | "register") => void;
@@ -29,12 +33,8 @@ export function SoulSpaceHero({
   const ref = useRef<HTMLDivElement>(null);
 
   const [started, setStarted] = useState(false);
-
-  const [userName, setUserName] = useState<string | null>(
-    null
-  );
-
-  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [userName, setUserName] = useState<string | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
   /*
    * =====================================================
@@ -56,22 +56,12 @@ export function SoulSpaceHero({
    * =====================================================
    * AUTH STATE
    * =====================================================
-   *
-   * If the user is already authenticated:
-   *
-   * Sign In / Sign Up
-   *
-   * becomes:
-   *
-   * User Name / Dashboard
-   *
-   * =====================================================
    */
 
   useEffect(() => {
     let mounted = true;
 
-    const loadUser = async () => {
+    const getUser = async () => {
       try {
         const {
           data: { user },
@@ -80,12 +70,12 @@ export function SoulSpaceHero({
         if (!mounted) return;
 
         if (user) {
-          const metadata = user.user_metadata;
+          const metadata = user.user_metadata ?? {};
 
           const name =
-            metadata?.full_name ||
-            metadata?.name ||
-            metadata?.display_name ||
+            metadata.full_name ||
+            metadata.name ||
+            metadata.first_name ||
             user.email?.split("@")[0] ||
             "You";
 
@@ -104,43 +94,40 @@ export function SoulSpaceHero({
         }
       } finally {
         if (mounted) {
-          setCheckingAuth(false);
+          setAuthLoading(false);
         }
       }
     };
 
-    loadUser();
+    getUser();
 
     /*
-     * Keep the hero synchronized with Supabase.
-     *
-     * This is important when the user logs in
-     * without a full page reload.
+     * Listen for login/logout changes.
      */
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
+      (_event, session) => {
         if (!mounted) return;
 
-        if (!session?.user) {
+        if (session?.user) {
+          const metadata =
+            session.user.user_metadata ?? {};
+
+          const name =
+            metadata.full_name ||
+            metadata.name ||
+            metadata.first_name ||
+            session.user.email?.split("@")[0] ||
+            "You";
+
+          setUserName(name);
+        } else {
           setUserName(null);
-          return;
         }
 
-        const user = session.user;
-
-        const metadata = user.user_metadata;
-
-        const name =
-          metadata?.full_name ||
-          metadata?.name ||
-          metadata?.display_name ||
-          user.email?.split("@")[0] ||
-          "You";
-
-        setUserName(name);
+        setAuthLoading(false);
       }
     );
 
@@ -196,9 +183,8 @@ export function SoulSpaceHero({
    */
 
   const handleStartExperience = () => {
-    const target = document.getElementById(
-      "features"
-    );
+    const target =
+      document.getElementById("features");
 
     if (!target) return;
 
@@ -369,6 +355,8 @@ export function SoulSpaceHero({
         preserveAspectRatio="none"
         fill="none"
       >
+        {/* Main sweeping line */}
+
         <motion.path
           d="
             M -180 610
@@ -400,6 +388,8 @@ export function SoulSpaceHero({
             ease: "easeInOut",
           }}
         />
+
+        {/* Opposite sweeping line */}
 
         <motion.path
           d="
@@ -433,6 +423,8 @@ export function SoulSpaceHero({
           }}
         />
 
+        {/* Fine white/gold thread */}
+
         <motion.path
           d="
             M -120 760
@@ -461,6 +453,8 @@ export function SoulSpaceHero({
             delay: 4,
           }}
         />
+
+        {/* Soft secondary golden line */}
 
         <motion.path
           d="
@@ -507,181 +501,209 @@ export function SoulSpaceHero({
       />
 
       {/* =====================================================
-          AUTH / USER BUTTONS
+          AUTH / USER NAVIGATION
       ====================================================== */}
 
-      {!checkingAuth && (
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: -30,
-            x: 20,
-            filter: "blur(12px)",
-          }}
-          animate={{
-            opacity: started ? 1 : 0,
-            y: started ? 0 : -30,
-            x: started ? 0 : 20,
-            filter: started
-              ? "blur(0px)"
-              : "blur(12px)",
-          }}
-          transition={{
-            delay: 0.65,
-            duration: 1.2,
-            ease: [0.16, 1, 0.3, 1],
-          }}
-          className="
-            absolute
-            right-5
-            top-5
-            z-30
-            flex
-            items-center
-            gap-2
-            sm:right-8
-            sm:top-8
-            md:right-10
-            md:top-10
-          "
-        >
-          {userName ? (
-            <>
-              {/* USER NAME */}
+      <motion.div
+        initial={{
+          opacity: 0,
+          y: -30,
+          x: 20,
+          filter: "blur(12px)",
+        }}
+        animate={{
+          opacity: started ? 1 : 0,
+          y: started ? 0 : -30,
+          x: started ? 0 : 20,
+          filter: started
+            ? "blur(0px)"
+            : "blur(12px)",
+        }}
+        transition={{
+          delay: 0.65,
+          duration: 1.2,
+          ease: [0.16, 1, 0.3, 1],
+        }}
+        className="
+          absolute
+          right-5
+          top-5
+          z-30
+          flex
+          items-center
+          gap-2
+          sm:right-8
+          sm:top-8
+          md:right-10
+          md:top-10
+        "
+      >
+        {authLoading ? (
+          /*
+           * Small cinematic placeholder while
+           * Supabase restores the session.
+           */
 
-              <div
-                className="
-                  flex
-                  items-center
-                  rounded-2xl
-                  border
-                  border-white/[0.08]
-                  bg-white/[0.025]
-                  px-5
-                  py-2.5
-                  text-[10px]
-                  uppercase
-                  tracking-[0.22em]
-                  text-white/55
-                  backdrop-blur-xl
-                "
-              >
-                {userName}
-              </div>
+          <motion.div
+            animate={{
+              opacity: [0.25, 0.6, 0.25],
+            }}
+            transition={{
+              duration: 1.8,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="
+              h-10
+              w-28
+              rounded-2xl
+              border
+              border-white/[0.06]
+              bg-white/[0.02]
+              backdrop-blur-xl
+            "
+          />
+        ) : userName ? (
+          <>
+            {/* USER NAME */}
 
-              {/* DASHBOARD */}
+            <motion.div
+              whileHover={{
+                y: -2,
+              }}
+              className="
+                flex
+                items-center
+                rounded-2xl
+                border
+                border-[#D6B25E]/20
+                bg-[#D6B25E]/[0.06]
+                px-5
+                py-2.5
+                text-[10px]
+                uppercase
+                tracking-[0.22em]
+                text-[#D6B25E]/80
+                backdrop-blur-xl
+                shadow-[0_10px_40px_rgba(0,0,0,0.2)]
+              "
+            >
+              {userName}
+            </motion.div>
 
-              <motion.button
-                type="button"
-                onClick={handleDashboard}
-                whileHover={{
-                  y: -2,
-                  scale: 1.025,
-                }}
-                whileTap={{
-                  scale: 0.96,
-                }}
-                className="
-                  cursor-pointer
-                  rounded-2xl
-                  border
-                  border-[#D6B25E]/25
-                  bg-[#D6B25E]/[0.08]
-                  px-5
-                  py-2.5
-                  text-[10px]
-                  uppercase
-                  tracking-[0.28em]
-                  text-[#D6B25E]/80
-                  backdrop-blur-xl
-                  transition-all
-                  duration-500
-                  hover:border-[#D6B25E]/45
-                  hover:bg-[#D6B25E]/[0.13]
-                  hover:text-[#D6B25E]
-                "
-              >
-                Dashboard
-              </motion.button>
-            </>
-          ) : (
-            <>
-              {/* SIGN IN */}
+            {/* BACK TO DASHBOARD */}
 
-              <motion.button
-                type="button"
-                onClick={handleSignIn}
-                whileHover={{
-                  y: -2,
-                  scale: 1.025,
-                }}
-                whileTap={{
-                  scale: 0.96,
-                }}
-                className="
-                  cursor-pointer
-                  rounded-2xl
-                  border
-                  border-white/[0.08]
-                  bg-white/[0.025]
-                  px-5
-                  py-2.5
-                  text-[10px]
-                  uppercase
-                  tracking-[0.28em]
-                  text-white/45
-                  backdrop-blur-xl
-                  shadow-[0_8px_30px_rgba(0,0,0,0.18)]
-                  transition-all
-                  duration-500
-                  hover:border-white/[0.2]
-                  hover:bg-white/[0.06]
-                  hover:text-white
-                "
-              >
-                Sign In
-              </motion.button>
+            <motion.button
+              type="button"
+              onClick={handleDashboard}
+              whileHover={{
+                y: -2,
+                scale: 1.025,
+              }}
+              whileTap={{
+                scale: 0.96,
+              }}
+              className="
+                cursor-pointer
+                rounded-2xl
+                border
+                border-white/[0.12]
+                bg-white/[0.045]
+                px-5
+                py-2.5
+                text-[10px]
+                uppercase
+                tracking-[0.24em]
+                text-white/65
+                backdrop-blur-xl
+                shadow-[0_10px_40px_rgba(0,0,0,0.22)]
+                transition-all
+                duration-500
+                hover:border-white/[0.24]
+                hover:bg-white/[0.08]
+                hover:text-white
+              "
+            >
+              Back to Dashboard
+            </motion.button>
+          </>
+        ) : (
+          <>
+            {/* SIGN IN */}
 
-              {/* SIGN UP */}
+            <motion.button
+              type="button"
+              onClick={handleSignIn}
+              whileHover={{
+                y: -2,
+                scale: 1.025,
+              }}
+              whileTap={{
+                scale: 0.96,
+              }}
+              className="
+                cursor-pointer
+                rounded-2xl
+                border
+                border-white/[0.08]
+                bg-white/[0.025]
+                px-5
+                py-2.5
+                text-[10px]
+                uppercase
+                tracking-[0.28em]
+                text-white/45
+                backdrop-blur-xl
+                shadow-[0_8px_30px_rgba(0,0,0,0.18)]
+                transition-all
+                duration-500
+                hover:border-white/[0.2]
+                hover:bg-white/[0.06]
+                hover:text-white
+              "
+            >
+              Sign In
+            </motion.button>
 
-              <motion.button
-                type="button"
-                onClick={handleSignUp}
-                whileHover={{
-                  y: -2,
-                  scale: 1.025,
-                }}
-                whileTap={{
-                  scale: 0.96,
-                }}
-                className="
-                  cursor-pointer
-                  rounded-2xl
-                  border
-                  border-white/[0.14]
-                  bg-white/[0.055]
-                  px-5
-                  py-2.5
-                  text-[10px]
-                  uppercase
-                  tracking-[0.28em]
-                  text-white/75
-                  backdrop-blur-xl
-                  shadow-[0_10px_40px_rgba(0,0,0,0.25)]
-                  transition-all
-                  duration-500
-                  hover:border-white/[0.28]
-                  hover:bg-white/[0.09]
-                  hover:text-white
-                  hover:shadow-[0_15px_50px_rgba(255,255,255,0.06)]
-                "
-              >
-                Sign Up
-              </motion.button>
-            </>
-          )}
-        </motion.div>
-      )}
+            {/* SIGN UP */}
+
+            <motion.button
+              type="button"
+              onClick={handleSignUp}
+              whileHover={{
+                y: -2,
+                scale: 1.025,
+              }}
+              whileTap={{
+                scale: 0.96,
+              }}
+              className="
+                cursor-pointer
+                rounded-2xl
+                border
+                border-white/[0.14]
+                bg-white/[0.055]
+                px-5
+                py-2.5
+                text-[10px]
+                uppercase
+                tracking-[0.28em]
+                text-white/75
+                backdrop-blur-xl
+                shadow-[0_10px_40px_rgba(0,0,0,0.25)]
+                transition-all
+                duration-500
+                hover:border-white/[0.28]
+                hover:bg-white/[0.09]
+                hover:text-white
+                hover:shadow-[0_15px_50px_rgba(255,255,255,0.06)]
+              "
+            >
+              Sign Up
+            </motion.button>
+          </>
+        )}
+      </motion.div>
 
       {/* =====================================================
           HERO CONTENT
@@ -795,8 +817,7 @@ export function SoulSpaceHero({
                     }
               }
               transition={{
-                delay:
-                  0.25 + index * 0.11,
+                delay: 0.25 + index * 0.11,
                 duration: 1.25,
                 ease: [0.16, 1, 0.3, 1],
               }}
@@ -1091,39 +1112,34 @@ export function SoulSpaceHero({
       ====================================================== */}
 
       <div className="pointer-events-none absolute inset-0">
-        {Array.from({ length: 18 }).map(
-          (_, i) => (
-            <motion.span
-              key={i}
-              animate={{
-                y: [0, -60, 0],
-                opacity: [
-                  0.05,
-                  0.3,
-                  0.05,
-                ],
-              }}
-              transition={{
-                duration: 5 + (i % 5),
-                repeat: Infinity,
-                delay: i * 0.35,
-                ease: "easeInOut",
-              }}
-              className="
-                absolute
-                h-[2px]
-                w-[2px]
-                rounded-full
-                bg-[#D6B25E]
-              "
-              style={{
-                left: `${(i * 37) % 100}%`,
-                top: `${(i * 53) % 100}%`,
-              }}
-            />
-          )
-        )}
+        {Array.from({ length: 18 }).map((_, i) => (
+          <motion.span
+            key={i}
+            animate={{
+              y: [0, -60, 0],
+              opacity: [0.05, 0.3, 0.05],
+            }}
+            transition={{
+              duration: 5 + (i % 5),
+              repeat: Infinity,
+              delay: i * 0.35,
+              ease: "easeInOut",
+            }}
+            className="
+              absolute
+              h-[2px]
+              w-[2px]
+              rounded-full
+              bg-[#D6B25E]
+            "
+            style={{
+              left: `${(i * 37) % 100}%`,
+              top: `${(i * 53) % 100}%`,
+            }}
+          />
+        ))}
       </div>
     </section>
   );
 }
+
