@@ -1,1290 +1,1123 @@
+
 "use client";
 
 import {
-motion,
-useScroll,
-useTransform,
+  motion,
+  useScroll,
+  useTransform,
 } from "framer-motion";
 
 import { ArrowRight } from "lucide-react";
 
 import {
-useEffect,
-useRef,
-useState,
+  useEffect,
+  useRef,
+  useState,
 } from "react";
 
 import { useRouter } from "next/navigation";
 
-import { supabase } from "../../lib/supabase/client";
+import { supabase } from "@/lib/supabase/client";
 
 interface SoulSpaceHeroProps {
-onOpenAuth?: (mode: "login" | "register") => void;
+  onOpenAuth?: (mode: "login" | "register") => void;
 }
 
 const letters = "SoulMirror".split("");
 
 export function SoulSpaceHero({
-onOpenAuth,
+  onOpenAuth,
 }: SoulSpaceHeroProps) {
-const router = useRouter();
+  const router = useRouter();
 
-const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
-const [started, setStarted] = useState(false);
+  const [started, setStarted] = useState(false);
+  const [userName, setUserName] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-const [user, setUser] = useState<{
-id: string;
-email?: string;
-name?: string;
-} | null>(null);
+  /*
+   * =====================================================
+   * INITIAL HERO ANIMATION
+   * =====================================================
+   */
 
-const [authLoading, setAuthLoading] = useState(true);
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setStarted(true);
+    }, 100);
 
-/*
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, []);
 
-* =====================================================
-* INITIAL HERO ANIMATION
-* =====================================================
-  */
+  /*
+   * =====================================================
+   * AUTHENTICATION STATE
+   * =====================================================
+   *
+   * We use the SAME Supabase browser client as the rest
+   * of the application:
+   *
+   * @/lib/supabase/client
+   *
+   * This allows the hero to detect an existing session.
+   */
 
-useEffect(() => {
-const timer = window.setTimeout(() => {
-setStarted(true);
-}, 100);
+  useEffect(() => {
+    let mounted = true;
 
+    const loadUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-return () => {
-  window.clearTimeout(timer);
-};
+      if (!mounted) return;
 
+      if (user) {
+        setIsAuthenticated(true);
 
-}, []);
+        const metadata = user.user_metadata;
 
-/*
+        const name =
+          metadata?.full_name ||
+          metadata?.name ||
+          metadata?.display_name ||
+          user.email?.split("@")[0] ||
+          "SoulMirror";
 
-* =====================================================
-* SUPABASE AUTH
-*
-* IMPORTANT:
-* This component uses the same client as AuthForm:
-*
-* src/lib/supabase/client.ts
-*
-* This prevents the page from creating a separate
-* authentication state.
-* =====================================================
-  */
+        setUserName(name);
+      } else {
+        setIsAuthenticated(false);
+        setUserName(null);
+      }
+    };
 
-useEffect(() => {
-let mounted = true;
+    loadUser();
 
-
-const loadUser = async () => {
-  try {
     const {
-      data: { user: currentUser },
-    } = await supabase.auth.getUser();
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (!mounted) return;
 
-    if (!mounted) return;
+        if (session?.user) {
+          setIsAuthenticated(true);
 
-    if (currentUser) {
-      const metadata = currentUser.user_metadata ?? {};
+          const metadata = session.user.user_metadata;
 
-      const name =
-        metadata.full_name ||
-        metadata.name ||
-        metadata.display_name ||
-        metadata.username ||
-        undefined;
+          const name =
+            metadata?.full_name ||
+            metadata?.name ||
+            metadata?.display_name ||
+            session.user.email?.split("@")[0] ||
+            "SoulMirror";
 
-      setUser({
-        id: currentUser.id,
-        email: currentUser.email,
-        name,
-      });
-    } else {
-      setUser(null);
-    }
-  } catch (error) {
-    console.error(
-      "Failed to load authenticated user:",
-      error
+          setUserName(name);
+        } else {
+          setIsAuthenticated(false);
+          setUserName(null);
+        }
+      }
     );
 
-    if (mounted) {
-      setUser(null);
-    }
-  } finally {
-    if (mounted) {
-      setAuthLoading(false);
-    }
-  }
-};
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, []);
 
-loadUser();
+  /*
+   * =====================================================
+   * HERO SCROLL
+   * =====================================================
+   */
 
-/*
- * Keep the hero synchronized with Supabase.
- */
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
 
-const {
-  data: { subscription },
-} = supabase.auth.onAuthStateChange(
-  async (event, session) => {
-    if (!mounted) return;
+  const heroY = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [0, -140]
+  );
 
-    if (
-      event === "SIGNED_OUT" ||
-      !session?.user
-    ) {
-      setUser(null);
+  const heroScale = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [1, 0.94]
+  );
+
+  const heroOpacity = useTransform(
+    scrollYProgress,
+    [0, 0.7, 1],
+    [1, 1, 0]
+  );
+
+  const heroBlur = useTransform(
+    scrollYProgress,
+    [0, 0.7, 1],
+    [
+      "blur(0px)",
+      "blur(0px)",
+      "blur(8px)",
+    ]
+  );
+
+  /*
+   * =====================================================
+   * START EXPERIENCE
+   * =====================================================
+   */
+
+  const handleStartExperience = () => {
+    const target = document.getElementById("features");
+
+    if (!target) return;
+
+    target.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
+  /*
+   * =====================================================
+   * EXPLORE ECOSYSTEM
+   * =====================================================
+   */
+
+  const handleExploreEcosystem = (
+    event: React.MouseEvent<HTMLAnchorElement>
+  ) => {
+    event.preventDefault();
+
+    const target = document.getElementById("ecosystem");
+
+    if (!target) return;
+
+    target.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
+  /*
+   * =====================================================
+   * AUTH
+   * =====================================================
+   */
+
+  const handleSignIn = () => {
+    onOpenAuth?.("login");
+  };
+
+  const handleSignUp = () => {
+    onOpenAuth?.("register");
+  };
+
+  /*
+   * =====================================================
+   * DASHBOARD
+   * =====================================================
+   */
+
+  const handleDashboard = async () => {
+    /*
+     * Verify the actual Supabase session before navigating.
+     * This prevents sending the user to Dashboard when the
+     * browser client does not actually have a valid session.
+     */
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (session?.user) {
+      router.push("/dashboard");
+      router.refresh();
       return;
     }
 
-    const currentUser = session.user;
-    const metadata =
-      currentUser.user_metadata ?? {};
+    /*
+     * No valid session.
+     * Open the login experience instead of navigating to
+     * a dashboard that will reject the user.
+     */
 
-    const name =
-      metadata.full_name ||
-      metadata.name ||
-      metadata.display_name ||
-      metadata.username ||
-      undefined;
-
-    setUser({
-      id: currentUser.id,
-      email: currentUser.email,
-      name,
-    });
-  }
-);
-
-return () => {
-  mounted = false;
-  subscription.unsubscribe();
-};
-
-
-}, []);
-
-/*
-
-* =====================================================
-* HERO SCROLL
-* =====================================================
-  */
-
-const { scrollYProgress } = useScroll({
-target: ref,
-offset: ["start start", "end start"],
-});
-
-const heroY = useTransform(
-scrollYProgress,
-[0, 1],
-[0, -140]
-);
-
-const heroScale = useTransform(
-scrollYProgress,
-[0, 1],
-[1, 0.94]
-);
-
-const heroOpacity = useTransform(
-scrollYProgress,
-[0, 0.7, 1],
-[1, 1, 0]
-);
-
-const heroBlur = useTransform(
-scrollYProgress,
-[0, 0.7, 1],
-[
-"blur(0px)",
-"blur(0px)",
-"blur(8px)",
-]
-);
-
-/*
-
-* =====================================================
-* START EXPERIENCE
-* =====================================================
-  */
-
-const handleStartExperience = () => {
-const target =
-document.getElementById("features");
-
-
-if (!target) return;
-
-target.scrollIntoView({
-  behavior: "smooth",
-  block: "start",
-});
-
-
-};
-
-/*
-
-* =====================================================
-* ECOSYSTEM
-* =====================================================
-  */
-
-const handleExploreEcosystem = (
-event: React.MouseEvent<HTMLAnchorElement>
-) => {
-event.preventDefault();
-
-```
-const target =
-  document.getElementById("ecosystem");
-
-if (!target) return;
-
-target.scrollIntoView({
-  behavior: "smooth",
-  block: "start",
-});
-
-
-};
-
-/*
-
-* =====================================================
-* AUTH
-* =====================================================
-  */
-
-const handleSignIn = () => {
-onOpenAuth?.("login");
-};
-
-const handleSignUp = () => {
-onOpenAuth?.("register");
-};
-
-/*
-
-* =====================================================
-* DASHBOARD
-*
-* IMPORTANT:
-* We check the CURRENT Supabase session immediately
-* before navigating.
-*
-* This avoids sending an authenticated user to the
-* login flow because of stale React state.
-* =====================================================
-  */
-
-const handleDashboard = async () => {
-try {
-setAuthLoading(true);
-
-
-  const {
-    data: { user: currentUser },
-    error,
-  } = await supabase.auth.getUser();
-
-  if (error) {
-    console.error(
-      "Failed to verify authentication:",
-      error
-    );
+    setIsAuthenticated(false);
+    setUserName(null);
 
     onOpenAuth?.("login");
-    return;
-  }
+  };
 
-  if (!currentUser) {
-    onOpenAuth?.("login");
-    return;
-  }
-
-  /*
-   * Make sure the local UI has the latest user.
-   */
-
-  const metadata =
-    currentUser.user_metadata ?? {};
-
-  const name =
-    metadata.full_name ||
-    metadata.name ||
-    metadata.display_name ||
-    metadata.username ||
-    undefined;
-
-  setUser({
-    id: currentUser.id,
-    email: currentUser.email,
-    name,
-  });
-
-  /*
-   * Refresh the Next.js server tree so server-side
-   * Supabase auth can see the current session.
-   */
-
-  router.refresh();
-
-  /*
-   * Give the browser a moment to persist the auth
-   * cookies before navigation.
-   */
-
-  await new Promise((resolve) =>
-    window.setTimeout(resolve, 100)
-  );
-
-  router.push("/dashboard");
-} catch (error) {
-  console.error(
-    "Failed to open dashboard:",
-    error
-  );
-
-  onOpenAuth?.("login");
-} finally {
-  setAuthLoading(false);
-}
-
-
-};
-
-/*
-
-* =====================================================
-* DISPLAY NAME
-* =====================================================
-  */
-
-const displayName =
-user?.name ||
-user?.email?.split("@")[0] ||
-"Your Intelligence";
-
-const isAuthenticated =
-!authLoading && !!user;
-
-return ( <section
-   ref={ref}
-   className="
-     relative
-     flex
-     min-h-screen
-     items-center
-     justify-center
-     overflow-hidden
-     bg-[#050505]
-     px-6
-     py-24
-   "
- >
-{/* =====================================================
-DEEP ATMOSPHERE
-====================================================== */}
-
-
-  <div className="pointer-events-none absolute inset-0 bg-[#050505]" />
-
-  {/* =====================================================
-      CENTRAL GOLDEN ATMOSPHERE
-  ====================================================== */}
-
-  <motion.div
-    initial={{
-      opacity: 0,
-      scale: 0.75,
-    }}
-    animate={{
-      opacity: started ? 1 : 0,
-      scale: started ? 1 : 0.75,
-    }}
-    transition={{
-      duration: 2.4,
-      ease: [0.16, 1, 0.3, 1],
-    }}
-    className="
-      pointer-events-none
-      absolute
-      left-1/2
-      top-1/2
-      h-[720px]
-      w-[720px]
-      -translate-x-1/2
-      -translate-y-1/2
-      rounded-full
-      bg-[#D6B25E]/[0.035]
-      blur-[180px]
-    "
-  />
-
-  {/* =====================================================
-      PURPLE INTELLIGENCE ATMOSPHERE
-  ====================================================== */}
-
-  <motion.div
-    animate={{
-      x: [-40, 40, -40],
-      y: [20, -20, 20],
-      opacity: [0.05, 0.12, 0.05],
-      scale: [1, 1.08, 1],
-    }}
-    transition={{
-      duration: 18,
-      repeat: Infinity,
-      ease: "easeInOut",
-    }}
-    className="
-      pointer-events-none
-      absolute
-      bottom-[-150px]
-      right-[-150px]
-      h-[550px]
-      w-[550px]
-      rounded-full
-      bg-[#8B5CF6]
-      blur-[180px]
-    "
-  />
-
-  {/* =====================================================
-      GOLDEN CINEMATIC LIGHT THREADS
-  ====================================================== */}
-
-  <motion.svg
-    initial={{
-      opacity: 0,
-    }}
-    animate={{
-      opacity: started ? 1 : 0,
-    }}
-    transition={{
-      duration: 2.5,
-      delay: 0.4,
-    }}
-    className="
-      pointer-events-none
-      absolute
-      inset-0
-      h-full
-      w-full
-      overflow-visible
-    "
-    viewBox="0 0 1440 900"
-    preserveAspectRatio="none"
-    fill="none"
-  >
-    <motion.path
-      d="
-        M -180 610
-        C 100 420
-          270 360
-          500 510
-        C 760 680
-          930 760
-          1130 500
-        C 1260 330
-          1380 360
-          1600 180
+  return (
+    <section
+      ref={ref}
+      className="
+        relative
+        flex
+        min-h-screen
+        items-center
+        justify-center
+        overflow-hidden
+        bg-[#050505]
+        px-6
+        py-24
       "
-      stroke="#D6B25E"
-      strokeWidth="1.15"
-      strokeLinecap="round"
-      initial={{
-        pathLength: 0.15,
-        opacity: 0.08,
-      }}
-      animate={{
-        pathLength: [0.15, 1, 0.15],
-        pathOffset: [0, 0.05, 0],
-        opacity: [0.08, 0.5, 0.08],
-      }}
-      transition={{
-        duration: 15,
-        repeat: Infinity,
-        ease: "easeInOut",
-      }}
-    />
+    >
+      {/* =====================================================
+          DEEP ATMOSPHERE
+      ====================================================== */}
 
-    <motion.path
-      d="
-        M -160 180
-        C 130 340
-          330 520
-          610 360
-        C 860 220
-          1050 110
-          1220 330
-        C 1320 470
-          1450 520
-          1610 410
-      "
-      stroke="#D6B25E"
-      strokeWidth="0.8"
-      strokeLinecap="round"
-      initial={{
-        pathLength: 0.1,
-        opacity: 0.04,
-      }}
-      animate={{
-        pathLength: [0.1, 0.85, 0.1],
-        opacity: [0.04, 0.32, 0.04],
-      }}
-      transition={{
-        duration: 18,
-        repeat: Infinity,
-        ease: "easeInOut",
-        delay: 2,
-      }}
-    />
+      <div className="pointer-events-none absolute inset-0 bg-[#050505]" />
 
-    <motion.path
-      d="
-        M -120 760
-        C 260 650
-          430 760
-          700 570
-        C 950 390
-          1150 420
-          1570 620
-      "
-      stroke="#F4F1EA"
-      strokeWidth="0.45"
-      strokeLinecap="round"
-      initial={{
-        pathLength: 0.1,
-        opacity: 0.02,
-      }}
-      animate={{
-        pathLength: [0.1, 1, 0.1],
-        opacity: [0.02, 0.18, 0.02],
-      }}
-      transition={{
-        duration: 20,
-        repeat: Infinity,
-        ease: "easeInOut",
-        delay: 4,
-      }}
-    />
+      {/* =====================================================
+          CENTRAL GOLDEN ATMOSPHERE
+      ====================================================== */}
 
-    <motion.path
-      d="
-        M -100 430
-        C 180 600
-          400 620
-          650 430
-        C 880 250
-          1080 250
-          1510 470
-      "
-      stroke="#D6B25E"
-      strokeWidth="0.5"
-      strokeLinecap="round"
-      initial={{
-        opacity: 0,
-      }}
-      animate={{
-        opacity: [0.02, 0.2, 0.02],
-      }}
-      transition={{
-        duration: 12,
-        repeat: Infinity,
-        ease: "easeInOut",
-        delay: 1,
-      }}
-    />
-  </motion.svg>
+      <motion.div
+        initial={{
+          opacity: 0,
+          scale: 0.75,
+        }}
+        animate={{
+          opacity: started ? 1 : 0,
+          scale: started ? 1 : 0.75,
+        }}
+        transition={{
+          duration: 2.4,
+          ease: [0.16, 1, 0.3, 1],
+        }}
+        className="
+          pointer-events-none
+          absolute
+          left-1/2
+          top-1/2
+          h-[720px]
+          w-[720px]
+          -translate-x-1/2
+          -translate-y-1/2
+          rounded-full
+          bg-[#D6B25E]/[0.035]
+          blur-[180px]
+        "
+      />
 
-  {/* =====================================================
-      DARK CINEMATIC OVERLAY
-  ====================================================== */}
+      {/* =====================================================
+          PURPLE INTELLIGENCE ATMOSPHERE
+      ====================================================== */}
 
-  <div
-    className="
-      pointer-events-none
-      absolute
-      inset-0
-      bg-gradient-to-b
-      from-black/20
-      via-transparent
-      to-black/65
-    "
-  />
+      <motion.div
+        animate={{
+          x: [-40, 40, -40],
+          y: [20, -20, 20],
+          opacity: [0.05, 0.12, 0.05],
+          scale: [1, 1.08, 1],
+        }}
+        transition={{
+          duration: 18,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="
+          pointer-events-none
+          absolute
+          bottom-[-150px]
+          right-[-150px]
+          h-[550px]
+          w-[550px]
+          rounded-full
+          bg-[#8B5CF6]
+          blur-[180px]
+        "
+      />
 
-  {/* =====================================================
-      AUTH / USER NAVIGATION
-  ====================================================== */}
+      {/* =====================================================
+          GOLDEN CINEMATIC LIGHT THREADS
+      ====================================================== */}
 
-  <motion.div
-    initial={{
-      opacity: 0,
-      y: -30,
-      x: 20,
-      filter: "blur(12px)",
-    }}
-    animate={{
-      opacity: started ? 1 : 0,
-      y: started ? 0 : -30,
-      x: started ? 0 : 20,
-      filter: started
-        ? "blur(0px)"
-        : "blur(12px)",
-    }}
-    transition={{
-      delay: 0.65,
-      duration: 1.2,
-      ease: [0.16, 1, 0.3, 1],
-    }}
-    className="
-      absolute
-      right-5
-      top-5
-      z-30
-      flex
-      items-center
-      gap-2
-      sm:right-8
-      sm:top-8
-      md:right-10
-      md:top-10
-    "
-  >
-    {isAuthenticated ? (
-      <>
-        {/* USER NAME */}
+      <motion.svg
+        initial={{
+          opacity: 0,
+        }}
+        animate={{
+          opacity: started ? 1 : 0,
+        }}
+        transition={{
+          duration: 2.5,
+          delay: 0.4,
+        }}
+        className="
+          pointer-events-none
+          absolute
+          inset-0
+          h-full
+          w-full
+          overflow-visible
+        "
+        viewBox="0 0 1440 900"
+        preserveAspectRatio="none"
+        fill="none"
+      >
+        {/* MAIN SWEEPING LINE */}
+
+        <motion.path
+          d="
+            M -180 610
+            C 100 420
+              270 360
+              500 510
+            C 760 680
+              930 760
+              1130 500
+            C 1260 330
+              1380 360
+              1600 180
+          "
+          stroke="#D6B25E"
+          strokeWidth="1.15"
+          strokeLinecap="round"
+          initial={{
+            pathLength: 0.15,
+            opacity: 0.08,
+          }}
+          animate={{
+            pathLength: [0.15, 1, 0.15],
+            pathOffset: [0, 0.05, 0],
+            opacity: [0.08, 0.5, 0.08],
+          }}
+          transition={{
+            duration: 15,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+
+        {/* OPPOSITE SWEEPING LINE */}
+
+        <motion.path
+          d="
+            M -160 180
+            C 130 340
+              330 520
+              610 360
+            C 860 220
+              1050 110
+              1220 330
+            C 1320 470
+              1450 520
+              1610 410
+          "
+          stroke="#D6B25E"
+          strokeWidth="0.8"
+          strokeLinecap="round"
+          initial={{
+            pathLength: 0.1,
+            opacity: 0.04,
+          }}
+          animate={{
+            pathLength: [0.1, 0.85, 0.1],
+            opacity: [0.04, 0.32, 0.04],
+          }}
+          transition={{
+            duration: 18,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2,
+          }}
+        />
+
+        {/* FINE WHITE/GOLD THREAD */}
+
+        <motion.path
+          d="
+            M -120 760
+            C 260 650
+              430 760
+              700 570
+            C 950 390
+              1150 420
+              1570 620
+          "
+          stroke="#F4F1EA"
+          strokeWidth="0.45"
+          strokeLinecap="round"
+          initial={{
+            pathLength: 0.1,
+            opacity: 0.02,
+          }}
+          animate={{
+            pathLength: [0.1, 1, 0.1],
+            opacity: [0.02, 0.18, 0.02],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 4,
+          }}
+        />
+
+        {/* SOFT SECONDARY GOLDEN LINE */}
+
+        <motion.path
+          d="
+            M -100 430
+            C 180 600
+              400 620
+              650 430
+            C 880 250
+              1080 250
+              1510 470
+          "
+          stroke="#D6B25E"
+          strokeWidth="0.5"
+          strokeLinecap="round"
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: [0.02, 0.2, 0.02],
+          }}
+          transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1,
+          }}
+        />
+      </motion.svg>
+
+      {/* =====================================================
+          DARK CINEMATIC OVERLAY
+      ====================================================== */}
+
+      <div
+        className="
+          pointer-events-none
+          absolute
+          inset-0
+          bg-gradient-to-b
+          from-black/20
+          via-transparent
+          to-black/65
+        "
+      />
+
+      {/* =====================================================
+          AUTH / DASHBOARD BUTTONS
+      ====================================================== */}
+
+      <motion.div
+        initial={{
+          opacity: 0,
+          y: -30,
+          x: 20,
+          filter: "blur(12px)",
+        }}
+        animate={{
+          opacity: started ? 1 : 0,
+          y: started ? 0 : -30,
+          x: started ? 0 : 20,
+          filter: started
+            ? "blur(0px)"
+            : "blur(12px)",
+        }}
+        transition={{
+          delay: 0.65,
+          duration: 1.2,
+          ease: [0.16, 1, 0.3, 1],
+        }}
+        className="
+          absolute
+          right-5
+          top-5
+          z-30
+          flex
+          items-center
+          gap-2
+          sm:right-8
+          sm:top-8
+          md:right-10
+          md:top-10
+        "
+      >
+        {isAuthenticated ? (
+          <>
+            {/* USER NAME */}
+
+            <motion.div
+              initial={{
+                opacity: 0,
+                x: 10,
+              }}
+              animate={{
+                opacity: 1,
+                x: 0,
+              }}
+              transition={{
+                duration: 0.6,
+              }}
+              className="
+                rounded-2xl
+                border
+                border-white/[0.08]
+                bg-white/[0.025]
+                px-5
+                py-2.5
+                text-[10px]
+                uppercase
+                tracking-[0.2em]
+                text-white/60
+                backdrop-blur-xl
+              "
+            >
+              {userName || "SoulMirror"}
+            </motion.div>
+
+            {/* RETURN TO DASHBOARD */}
+
+            <motion.button
+              type="button"
+              onClick={handleDashboard}
+              whileHover={{
+                y: -2,
+                scale: 1.025,
+              }}
+              whileTap={{
+                scale: 0.96,
+              }}
+              className="
+                cursor-pointer
+                rounded-2xl
+                border
+                border-[#D6B25E]/20
+                bg-[#D6B25E]/[0.08]
+                px-5
+                py-2.5
+                text-[10px]
+                uppercase
+                tracking-[0.24em]
+                text-[#D6B25E]/80
+                backdrop-blur-xl
+                shadow-[0_10px_40px_rgba(0,0,0,0.25)]
+                transition-all
+                duration-500
+                hover:border-[#D6B25E]/40
+                hover:bg-[#D6B25E]/[0.13]
+                hover:text-[#D6B25E]
+              "
+            >
+              Return to Dashboard
+            </motion.button>
+          </>
+        ) : (
+          <>
+            {/* SIGN IN */}
+
+            <motion.button
+              type="button"
+              onClick={handleSignIn}
+              whileHover={{
+                y: -2,
+                scale: 1.025,
+              }}
+              whileTap={{
+                scale: 0.96,
+              }}
+              className="
+                cursor-pointer
+                rounded-2xl
+                border
+                border-white/[0.08]
+                bg-white/[0.025]
+                px-5
+                py-2.5
+                text-[10px]
+                uppercase
+                tracking-[0.28em]
+                text-white/45
+                backdrop-blur-xl
+                shadow-[0_8px_30px_rgba(0,0,0,0.18)]
+                transition-all
+                duration-500
+                hover:border-white/[0.2]
+                hover:bg-white/[0.06]
+                hover:text-white
+              "
+            >
+              Sign In
+            </motion.button>
+
+            {/* SIGN UP */}
+
+            <motion.button
+              type="button"
+              onClick={handleSignUp}
+              whileHover={{
+                y: -2,
+                scale: 1.025,
+              }}
+              whileTap={{
+                scale: 0.96,
+              }}
+              className="
+                cursor-pointer
+                rounded-2xl
+                border
+                border-white/[0.14]
+                bg-white/[0.055]
+                px-5
+                py-2.5
+                text-[10px]
+                uppercase
+                tracking-[0.28em]
+                text-white/75
+                backdrop-blur-xl
+                shadow-[0_10px_40px_rgba(0,0,0,0.25)]
+                transition-all
+                duration-500
+                hover:border-white/[0.28]
+                hover:bg-white/[0.09]
+                hover:text-white
+                hover:shadow-[0_15px_50px_rgba(255,255,255,0.06)]
+              "
+            >
+              Sign Up
+            </motion.button>
+          </>
+        )}
+      </motion.div>
+
+      {/* =====================================================
+          HERO CONTENT
+      ====================================================== */}
+
+      <motion.div
+        style={{
+          y: heroY,
+          scale: heroScale,
+          opacity: heroOpacity,
+          filter: heroBlur,
+        }}
+        className="
+          relative
+          z-10
+          flex
+          w-full
+          max-w-7xl
+          flex-col
+          items-center
+          text-center
+        "
+      >
+        {/* EON AI */}
+
+        <motion.p
+          initial={{
+            opacity: 0,
+            y: 25,
+            x: -20,
+            filter: "blur(10px)",
+          }}
+          animate={{
+            opacity: started ? 1 : 0,
+            y: started ? 0 : 25,
+            x: started ? 0 : -20,
+            filter: started
+              ? "blur(0px)"
+              : "blur(10px)",
+          }}
+          transition={{
+            duration: 1,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+          className="
+            text-[10px]
+            uppercase
+            tracking-[0.65em]
+            text-[#D6B25E]/80
+          "
+        >
+          EON AI
+        </motion.p>
+
+        {/* SOULMIRROR */}
+
+        <h1
+          className="
+            mt-8
+            flex
+            whitespace-nowrap
+            font-[family:var(--font-cormorant)]
+            text-[56px]
+            font-light
+            leading-none
+            tracking-[0.025em]
+            text-[#F4F1EA]
+            sm:text-[76px]
+            md:text-[104px]
+            lg:text-[128px]
+          "
+        >
+          {letters.map((letter, index) => (
+            <motion.span
+              key={`${letter}-${index}`}
+              initial={{
+                opacity: 0,
+                x: index % 2 === 0 ? -140 : 140,
+                y: index % 3 === 0 ? -60 : 60,
+                scale: 0.7,
+                rotate: index % 2 === 0 ? -8 : 8,
+                filter: "blur(18px)",
+              }}
+              animate={
+                started
+                  ? {
+                      opacity: 1,
+                      x: 0,
+                      y: 0,
+                      scale: 1,
+                      rotate: 0,
+                      filter: "blur(0px)",
+                    }
+                  : {
+                      opacity: 0,
+                      x: index % 2 === 0 ? -140 : 140,
+                      y: index % 3 === 0 ? -60 : 60,
+                      scale: 0.7,
+                      rotate: index % 2 === 0 ? -8 : 8,
+                      filter: "blur(18px)",
+                    }
+              }
+              transition={{
+                delay: 0.25 + index * 0.11,
+                duration: 1.25,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="inline-block"
+            >
+              {letter}
+            </motion.span>
+          ))}
+        </h1>
+
+        {/* GOLD LINE */}
 
         <motion.div
           initial={{
             opacity: 0,
-            scale: 0.95,
+            scaleX: 0,
           }}
           animate={{
-            opacity: 1,
-            scale: 1,
+            opacity: started ? 1 : 0,
+            scaleX: started ? 1 : 0,
           }}
           transition={{
-            duration: 0.7,
+            delay: 1.55,
+            duration: 1,
+            ease: [0.22, 1, 0.36, 1],
           }}
           className="
-            flex
-            items-center
-            gap-3
-            rounded-2xl
-            border
-            border-white/[0.08]
-            bg-white/[0.025]
-            px-4
-            py-2.5
-            backdrop-blur-xl
-          "
-        >
-          <span
-            className="
-              h-1.5
-              w-1.5
-              rounded-full
-              bg-[#D6B25E]
-              shadow-[0_0_12px_rgba(214,178,94,0.6)]
-            "
-          />
-
-          <span
-            className="
-              max-w-[150px]
-              truncate
-              text-[10px]
-              uppercase
-              tracking-[0.2em]
-              text-white/65
-            "
-          >
-            {displayName}
-          </span>
-        </motion.div>
-
-        {/* RETURN TO DASHBOARD */}
-
-        <motion.button
-          type="button"
-          onClick={handleDashboard}
-          disabled={authLoading}
-          whileHover={{
-            y: -2,
-            scale: 1.025,
-          }}
-          whileTap={{
-            scale: 0.96,
-          }}
-          className="
-            group
-            flex
-            cursor-pointer
-            items-center
-            gap-2
-            rounded-2xl
-            border
-            border-[#D6B25E]/20
-            bg-[#D6B25E]/[0.07]
-            px-5
-            py-2.5
-            text-[10px]
-            uppercase
-            tracking-[0.22em]
-            text-[#D6B25E]/80
-            backdrop-blur-xl
-            transition-all
-            duration-500
-            hover:border-[#D6B25E]/40
-            hover:bg-[#D6B25E]/[0.12]
-            hover:text-[#D6B25E]
-            disabled:cursor-not-allowed
-            disabled:opacity-40
-          "
-        >
-          <span>
-            {authLoading
-              ? "Loading..."
-              : "Return to Dashboard"}
-          </span>
-
-          <ArrowRight
-            size={13}
-            strokeWidth={1.5}
-            className="
-              transition-transform
-              duration-500
-              group-hover:translate-x-1
-            "
-          />
-        </motion.button>
-      </>
-    ) : (
-      <>
-        {/* SIGN IN */}
-
-        <motion.button
-          type="button"
-          onClick={handleSignIn}
-          whileHover={{
-            y: -2,
-            scale: 1.025,
-          }}
-          whileTap={{
-            scale: 0.96,
-          }}
-          className="
-            cursor-pointer
-            rounded-2xl
-            border
-            border-white/[0.08]
-            bg-white/[0.025]
-            px-5
-            py-2.5
-            text-[10px]
-            uppercase
-            tracking-[0.28em]
-            text-white/45
-            backdrop-blur-xl
-            shadow-[0_8px_30px_rgba(0,0,0,0.18)]
-            transition-all
-            duration-500
-            hover:border-white/[0.2]
-            hover:bg-white/[0.06]
-            hover:text-white
-          "
-        >
-          Sign In
-        </motion.button>
-
-        {/* SIGN UP */}
-
-        <motion.button
-          type="button"
-          onClick={handleSignUp}
-          whileHover={{
-            y: -2,
-            scale: 1.025,
-          }}
-          whileTap={{
-            scale: 0.96,
-          }}
-          className="
-            cursor-pointer
-            rounded-2xl
-            border
-            border-white/[0.14]
-            bg-white/[0.055]
-            px-5
-            py-2.5
-            text-[10px]
-            uppercase
-            tracking-[0.28em]
-            text-white/75
-            backdrop-blur-xl
-            shadow-[0_10px_40px_rgba(0,0,0,0.25)]
-            transition-all
-            duration-500
-            hover:border-white/[0.28]
-            hover:bg-white/[0.09]
-            hover:text-white
-            hover:shadow-[0_15px_50px_rgba(255,255,255,0.06)]
-          "
-        >
-          Sign Up
-        </motion.button>
-      </>
-    )}
-  </motion.div>
-
-  {/* =====================================================
-      HERO CONTENT
-  ====================================================== */}
-
-  <motion.div
-    style={{
-      y: heroY,
-      scale: heroScale,
-      opacity: heroOpacity,
-      filter: heroBlur,
-    }}
-    className="
-      relative
-      z-10
-      flex
-      w-full
-      max-w-7xl
-      flex-col
-      items-center
-      text-center
-    "
-  >
-    {/* EON AI */}
-
-    <motion.p
-      initial={{
-        opacity: 0,
-        y: 25,
-        x: -20,
-        filter: "blur(10px)",
-      }}
-      animate={{
-        opacity: started ? 1 : 0,
-        y: started ? 0 : 25,
-        x: started ? 0 : -20,
-        filter: started
-          ? "blur(0px)"
-          : "blur(10px)",
-      }}
-      transition={{
-        duration: 1,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      className="
-        text-[10px]
-        uppercase
-        tracking-[0.65em]
-        text-[#D6B25E]/80
-      "
-    >
-      EON AI
-    </motion.p>
-
-    {/* SOULMIRROR */}
-
-    <h1
-      className="
-        mt-8
-        flex
-        whitespace-nowrap
-        font-[family:var(--font-cormorant)]
-        text-[56px]
-        font-light
-        leading-none
-        tracking-[0.025em]
-        text-[#F4F1EA]
-        sm:text-[76px]
-        md:text-[104px]
-        lg:text-[128px]
-      "
-    >
-      {letters.map((letter, index) => (
-        <motion.span
-          key={`${letter}-${index}`}
-          initial={{
-            opacity: 0,
-            x: index % 2 === 0 ? -140 : 140,
-            y: index % 3 === 0 ? -60 : 60,
-            scale: 0.7,
-            rotate:
-              index % 2 === 0 ? -8 : 8,
-            filter: "blur(18px)",
-          }}
-          animate={
-            started
-              ? {
-                  opacity: 1,
-                  x: 0,
-                  y: 0,
-                  scale: 1,
-                  rotate: 0,
-                  filter: "blur(0px)",
-                }
-              : {
-                  opacity: 0,
-                  x:
-                    index % 2 === 0
-                      ? -140
-                      : 140,
-                  y:
-                    index % 3 === 0
-                      ? -60
-                      : 60,
-                  scale: 0.7,
-                  rotate:
-                    index % 2 === 0
-                      ? -8
-                      : 8,
-                  filter: "blur(18px)",
-                }
-          }
-          transition={{
-            delay:
-              0.25 + index * 0.11,
-            duration: 1.25,
-            ease: [0.16, 1, 0.3, 1],
-          }}
-          className="inline-block"
-        >
-          {letter}
-        </motion.span>
-      ))}
-    </h1>
-
-    {/* GOLD LINE */}
-
-    <motion.div
-      initial={{
-        opacity: 0,
-        scaleX: 0,
-      }}
-      animate={{
-        opacity: started ? 1 : 0,
-        scaleX: started ? 1 : 0,
-      }}
-      transition={{
-        delay: 1.55,
-        duration: 1,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      className="
-        mt-8
-        h-px
-        w-[120px]
-        origin-center
-        bg-gradient-to-r
-        from-transparent
-        via-[#D6B25E]/70
-        to-transparent
-      "
-    />
-
-    {/* TAGLINE */}
-
-    <motion.p
-      initial={{
-        opacity: 0,
-        y: 15,
-      }}
-      animate={{
-        opacity: started ? 1 : 0,
-        y: started ? 0 : 15,
-      }}
-      transition={{
-        delay: 1.8,
-        duration: 1,
-      }}
-      className="
-        mt-7
-        text-[10px]
-        uppercase
-        tracking-[0.5em]
-        text-white/40
-      "
-    >
-      Reflect · Understand · Evolve
-    </motion.p>
-
-    {/* DESCRIPTION */}
-
-    <motion.p
-      initial={{
-        opacity: 0,
-        y: 20,
-      }}
-      animate={{
-        opacity: started ? 1 : 0,
-        y: started ? 0 : 20,
-      }}
-      transition={{
-        delay: 2.05,
-        duration: 1,
-      }}
-      className="
-        mt-8
-        max-w-xl
-        text-base
-        leading-8
-        text-white/45
-        md:text-lg
-      "
-    >
-      Your personal intelligence mirror.
-      <br />
-      AI designed to understand identity,
-      dreams, archetypes and evolution.
-    </motion.p>
-
-    {/* ACTIONS */}
-
-    <motion.div
-      initial={{
-        opacity: 0,
-        y: 25,
-        filter: "blur(8px)",
-      }}
-      animate={{
-        opacity: started ? 1 : 0,
-        y: started ? 0 : 25,
-        filter: started
-          ? "blur(0px)"
-          : "blur(8px)",
-      }}
-      transition={{
-        delay: 2.35,
-        duration: 1.1,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      className="
-        mt-12
-        flex
-        flex-col
-        items-center
-        gap-3
-        sm:flex-row
-      "
-    >
-      {/* START EXPERIENCE */}
-
-      <motion.button
-        type="button"
-        onClick={handleStartExperience}
-        whileHover={{
-          y: -3,
-          scale: 1.02,
-        }}
-        whileTap={{
-          scale: 0.97,
-        }}
-        className="
-          group
-          relative
-          flex
-          h-14
-          cursor-pointer
-          items-center
-          gap-3
-          overflow-hidden
-          rounded-2xl
-          border
-          border-white/[0.14]
-          bg-white/[0.055]
-          px-8
-          text-sm
-          font-medium
-          text-white
-          backdrop-blur-2xl
-          shadow-[0_10px_40px_rgba(0,0,0,0.25)]
-          transition-all
-          duration-500
-          hover:border-white/[0.28]
-          hover:bg-white/[0.09]
-          hover:shadow-[0_15px_55px_rgba(255,255,255,0.06)]
-        "
-      >
-        <span
-          className="
-            pointer-events-none
-            absolute
-            inset-0
-            -translate-x-full
+            mt-8
+            h-px
+            w-[120px]
+            origin-center
             bg-gradient-to-r
             from-transparent
-            via-white/[0.07]
+            via-[#D6B25E]/70
             to-transparent
-            transition-transform
-            duration-1000
-            group-hover:translate-x-full
           "
         />
 
-        <span className="relative z-10">
-          Start Experience
-        </span>
+        {/* TAGLINE */}
 
-        <ArrowRight
-          size={16}
-          strokeWidth={1.5}
+        <motion.p
+          initial={{
+            opacity: 0,
+            y: 15,
+          }}
+          animate={{
+            opacity: started ? 1 : 0,
+            y: started ? 0 : 15,
+          }}
+          transition={{
+            delay: 1.8,
+            duration: 1,
+          }}
           className="
-            relative
-            z-10
-            transition-transform
-            duration-500
-            group-hover:translate-x-1
+            mt-7
+            text-[10px]
+            uppercase
+            tracking-[0.5em]
+            text-white/40
           "
-        />
-      </motion.button>
+        >
+          Reflect · Understand · Evolve
+        </motion.p>
 
-      {/* EXPLORE ECOSYSTEM */}
+        {/* DESCRIPTION */}
 
-      <motion.a
-        href="#ecosystem"
-        onClick={handleExploreEcosystem}
-        whileHover={{
-          y: -3,
-        }}
-        whileTap={{
-          scale: 0.97,
-        }}
-        className="
-          flex
-          h-14
-          cursor-pointer
-          items-center
-          justify-center
-          rounded-2xl
-          border
-          border-white/[0.08]
-          bg-white/[0.025]
-          px-8
-          text-[10px]
-          uppercase
-          tracking-[0.3em]
-          text-white/45
-          backdrop-blur-xl
-          transition-all
-          duration-500
-          hover:border-white/[0.18]
-          hover:bg-white/[0.05]
-          hover:text-white/80
-        "
-      >
-        Explore Ecosystem
-      </motion.a>
-    </motion.div>
+        <motion.p
+          initial={{
+            opacity: 0,
+            y: 20,
+          }}
+          animate={{
+            opacity: started ? 1 : 0,
+            y: started ? 0 : 20,
+          }}
+          transition={{
+            delay: 2.05,
+            duration: 1,
+          }}
+          className="
+            mt-8
+            max-w-xl
+            text-base
+            leading-8
+            text-white/45
+            md:text-lg
+          "
+        >
+          Your personal intelligence mirror.
+          <br />
+          AI designed to understand identity,
+          dreams, archetypes and evolution.
+        </motion.p>
 
-    {/* SCROLL INDICATOR */}
+        {/* ACTIONS */}
 
-    <motion.div
-      initial={{
-        opacity: 0,
-      }}
-      animate={{
-        opacity: started ? 1 : 0,
-      }}
-      transition={{
-        delay: 3.1,
-        duration: 1.2,
-      }}
-      className="
-        absolute
-        -bottom-28
-        left-1/2
-        hidden
-        -translate-x-1/2
-        flex-col
-        items-center
-        gap-3
-        md:flex
-      "
-    >
-      <span
-        className="
-          text-[9px]
-          uppercase
-          tracking-[0.45em]
-          text-white/20
-        "
-      >
-        Scroll to explore
-      </span>
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 25,
+            filter: "blur(8px)",
+          }}
+          animate={{
+            opacity: started ? 1 : 0,
+            y: started ? 0 : 25,
+            filter: started
+              ? "blur(0px)"
+              : "blur(8px)",
+          }}
+          transition={{
+            delay: 2.35,
+            duration: 1.1,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+          className="
+            mt-12
+            flex
+            flex-col
+            items-center
+            gap-3
+            sm:flex-row
+          "
+        >
+          {/* START EXPERIENCE */}
 
-      <motion.div
-        animate={{
-          y: [0, 5, 0],
-          opacity: [0.25, 0.7, 0.25],
-        }}
-        transition={{
-          duration: 2.2,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="
-          h-8
-          w-px
-          bg-gradient-to-b
-          from-white/30
-          to-transparent
-        "
-      />
-    </motion.div>
-  </motion.div>
+          <motion.button
+            type="button"
+            onClick={handleStartExperience}
+            whileHover={{
+              y: -3,
+              scale: 1.02,
+            }}
+            whileTap={{
+              scale: 0.97,
+            }}
+            className="
+              group
+              relative
+              flex
+              h-14
+              cursor-pointer
+              items-center
+              gap-3
+              overflow-hidden
+              rounded-2xl
+              border
+              border-white/[0.14]
+              bg-white/[0.055]
+              px-8
+              text-sm
+              font-medium
+              text-white
+              backdrop-blur-2xl
+              shadow-[0_10px_40px_rgba(0,0,0,0.25)]
+              transition-all
+              duration-500
+              hover:border-white/[0.28]
+              hover:bg-white/[0.09]
+              hover:shadow-[0_15px_55px_rgba(255,255,255,0.06)]
+            "
+          >
+            <span
+              className="
+                pointer-events-none
+                absolute
+                inset-0
+                -translate-x-full
+                bg-gradient-to-r
+                from-transparent
+                via-white/[0.07]
+                to-transparent
+                transition-transform
+                duration-1000
+                group-hover:translate-x-full
+              "
+            />
 
-  {/* =====================================================
-      FLOATING PARTICLES
-  ====================================================== */}
+            <span className="relative z-10">
+              Start Experience
+            </span>
 
-  <div className="pointer-events-none absolute inset-0">
-    {Array.from({ length: 18 }).map((_, i) => (
-      <motion.span
-        key={i}
-        animate={{
-          y: [0, -60, 0],
-          opacity: [0.05, 0.3, 0.05],
-        }}
-        transition={{
-          duration: 5 + (i % 5),
-          repeat: Infinity,
-          delay: i * 0.35,
-          ease: "easeInOut",
-        }}
-        className="
-          absolute
-          h-[2px]
-          w-[2px]
-          rounded-full
-          bg-[#D6B25E]
-        "
-        style={{
-          left: `${(i * 37) % 100}%`,
-          top: `${(i * 53) % 100}%`,
-        }}
-      />
-    ))}
-  </div>
-</section>
+            <ArrowRight
+              size={16}
+              strokeWidth={1.5}
+              className="
+                relative
+                z-10
+                transition-transform
+                duration-500
+                group-hover:translate-x-1
+              "
+            />
+          </motion.button>
 
+          {/* EXPLORE ECOSYSTEM */}
 
-);
+          <motion.a
+            href="#ecosystem"
+            onClick={handleExploreEcosystem}
+            whileHover={{
+              y: -3,
+            }}
+            whileTap={{
+              scale: 0.97,
+            }}
+            className="
+              flex
+              h-14
+              cursor-pointer
+              items-center
+              justify-center
+              rounded-2xl
+              border
+              border-white/[0.08]
+              bg-white/[0.025]
+              px-8
+              text-[10px]
+              uppercase
+              tracking-[0.3em]
+              text-white/45
+              backdrop-blur-xl
+              transition-all
+              duration-500
+              hover:border-white/[0.18]
+              hover:bg-white/[0.05]
+              hover:text-white/80
+            "
+          >
+            Explore Ecosystem
+          </motion.a>
+        </motion.div>
+
+        {/* SCROLL INDICATOR */}
+
+        <motion.div
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: started ? 1 : 0,
+          }}
+          transition={{
+            delay: 3.1,
+            duration: 1.2,
+          }}
+          className="
+            absolute
+            -bottom-28
+            left-1/2
+            hidden
+            -translate-x-1/2
+            flex-col
+            items-center
+            gap-3
+            md:flex
+          "
+        >
+          <span
+            className="
+              text-[9px]
+              uppercase
+              tracking-[0.45em]
+              text-white/20
+            "
+          >
+            Scroll to explore
+          </span>
+
+          <motion.div
+            animate={{
+              y: [0, 5, 0],
+              opacity: [0.25, 0.7, 0.25],
+            }}
+            transition={{
+              duration: 2.2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="
+              h-8
+              w-px
+              bg-gradient-to-b
+              from-white/30
+              to-transparent
+            "
+          />
+        </motion.div>
+      </motion.div>
+
+      {/* =====================================================
+          FLOATING PARTICLES
+      ====================================================== */}
+
+      <div className="pointer-events-none absolute inset-0">
+        {Array.from({ length: 18 }).map((_, i) => (
+          <motion.span
+            key={i}
+            animate={{
+              y: [0, -60, 0],
+              opacity: [0.05, 0.3, 0.05],
+            }}
+            transition={{
+              duration: 5 + (i % 5),
+              repeat: Infinity,
+              delay: i * 0.35,
+              ease: "easeInOut",
+            }}
+            className="
+              absolute
+              h-[2px]
+              w-[2px]
+              rounded-full
+              bg-[#D6B25E]
+            "
+            style={{
+              left: `${(i * 37) % 100}%`,
+              top: `${(i * 53) % 100}%`,
+            }}
+          />
+        ))}
+      </div>
+    </section>
+  );
 }
+
