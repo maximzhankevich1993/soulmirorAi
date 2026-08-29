@@ -53,11 +53,11 @@ const timer = window.setTimeout(() => {
 setStarted(true);
 }, 100);
 
-```
+
 return () => {
   window.clearTimeout(timer);
 };
-```
+
 
 }, []);
 
@@ -79,7 +79,7 @@ return () => {
 useEffect(() => {
 let mounted = true;
 
-```
+
 const loadUser = async () => {
   try {
     const {
@@ -165,7 +165,7 @@ return () => {
   mounted = false;
   subscription.unsubscribe();
 };
-```
+
 
 }, []);
 
@@ -220,14 +220,14 @@ const handleStartExperience = () => {
 const target =
 document.getElementById("features");
 
-```
+
 if (!target) return;
 
 target.scrollIntoView({
   behavior: "smooth",
   block: "start",
 });
-```
+
 
 };
 
@@ -253,7 +253,7 @@ target.scrollIntoView({
   behavior: "smooth",
   block: "start",
 });
-```
+
 
 };
 
@@ -290,7 +290,7 @@ const handleDashboard = async () => {
 try {
 setAuthLoading(true);
 
-```
+
   const {
     data: { user: currentUser },
     error,
@@ -358,7 +358,7 @@ setAuthLoading(true);
 } finally {
   setAuthLoading(false);
 }
-```
+
 
 };
 
@@ -395,7 +395,7 @@ return ( <section
 DEEP ATMOSPHERE
 ====================================================== */}
 
-```
+
   <div className="pointer-events-none absolute inset-0 bg-[#050505]" />
 
   {/* =====================================================
@@ -1284,7 +1284,7 @@ DEEP ATMOSPHERE
     ))}
   </div>
 </section>
-```
+
 
 );
 }
