@@ -1,4 +1,3 @@
-
 "use client";
 
 import {
@@ -17,7 +16,7 @@ import {
 
 import { useRouter } from "next/navigation";
 
-import { supabase } from "../../src/lib/supabaseClient";
+import { supabase } from "../../lib/supabaseClient";
 
 interface SoulSpaceHeroProps {
   onOpenAuth?: (mode: "login" | "register") => void;
@@ -34,21 +33,15 @@ export function SoulSpaceHero({
 
   const [started, setStarted] = useState(false);
 
-  /*
-   * =====================================================
-   * AUTH STATE
-   * =====================================================
-   */
-
   const [userName, setUserName] = useState<string | null>(
     null
   );
 
-  const [authLoading, setAuthLoading] = useState(true);
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
   /*
    * =====================================================
-   * INITIAL HERO ANIMATION
+   * INITIAL EXPERIENCE
    * =====================================================
    */
 
@@ -64,7 +57,7 @@ export function SoulSpaceHero({
 
   /*
    * =====================================================
-   * LOAD AUTHENTICATED USER
+   * AUTH STATE
    * =====================================================
    */
 
@@ -79,42 +72,37 @@ export function SoulSpaceHero({
 
         if (!mounted) return;
 
-        if (user) {
-          const metadata = user.user_metadata ?? {};
-
-          const name =
-            metadata.full_name ||
-            metadata.name ||
-            metadata.display_name ||
-            (user.email
-              ? user.email.split("@")[0]
-              : "Your Soul");
-
-          setUserName(name);
-        } else {
+        if (!user) {
           setUserName(null);
+          setCheckingAuth(false);
+          return;
         }
+
+        const metadata = user.user_metadata ?? {};
+
+        const name =
+          metadata.full_name ||
+          metadata.name ||
+          metadata.display_name ||
+          user.email?.split("@")[0] ||
+          "SoulMirror";
+
+        setUserName(name);
+        setCheckingAuth(false);
       } catch (error) {
         console.error(
-          "Failed to load authenticated user:",
+          "Failed to load authentication state:",
           error
         );
 
         if (mounted) {
           setUserName(null);
-        }
-      } finally {
-        if (mounted) {
-          setAuthLoading(false);
+          setCheckingAuth(false);
         }
       }
     };
 
     loadUser();
-
-    /*
-     * Listen for login / logout / session changes.
-     */
 
     const {
       data: { subscription },
@@ -122,25 +110,22 @@ export function SoulSpaceHero({
       (_event, session) => {
         if (!mounted) return;
 
-        const user = session?.user;
-
-        if (user) {
-          const metadata = user.user_metadata ?? {};
-
-          const name =
-            metadata.full_name ||
-            metadata.name ||
-            metadata.display_name ||
-            (user.email
-              ? user.email.split("@")[0]
-              : "Your Soul");
-
-          setUserName(name);
-        } else {
+        if (!session?.user) {
           setUserName(null);
+          return;
         }
 
-        setAuthLoading(false);
+        const user = session.user;
+        const metadata = user.user_metadata ?? {};
+
+        const name =
+          metadata.full_name ||
+          metadata.name ||
+          metadata.display_name ||
+          user.email?.split("@")[0] ||
+          "SoulMirror";
+
+        setUserName(name);
       }
     );
 
@@ -196,8 +181,7 @@ export function SoulSpaceHero({
    */
 
   const handleStartExperience = () => {
-    const target =
-      document.getElementById("features");
+    const target = document.getElementById("features");
 
     if (!target) return;
 
@@ -218,8 +202,7 @@ export function SoulSpaceHero({
   ) => {
     event.preventDefault();
 
-    const target =
-      document.getElementById("ecosystem");
+    const target = document.getElementById("ecosystem");
 
     if (!target) return;
 
@@ -245,19 +228,13 @@ export function SoulSpaceHero({
 
   /*
    * =====================================================
-   * RETURN TO DASHBOARD
+   * DASHBOARD
    * =====================================================
    */
 
-  const handleDashboard = () => {
+  const handleReturnToDashboard = () => {
     router.push("/dashboard");
   };
-
-  /*
-   * =====================================================
-   * RENDER
-   * =====================================================
-   */
 
   return (
     <section
@@ -368,8 +345,6 @@ export function SoulSpaceHero({
         preserveAspectRatio="none"
         fill="none"
       >
-        {/* MAIN SWEEPING LINE */}
-
         <motion.path
           d="
             M -180 610
@@ -401,8 +376,6 @@ export function SoulSpaceHero({
             ease: "easeInOut",
           }}
         />
-
-        {/* OPPOSITE SWEEPING LINE */}
 
         <motion.path
           d="
@@ -436,8 +409,6 @@ export function SoulSpaceHero({
           }}
         />
 
-        {/* FINE WHITE / GOLD THREAD */}
-
         <motion.path
           d="
             M -120 760
@@ -466,8 +437,6 @@ export function SoulSpaceHero({
             delay: 4,
           }}
         />
-
-        {/* SOFT SECONDARY GOLDEN LINE */}
 
         <motion.path
           d="
@@ -514,7 +483,7 @@ export function SoulSpaceHero({
       />
 
       {/* =====================================================
-          AUTH / DASHBOARD NAVIGATION
+          AUTH / USER NAVIGATION
       ====================================================== */}
 
       <motion.div
@@ -551,102 +520,53 @@ export function SoulSpaceHero({
           md:top-10
         "
       >
-        {/* =================================================
-            AUTHENTICATION LOADING
-        ================================================== */}
-
-        {authLoading ? (
-          <motion.div
-            initial={{
-              opacity: 0,
-              width: 0,
-            }}
-            animate={{
-              opacity: 1,
-              width: 110,
-            }}
-            className="
-              h-10
-              overflow-hidden
-              rounded-2xl
-              border
-              border-white/[0.06]
-              bg-white/[0.02]
-              backdrop-blur-xl
-            "
-          >
-            <motion.div
-              animate={{
-                opacity: [0.2, 0.5, 0.2],
-              }}
-              transition={{
-                duration: 1.8,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="
-                h-full
-                w-full
-                bg-white/[0.04]
-              "
-            />
-          </motion.div>
-        ) : userName ? (
+        {!checkingAuth && userName ? (
           <>
-            {/* =================================================
-                USER NAME
-            ================================================== */}
+            {/* USER NAME */}
 
             <motion.div
               initial={{
                 opacity: 0,
-                x: -15,
-                scale: 0.96,
+                x: 15,
               }}
               animate={{
                 opacity: 1,
                 x: 0,
-                scale: 1,
               }}
               transition={{
                 duration: 0.7,
                 ease: [0.16, 1, 0.3, 1],
               }}
               className="
-                flex
-                h-10
+                hidden
                 items-center
                 rounded-2xl
                 border
-                border-[#D6B25E]/20
-                bg-[#D6B25E]/[0.06]
+                border-white/[0.08]
+                bg-white/[0.025]
                 px-5
+                py-2.5
+                text-[10px]
+                tracking-[0.12em]
+                text-white/55
                 backdrop-blur-xl
-                shadow-[0_8px_30px_rgba(0,0,0,0.18)]
+                sm:flex
               "
             >
-              <span
-                className="
-                  max-w-[150px]
-                  truncate
-                  text-[10px]
-                  font-medium
-                  uppercase
-                  tracking-[0.22em]
-                  text-[#D6B25E]/85
-                "
-              >
+              <span className="mr-2 text-[#D6B25E]/70">
+                ✦
+              </span>
+
+              <span>
                 {userName}
               </span>
             </motion.div>
 
-            {/* =================================================
-                RETURN TO DASHBOARD
-            ================================================== */}
+            {/* DASHBOARD */}
 
             <motion.button
               type="button"
-              onClick={handleDashboard}
+              onClick={handleReturnToDashboard}
               whileHover={{
                 y: -2,
                 scale: 1.025,
@@ -655,35 +575,48 @@ export function SoulSpaceHero({
                 scale: 0.96,
               }}
               className="
+                group
+                flex
                 cursor-pointer
+                items-center
+                gap-2
                 rounded-2xl
                 border
-                border-white/[0.14]
-                bg-white/[0.055]
+                border-[#D6B25E]/20
+                bg-[#D6B25E]/[0.07]
                 px-5
                 py-2.5
                 text-[10px]
                 uppercase
                 tracking-[0.25em]
-                text-white/75
+                text-[#D6B25E]/80
                 backdrop-blur-xl
-                shadow-[0_10px_40px_rgba(0,0,0,0.25)]
+                shadow-[0_10px_40px_rgba(0,0,0,0.2)]
                 transition-all
                 duration-500
-                hover:border-white/[0.28]
-                hover:bg-white/[0.09]
-                hover:text-white
-                hover:shadow-[0_15px_50px_rgba(255,255,255,0.06)]
+                hover:border-[#D6B25E]/40
+                hover:bg-[#D6B25E]/[0.12]
+                hover:text-[#D6B25E]
               "
             >
-              Return to Dashboard
+              <span>
+                Return to Dashboard
+              </span>
+
+              <ArrowRight
+                size={13}
+                strokeWidth={1.5}
+                className="
+                  transition-transform
+                  duration-500
+                  group-hover:translate-x-1
+                "
+              />
             </motion.button>
           </>
         ) : (
           <>
-            {/* =================================================
-                SIGN IN
-            ================================================== */}
+            {/* SIGN IN */}
 
             <motion.button
               type="button"
@@ -719,9 +652,7 @@ export function SoulSpaceHero({
               Sign In
             </motion.button>
 
-            {/* =================================================
-                SIGN UP
-            ================================================== */}
+            {/* SIGN UP */}
 
             <motion.button
               type="button"
@@ -783,9 +714,7 @@ export function SoulSpaceHero({
           text-center
         "
       >
-        {/* =================================================
-            EON AI
-        ================================================== */}
+        {/* EON AI */}
 
         <motion.p
           initial={{
@@ -816,9 +745,7 @@ export function SoulSpaceHero({
           EON AI
         </motion.p>
 
-        {/* =================================================
-            SOULMIRROR
-        ================================================== */}
+        {/* SOULMIRROR */}
 
         <h1
           className="
@@ -880,12 +807,7 @@ export function SoulSpaceHero({
                 delay:
                   0.25 + index * 0.11,
                 duration: 1.25,
-                ease: [
-                  0.16,
-                  1,
-                  0.3,
-                  1,
-                ],
+                ease: [0.16, 1, 0.3, 1],
               }}
               className="inline-block"
             >
@@ -894,9 +816,7 @@ export function SoulSpaceHero({
           ))}
         </h1>
 
-        {/* =================================================
-            GOLD LINE
-        ================================================== */}
+        {/* GOLD LINE */}
 
         <motion.div
           initial={{
@@ -924,9 +844,7 @@ export function SoulSpaceHero({
           "
         />
 
-        {/* =================================================
-            TAGLINE
-        ================================================== */}
+        {/* TAGLINE */}
 
         <motion.p
           initial={{
@@ -952,9 +870,7 @@ export function SoulSpaceHero({
           Reflect · Understand · Evolve
         </motion.p>
 
-        {/* =================================================
-            DESCRIPTION
-        ================================================== */}
+        {/* DESCRIPTION */}
 
         <motion.p
           initial={{
@@ -984,9 +900,7 @@ export function SoulSpaceHero({
           dreams, archetypes and evolution.
         </motion.p>
 
-        {/* =================================================
-            ACTIONS
-        ================================================== */}
+        {/* ACTIONS */}
 
         <motion.div
           initial={{
@@ -1124,9 +1038,7 @@ export function SoulSpaceHero({
           </motion.a>
         </motion.div>
 
-        {/* =================================================
-            SCROLL INDICATOR
-        ================================================== */}
+        {/* SCROLL INDICATOR */}
 
         <motion.div
           initial={{
@@ -1188,36 +1100,33 @@ export function SoulSpaceHero({
       ====================================================== */}
 
       <div className="pointer-events-none absolute inset-0">
-        {Array.from({ length: 18 }).map(
-          (_, i) => (
-            <motion.span
-              key={i}
-              animate={{
-                y: [0, -60, 0],
-                opacity: [0.05, 0.3, 0.05],
-              }}
-              transition={{
-                duration: 5 + (i % 5),
-                repeat: Infinity,
-                delay: i * 0.35,
-                ease: "easeInOut",
-              }}
-              className="
-                absolute
-                h-[2px]
-                w-[2px]
-                rounded-full
-                bg-[#D6B25E]
-              "
-              style={{
-                left: `${(i * 37) % 100}%`,
-                top: `${(i * 53) % 100}%`,
-              }}
-            />
-          )
-        )}
+        {Array.from({ length: 18 }).map((_, i) => (
+          <motion.span
+            key={i}
+            animate={{
+              y: [0, -60, 0],
+              opacity: [0.05, 0.3, 0.05],
+            }}
+            transition={{
+              duration: 5 + (i % 5),
+              repeat: Infinity,
+              delay: i * 0.35,
+              ease: "easeInOut",
+            }}
+            className="
+              absolute
+              h-[2px]
+              w-[2px]
+              rounded-full
+              bg-[#D6B25E]
+            "
+            style={{
+              left: `${(i * 37) % 100}%`,
+              top: `${(i * 53) % 100}%`,
+            }}
+          />
+        ))}
       </div>
     </section>
   );
 }
-
