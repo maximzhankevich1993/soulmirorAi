@@ -12,22 +12,26 @@ model User {
   email     String   @unique
 
   plan      UserPlan?
+  usage     UserUsage?
 
   createdAt DateTime @default(now())
 
   soulScans     SoulScan[]
   dreamAnalyses DreamAnalysis[]
   tarotReadings TarotReading[]
-  usage         UserUsage[]
 }
 
 model UserPlan {
-  id        String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id])
+  userId String @unique
+  user   User   @relation(
+    fields: [userId],
+    references: [id],
+    onDelete: Cascade
+  )
 
-  plan      String   @default("free")
+  plan String @default("free")
 
   expiresAt DateTime?
 
@@ -35,10 +39,76 @@ model UserPlan {
   updatedAt DateTime @updatedAt
 }
 
-model SoulScan {
-  id        String @id @default(cuid())
+model UserUsage {
+  id String @id @default(cuid())
 
-  userId    String?
+  /*
+   * One usage record per user.
+   *
+   * There is NO date field because
+   * free usage is lifetime-based.
+   */
+
+  userId String @unique
+
+  user User @relation(
+    fields: [userId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  /*
+   * Lifetime usage counters.
+   *
+   * Each tool has its own free limit.
+   */
+
+  soulScan Int @default(0)
+  dream    Int @default(0)
+  tarot    Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model GuestSession {
+  id String @id @default(cuid())
+
+  /*
+   * Persistent anonymous browser identity.
+   */
+
+  guestId String @unique
+
+  /*
+   * Lifetime anonymous usage.
+   */
+
+  soulScan Int @default(0)
+  dream    Int @default(0)
+  tarot    Int @default(0)
+
+  createdAt DateTime @default(now())
+
+  /*
+   * Guest sessions can eventually expire.
+   * The cookie itself currently lives for one year.
+   */
+
+  expiresAt DateTime
+
+  @@index([guestId])
+}
+
+model SoulScan {
+  id String @id @default(cuid())
+
+  /*
+   * Nullable because guests are allowed
+   * to use Soul Scan without registration.
+   */
+
+  userId String?
 
   input     String
   archetype String
@@ -47,13 +117,22 @@ model SoulScan {
 
   createdAt DateTime @default(now())
 
-  user User? @relation(fields: [userId], references: [id])
+  user User? @relation(
+    fields: [userId],
+    references: [id],
+    onDelete: SetNull
+  )
 
   @@index([userId])
 }
 
 model DreamAnalysis {
   id String @id @default(cuid())
+
+  /*
+   * Nullable because guests are allowed
+   * to use Dream Analysis without registration.
+   */
 
   userId String?
 
@@ -64,13 +143,22 @@ model DreamAnalysis {
 
   createdAt DateTime @default(now())
 
-  user User? @relation(fields: [userId], references: [id])
+  user User? @relation(
+    fields: [userId],
+    references: [id],
+    onDelete: SetNull
+  )
 
   @@index([userId])
 }
 
 model TarotReading {
   id String @id @default(cuid())
+
+  /*
+   * Nullable because guests are allowed
+   * to use Tarot without registration.
+   */
 
   userId String?
 
@@ -80,40 +168,11 @@ model TarotReading {
 
   createdAt DateTime @default(now())
 
-  user User? @relation(fields: [userId], references: [id])
+  user User? @relation(
+    fields: [userId],
+    references: [id],
+    onDelete: SetNull
+  )
 
   @@index([userId])
-}
-
-model UserUsage {
-  id String @id @default(cuid())
-
-  userId String
-  date   DateTime
-
-  soulScan Int @default(0)
-  dream    Int @default(0)
-  tarot    Int @default(0)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id])
-
-  @@unique([userId, date])
-}
-
-model GuestSession {
-  id String @id @default(cuid())
-
-  guestId String @unique
-
-  soulScan Int @default(0)
-  dream    Int @default(0)
-  tarot    Int @default(0)
-
-  createdAt DateTime @default(now())
-  expiresAt DateTime
-
-  @@index([guestId])
 }
