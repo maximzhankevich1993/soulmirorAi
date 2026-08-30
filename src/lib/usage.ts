@@ -24,16 +24,17 @@ export type AccessResult = {
  * FREE LIMIT
  * =========================================================
  *
- * Each tool can be used 2 times for free.
+ * Each tool has 2 lifetime free uses.
  *
- * This is NOT a daily limit.
- * The limit is lifetime-based for the free plan.
+ * Soul Scan       → 2 free uses
+ * Dream Analysis  → 2 free uses
+ * Tarot           → 2 free uses
  *
- * Soul Scan  → 2 free uses
- * Dream      → 2 free uses
- * Tarot      → 2 free uses
+ * NOT daily.
+ * NOT monthly.
  *
- * After that → paid plan required.
+ * After the limit is reached,
+ * a paid plan is required.
  *
  * =========================================================
  */
@@ -53,7 +54,7 @@ export async function checkAccess(
 
   /*
    * =======================================================
-   * GUEST USER
+   * GUEST
    * =======================================================
    */
 
@@ -68,10 +69,6 @@ export async function checkAccess(
     const used =
       session?.[type] ?? 0;
 
-    /*
-     * Free limit reached
-     */
-
     if (used >= FREE_LIMIT) {
       return {
         allowed: false,
@@ -81,10 +78,6 @@ export async function checkAccess(
         reason: "FREE_LIMIT_REACHED",
       };
     }
-
-    /*
-     * Free access available
-     */
 
     return {
       allowed: true,
@@ -107,12 +100,13 @@ export async function checkAccess(
       },
       include: {
         plan: true,
+        usage: true,
       },
     });
 
   /*
    * =======================================================
-   * USER PLAN
+   * PLAN
    * =======================================================
    */
 
@@ -124,11 +118,8 @@ export async function checkAccess(
 
   /*
    * =======================================================
-   * PAID PLANS
+   * PAID PLAN
    * =======================================================
-   *
-   * Day Pass / Pro have no free usage restriction.
-   *
    */
 
   if (plan !== "free") {
@@ -143,65 +134,42 @@ export async function checkAccess(
 
   /*
    * =======================================================
-   * FREE REGISTERED USER
+   * FREE USER
    * =======================================================
-   *
-   * IMPORTANT:
-   *
-   * We intentionally DO NOT filter by date.
-   *
-   * The free limit is lifetime-based.
-   *
    */
-
-  const usage =
-    await prisma.userUsage.findUnique({
-      where: {
-        userId: actor.userId,
-      },
-    });
 
   const used =
-    usage?.[type] ?? 0;
-
-  /*
-   * Free limit reached
-   */
+    dbUser?.usage?.[type] ?? 0;
 
   if (used >= FREE_LIMIT) {
     return {
       allowed: false,
       guest: false,
       userId: actor.userId,
-      plan,
+      plan: "free",
       remaining: 0,
       reason: "FREE_LIMIT_REACHED",
     };
   }
 
-  /*
-   * Free usage remaining
-   */
-
   return {
     allowed: true,
     guest: false,
     userId: actor.userId,
-    plan,
+    plan: "free",
     remaining: FREE_LIMIT - used,
   };
 }
 
 /*
  * =========================================================
- * INCREASE USAGE
+ * INCREASE USER USAGE
  * =========================================================
  *
- * IMPORTANT:
+ * Lifetime usage.
  *
- * This function does NOT reset usage every day.
- *
- * Each user's total lifetime free usage is stored.
+ * No dates.
+ * No daily reset.
  *
  * =========================================================
  */
@@ -210,59 +178,83 @@ export async function increaseUsage(
   userId: string,
   type: UsageType
 ) {
-  /*
-   * Find existing usage record
-   */
-
-  const existing =
-    await prisma.userUsage.findUnique({
-      where: {
-        userId,
-      },
-    });
-
-  /*
-   * Create usage record if it doesn't exist
-   */
-
-  if (!existing) {
-    await prisma.userUsage.create({
-      data: {
-        userId,
-
-        soulScan:
-          type === "soulScan"
-            ? 1
-            : 0,
-
-        dream:
-          type === "dream"
-            ? 1
-            : 0,
-
-        tarot:
-          type === "tarot"
-            ? 1
-            : 0,
-      },
-    });
-
-    return;
-  }
-
-  /*
-   * Increase selected tool
-   */
-
-  await prisma.userUsage.update({
+  await prisma.userUsage.upsert({
     where: {
       userId,
     },
 
-    data: {
+    update: {
       [type]: {
         increment: 1,
       },
+    },
+
+    create: {
+      userId,
+
+      soulScan:
+        type === "soulScan"
+          ? 1
+          : 0,
+
+      dream:
+        type === "dream"
+          ? 1
+          : 0,
+
+      tarot:
+        type === "tarot"
+          ? 1
+          : 0,
+    },
+  });
+}
+
+/*
+ * =========================================================
+ * INCREASE GUEST USAGE
+ * =========================================================
+ *
+ * Guests also have 2 lifetime free uses
+ * for each individual tool.
+ *
+ * =========================================================
+ */
+
+export async function increaseGuestUsage(
+  guestId: string,
+  type: UsageType
+) {
+  await prisma.guestSession.upsert({
+    where: {
+      guestId,
+    },
+
+    update: {
+      [type]: {
+        increment: 1,
+      },
+    },
+
+    create: {
+      guestId,
+
+      soulScan:
+        type === "soulScan"
+          ? 1
+          : 0,
+
+      dream:
+        type === "dream"
+          ? 1
+          : 0,
+
+      tarot:
+        type === "tarot"
+          ? 1
+          : 0,
+
+      expiresAt: null,
     },
   });
 }
