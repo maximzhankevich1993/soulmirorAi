@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Check, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-import { supabase } from "../../lib/supabaseClient";
+import { supabase } from "@/lib/supabase/client";
 
 type UserPlan = "free" | "day" | "monthly" | "yearly";
 
