@@ -1,3 +1,4 @@
+
 import { prisma } from "@/lib/prisma";
 import { getActor } from "@/lib/getActor";
 
@@ -16,35 +17,31 @@ export type AccessResult = {
 
   plan: "free" | "day" | "pro";
 
+  used: number;
+  limit: number;
   remaining: number;
 };
-
-/*
- * =====================================================
- * FREE PLAN LIMIT
- * =====================================================
- *
- * Каждый пользователь получает:
- *
- * Soul Scan        → 2 раза
- * Dream Analysis   → 2 раза
- * Tarot            → 2 раза
- *
- * Лимит lifetime.
- *
- * Никакого ежедневного сброса.
- *
- * После достижения лимита требуется платный план.
- *
- * =====================================================
- */
 
 const FREE_LIMIT = 2;
 
 /*
- * =====================================================
+ * =========================================================
  * CHECK ACCESS
- * =====================================================
+ * =========================================================
+ *
+ * FREE LIMIT:
+ *
+ * Soul Scan       → 2 total
+ * Dream Analysis  → 2 total
+ * Tarot           → 2 total
+ *
+ * NOT DAILY.
+ *
+ * After the user reaches 2 uses of a specific tool,
+ * that tool requires a paid plan.
+ *
+ * The limit is enforced on the server.
+ * =========================================================
  */
 
 export async function checkAccess(
@@ -53,9 +50,9 @@ export async function checkAccess(
   const actor = await getActor();
 
   /*
-   * ===================================================
+   * =======================================================
    * GUEST USER
-   * ===================================================
+   * =======================================================
    */
 
   if (actor.type === "guest") {
@@ -69,36 +66,37 @@ export async function checkAccess(
     const used =
       session?.[type] ?? 0;
 
-    /*
-     * Free limit reached
-     */
+    const remaining = Math.max(
+      FREE_LIMIT - used,
+      0
+    );
 
     if (used >= FREE_LIMIT) {
       return {
         allowed: false,
         guest: true,
         plan: "free",
+        used,
+        limit: FREE_LIMIT,
         remaining: 0,
         reason: "FREE_LIMIT_REACHED",
       };
     }
 
-    /*
-     * Free usage available
-     */
-
     return {
       allowed: true,
       guest: true,
       plan: "free",
-      remaining: FREE_LIMIT - used,
+      used,
+      limit: FREE_LIMIT,
+      remaining,
     };
   }
 
   /*
-   * ===================================================
+   * =======================================================
    * REGISTERED USER
-   * ===================================================
+   * =======================================================
    */
 
   const dbUser =
@@ -111,10 +109,6 @@ export async function checkAccess(
       },
     });
 
-  /*
-   * Determine current plan
-   */
-
   const plan =
     (dbUser?.plan?.plan as
       | "free"
@@ -122,14 +116,11 @@ export async function checkAccess(
       | "pro") ?? "free";
 
   /*
-   * ===================================================
+   * =======================================================
    * PAID PLANS
-   * ===================================================
+   * =======================================================
    *
-   * Day Pass / Pro:
-   *
-   * No free-limit restriction.
-   *
+   * Paid users have unlimited access.
    */
 
   if (plan !== "free") {
@@ -138,45 +129,24 @@ export async function checkAccess(
       guest: false,
       userId: actor.userId,
       plan,
+      used: 0,
+      limit: Infinity,
       remaining: Infinity,
     };
   }
 
   /*
-   * ===================================================
-   * FREE PLAN
-   * ===================================================
+   * =======================================================
+   * FREE REGISTERED USER
+   * =======================================================
    *
    * IMPORTANT:
    *
-   * We intentionally DO NOT filter by date.
+   * We DO NOT check today's date.
    *
-   * The limit is lifetime.
-   *
-   */
-
-  const usage =
-    await prisma.userUsage.findFirst({
-      where: {
-        userId: actor.userId,
-      },
-
-      orderBy: {
-        date: "asc",
-      },
-    });
-
-  /*
-   * ===================================================
-   * CALCULATE TOTAL USAGE
-   * ===================================================
-   *
-   * UserUsage may contain multiple records if old
-   * daily logic created them.
-   *
-   * Therefore we calculate the total usage across
-   * all records instead of relying on one date.
-   *
+   * We count the user's TOTAL usage across all
+   * UserUsage records.
+   * =======================================================
    */
 
   const usageRecords =
@@ -184,7 +154,6 @@ export async function checkAccess(
       where: {
         userId: actor.userId,
       },
-
       select: {
         soulScan: true,
         dream: true,
@@ -198,10 +167,13 @@ export async function checkAccess(
     0
   );
 
+  const remaining = Math.max(
+    FREE_LIMIT - used,
+    0
+  );
+
   /*
-   * ===================================================
-   * LIMIT REACHED
-   * ===================================================
+   * FREE LIMIT REACHED
    */
 
   if (used >= FREE_LIMIT) {
@@ -210,15 +182,15 @@ export async function checkAccess(
       guest: false,
       userId: actor.userId,
       plan,
+      used,
+      limit: FREE_LIMIT,
       remaining: 0,
       reason: "FREE_LIMIT_REACHED",
     };
   }
 
   /*
-   * ===================================================
-   * FREE USAGE AVAILABLE
-   * ===================================================
+   * FREE ACCESS STILL AVAILABLE
    */
 
   return {
@@ -226,87 +198,54 @@ export async function checkAccess(
     guest: false,
     userId: actor.userId,
     plan,
-    remaining: FREE_LIMIT - used,
+    used,
+    limit: FREE_LIMIT,
+    remaining,
   };
 }
 
 /*
- * =====================================================
+ * =========================================================
  * INCREASE USAGE
- * =====================================================
+ * =========================================================
  *
- * Records one usage.
+ * Adds exactly one usage to the user's lifetime total.
  *
- * IMPORTANT:
- *
- * This function does NOT reset anything by date.
- *
- * We keep the existing UserUsage structure for
- * compatibility with the database.
- *
- * The access check above calculates the lifetime
- * total across all records.
- *
- * =====================================================
+ * The date is kept in the database for history/statistics,
+ * but it is NOT used for enforcing the free limit.
+ * =========================================================
  */
 
 export async function increaseUsage(
   userId: string,
   type: UsageType
 ) {
-  /*
-   * Use one permanent usage record for the user.
-   *
-   * We use the earliest existing record if available.
-   */
+  const today = new Date();
 
-  const existing =
-    await prisma.userUsage.findFirst({
-      where: {
+  today.setHours(
+    0,
+    0,
+    0,
+    0
+  );
+
+  await prisma.userUsage.upsert({
+    where: {
+      userId_date: {
         userId,
+        date: today,
       },
+    },
 
-      orderBy: {
-        date: "asc",
+    update: {
+      [type]: {
+        increment: 1,
       },
-    });
+    },
 
-  /*
-   * ===================================================
-   * EXISTING RECORD
-   * ===================================================
-   */
-
-  if (existing) {
-    await prisma.userUsage.update({
-      where: {
-        id: existing.id,
-      },
-
-      data: {
-        [type]: {
-          increment: 1,
-        },
-      },
-    });
-
-    return;
-  }
-
-  /*
-   * ===================================================
-   * CREATE FIRST RECORD
-   * ===================================================
-   */
-
-  const date = new Date();
-
-  date.setHours(0, 0, 0, 0);
-
-  await prisma.userUsage.create({
-    data: {
+    create: {
       userId,
-      date,
+      date: today,
 
       soulScan:
         type === "soulScan"
@@ -325,3 +264,4 @@ export async function increaseUsage(
     },
   });
 }
+
