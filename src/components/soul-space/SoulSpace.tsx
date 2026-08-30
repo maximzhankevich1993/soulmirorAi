@@ -361,7 +361,6 @@ export function SoulSpace() {
         <CinematicSection>
           <section id="dreams">
             <DreamConsole />
-
             <TarotConsole />
           </section>
         </CinematicSection>
@@ -373,9 +372,7 @@ export function SoulSpace() {
         <CinematicSection>
           <section id="journal">
             <SoulProfile />
-
             <SoulJourneyTimeline />
-
             <LatestInsight />
           </section>
         </CinematicSection>
@@ -551,7 +548,7 @@ export function SoulSpace() {
                 min-h-screen
               "
             >
-              <AuthScreen mode={authMode} />
+              <AuthScreen initialMode={authMode} />
             </motion.div>
 
             {/* CLOSE */}
