@@ -18,39 +18,14 @@ if (!supabaseAnonKey) {
 }
 
 /**
- * SoulMirror browser client
+ * Single browser Supabase client.
  *
  * IMPORTANT:
- * We intentionally use sessionStorage instead of
- * localStorage.
- *
- * This means:
- *
- * - navigation between pages keeps the session
- * - Dashboard -> SoulMirror keeps the session
- * - refreshing the page keeps the session
- * - closing the browser tab removes the session
- * - opening SoulMirror again starts unauthenticated
- *
- * This matches the desired SoulMirror UX.
+ * Do not create another createClient() with
+ * @supabase/supabase-js inside client components.
  */
-
 export const supabase = createBrowserClient(
   supabaseUrl,
-  supabaseAnonKey,
-  {
-    auth: {
-      storage:
-        typeof window !== "undefined"
-          ? window.sessionStorage
-          : undefined,
-
-      persistSession: true,
-
-      autoRefreshToken: true,
-
-      detectSessionInUrl: true,
-    },
-  }
+  supabaseAnonKey
 );
 
