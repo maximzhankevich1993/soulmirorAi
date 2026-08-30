@@ -17,14 +17,14 @@ model User {
   soulScans     SoulScan[]
   dreamAnalyses DreamAnalysis[]
   tarotReadings TarotReading[]
-  usage         UserUsage[]
+  usage         UserUsage?
 }
 
 model UserPlan {
-  id String @id @default(cuid())
+  id        String   @id @default(cuid())
 
   userId String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id])
 
   plan      String   @default("free")
   expiresAt DateTime?
@@ -36,8 +36,8 @@ model UserPlan {
 model SoulScan {
   id String @id @default(cuid())
 
-  userId String?
-  user   User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId  String?
+  guestId String?
 
   input     String
   archetype String
@@ -46,14 +46,17 @@ model SoulScan {
 
   createdAt DateTime @default(now())
 
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
   @@index([userId])
+  @@index([guestId])
 }
 
 model DreamAnalysis {
   id String @id @default(cuid())
 
-  userId String?
-  user   User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId  String?
+  guestId String?
 
   dream          String
   summary        String
@@ -62,14 +65,17 @@ model DreamAnalysis {
 
   createdAt DateTime @default(now())
 
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
   @@index([userId])
+  @@index([guestId])
 }
 
 model TarotReading {
   id String @id @default(cuid())
 
-  userId String?
-  user   User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId  String?
+  guestId String?
 
   card     String
   meaning  String
@@ -77,14 +83,17 @@ model TarotReading {
 
   createdAt DateTime @default(now())
 
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
   @@index([userId])
+  @@index([guestId])
 }
 
 model UserUsage {
   id String @id @default(cuid())
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
 
   soulScan Int @default(0)
   dream    Int @default(0)
@@ -92,8 +101,6 @@ model UserUsage {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@unique([userId])
 }
 
 model GuestSession {
@@ -106,7 +113,9 @@ model GuestSession {
   tarot    Int @default(0)
 
   createdAt DateTime @default(now())
-  expiresAt DateTime
+  updatedAt DateTime @updatedAt
+
+  expiresAt DateTime?
 
   @@index([guestId])
 }
