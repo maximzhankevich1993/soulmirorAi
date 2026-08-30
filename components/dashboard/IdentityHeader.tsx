@@ -9,7 +9,7 @@ import {
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { supabase } from "../../src/lib/supabaseClient";
+import { supabase } from "@/lib/supabaseClient";
 import { GlassCard } from "../../src/components/ui/GlassCard";
 
 type UserProfile = {
