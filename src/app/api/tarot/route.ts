@@ -8,19 +8,14 @@ import {
   YANDEX_FOLDER_ID,
 } from "@/lib/yandex";
 
-import {
-  getUser,
-} from "@/lib/getUser";
+import { getActor } from "@/lib/getActor";
 
 import {
   checkAccess,
   increaseUsage,
 } from "@/lib/usage";
 
-
-
 const tarotCards = [
-
   "The Fool",
   "The Magician",
   "The High Priestess",
@@ -42,405 +37,261 @@ const tarotCards = [
   "The Sun",
   "Judgement",
   "The World",
-
 ];
 
-
-
-
-
-function getRandomCard(){
-
+function getRandomCard() {
   return tarotCards[
-    Math.floor(
-      Math.random()
-      *
-      tarotCards.length
-    )
+    Math.floor(Math.random() * tarotCards.length)
   ];
-
 }
 
-
-
-
-
-
-
-export async function POST(){
-
-
+export async function POST() {
   try {
+    // =========================================
+    // ACTOR
+    // Registered user OR guest
+    // =========================================
 
+    const actor = await getActor();
 
-
-    // AUTH
-
-    const user =
-      await getUser();
-
-
-
-
-    if(!user){
-
-
-      return NextResponse.json(
-
-        {
-          error:
-          "Unauthorized"
-
-        },
-
-        {
-          status:401
-        }
-
-      );
-
-    }
-
-
-
-
-
-
+    // =========================================
     // ACCESS
+    // 2 lifetime free uses for Tarot
+    // Works for guests and registered users
+    // =========================================
 
-    const access =
-      await checkAccess(
-        "tarot"
-      );
+    const access = await checkAccess("tarot");
 
-
-
-
-
-    if(!access.allowed){
-
-
+    if (!access.allowed) {
       return NextResponse.json(
-
         {
           error:
-          access.reason
+            access.reason || "FREE_LIMIT_REACHED",
 
+          remaining: 0,
+
+          plan: access.plan,
+
+          guest: access.guest,
         },
-
         {
-          status:403
+          status: 403,
         }
-
       );
-
     }
 
+    // =========================================
+    // RANDOM CARD
+    // =========================================
 
+    const card = getRandomCard();
 
+    // =========================================
+    // AI REQUEST
+    // =========================================
 
+    const response = await fetch(
+      YANDEX_API_URL,
+      {
+        method: "POST",
 
+        headers: {
+          Authorization: `Api-Key ${YANDEX_API_KEY}`,
 
+          "Content-Type": "application/json",
+        },
 
-    const card =
-      getRandomCard();
-
-
-
-
-
-
-
-
-    const response =
-      await fetch(
-
-        YANDEX_API_URL,
-
-        {
-
-          method:"POST",
-
-
-          headers:{
-
-
-            Authorization:
-            `Api-Key ${YANDEX_API_KEY}`,
-
-
-            "Content-Type":
-            "application/json",
-
-          },
-
-
-
-          body:JSON.stringify({
-
-
-            modelUri:
+        body: JSON.stringify({
+          modelUri:
             `gpt://${YANDEX_FOLDER_ID}/yandexgpt-lite/latest`,
 
+          completionOptions: {
+            stream: false,
+            temperature: 0.8,
+            maxTokens: 800,
+          },
 
+          messages: [
+            {
+              role: "system",
 
-            completionOptions:{
-
-
-              stream:false,
-
-
-              temperature:0.8,
-
-
-              maxTokens:800,
-
-
-            },
-
-
-
-            messages:[
-
-
-              {
-
-                role:"system",
-
-                text:`
-
+              text: `
 You are Tarot AI.
 
-Return ONLY JSON:
+Return ONLY valid JSON.
 
 {
-"meaning":"",
-"guidance":""
+  "meaning": "",
+  "guidance": ""
 }
 
 No markdown.
+No explanations outside JSON.
+`,
+            },
 
-`
+            {
+              role: "user",
 
-              },
+              text: `Card: ${card}`,
+            },
+          ],
+        }),
+      }
+    );
 
+    // =========================================
+    // AI ERROR
+    // =========================================
 
-              {
+    if (!response.ok) {
+      const errorText = await response.text();
 
-                role:"user",
-
-                text:
-                `Card: ${card}`
-
-              }
-
-
-            ]
-
-
-          })
-
-        }
-
+      console.error(
+        "YANDEX TAROT ERROR:",
+        response.status,
+        errorText
       );
-
-
-
-
-
-
-
-    if(!response.ok){
-
 
       throw new Error(
-        "AI request failed"
+        "Yandex AI request failed"
       );
-
-
     }
 
+    // =========================================
+    // PARSE AI RESPONSE
+    // =========================================
 
-
-
-
-
-
-
-    const data =
-      await response.json();
-
-
-
-
+    const data = await response.json();
 
     const content =
-      data?.result
-      ?.alternatives?.[0]
-      ?.message
-      ?.text;
+      data?.result?.alternatives?.[0]?.message?.text;
 
-
-
-
-
-
-
-    if(!content){
-
-
+    if (!content) {
       throw new Error(
         "Empty AI response"
       );
-
     }
 
-
-
-
-
-
-
-    const cleaned =
-      content
-      .replace(
-        /```json/g,
-        ""
-      )
-      .replace(
-        /```/g,
-        ""
-      )
+    const cleaned = content
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
       .trim();
 
+    const parsed = JSON.parse(cleaned);
 
-
-
-
-
-    const parsed =
-      JSON.parse(
-        cleaned
-      );
-
-
-
-
-
-
+    // =========================================
+    // RESULT
+    // =========================================
 
     const result = {
-
-
       card,
 
-
       meaning:
-      parsed.meaning ||
-      "Mystical energy surrounds this card.",
-
-
+        parsed.meaning ||
+        "Mystical energy surrounds this card.",
 
       guidance:
-      parsed.guidance ||
-      "Trust your intuition.",
-
-
+        parsed.guidance ||
+        "Trust your intuition.",
     };
 
+    // =========================================
+    // SAVE READING
+    //
+    // Registered user:
+    //   userId
+    //
+    // Guest:
+    //   guestId
+    //
+    // Prisma schema already supports both.
+    // =========================================
 
+    if (actor.type === "user") {
+      await prisma.tarotReading.create({
+        data: {
+          userId: actor.userId,
 
+          card: result.card,
 
+          meaning: result.meaning,
 
+          guidance: result.guidance,
+        },
+      });
+    } else {
+      await prisma.tarotReading.create({
+        data: {
+          guestId: actor.guestId,
 
+          card: result.card,
 
+          meaning: result.meaning,
 
-    // SAVE
+          guidance: result.guidance,
+        },
+      });
+    }
 
+    // =========================================
+    // INCREASE USAGE
+    //
+    // Registered user:
+    //   userId
+    //
+    // Guest:
+    //   guestId
+    // =========================================
 
-    await prisma.tarotReading.create({
+    if (actor.type === "user") {
+      await increaseUsage(
+        actor.userId,
+        "tarot"
+      );
+    } else {
+      await increaseUsage(
+        actor.guestId,
+        "tarot"
+      );
+    }
 
-      data:{
+    // =========================================
+    // RESPONSE
+    // =========================================
 
+    return NextResponse.json({
+      ...result,
 
-        userId:user.id,
+      usage: {
+        remaining:
+          access.plan === "free"
+            ? Math.max(
+                access.remaining - 1,
+                0
+              )
+            : null,
 
+        plan: access.plan,
 
-        card:
-        result.card,
-
-
-        meaning:
-        result.meaning,
-
-
-        guidance:
-        result.guidance,
-
-
-      }
-
+        guest:
+          actor.type === "guest",
+      },
     });
-
-
-
-
-
-
-
-
-    await increaseUsage(
-
-      user.id,
-
-      "tarot"
-
-    );
-
-
-
-
-
-
-
-    return NextResponse.json(
-      result
-    );
-
-
-
-
-  }
-
-
-  catch(error:any){
-
-
-
+  } catch (error) {
     console.error(
       "TAROT ERROR:",
       error
     );
 
-
-
     return NextResponse.json(
-
       {
         error:
-        error.message ||
-        "Tarot failed"
-
+          "Tarot reading failed",
       },
-
       {
-        status:500
+        status: 500,
       }
-
     );
-
-
   }
-
-
 }
