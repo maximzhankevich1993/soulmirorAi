@@ -13,439 +13,243 @@ import {
   increaseUsage,
 } from "@/lib/usage";
 
-import {
-  getUser,
-} from "@/lib/getUser";
+import { getActor } from "@/lib/getActor";
 
-
-
-const FREE_LIMIT = 1;
-
-
-
-
-export async function POST(
-  req:Request
-){
-
-
+export async function POST(req: Request) {
   try {
+    // =========================================
+    // ACTOR
+    // Registered user OR guest
+    // =========================================
 
+    const actor = await getActor();
 
+    // =========================================
+    // ACCESS CHECK
+    // 2 free uses per tool
+    // Lifetime, not daily
+    // =========================================
 
-    // 1. AUTH
+    const access = await checkAccess("soulScan");
 
-    const user =
-      await getUser();
-
-
-
-    if(!user){
-
-
+    if (!access.allowed) {
       return NextResponse.json(
-
         {
-          error:
-          "Unauthorized"
-
+          error: access.reason || "FREE_LIMIT_REACHED",
+          remaining: 0,
+          plan: access.plan,
         },
-
         {
-          status:401
+          status: 403,
         }
-
       );
-
     }
 
+    // =========================================
+    // INPUT
+    // =========================================
 
+    const body = await req.json();
 
+    const text = body.text?.trim();
 
-
-
-    // 2. ACCESS CHECK
-
-
-    const access =
-      await checkAccess(
-        "soulScan"
-      );
-
-
-
-
-
-    if(!access.allowed){
-
-
+    if (!text) {
       return NextResponse.json(
-
         {
-          error:
-          access.reason
-
+          error: "Text required",
         },
-
         {
-          status:403
+          status: 400,
         }
-
       );
-
     }
 
-
-
-
-
-
-
-    // 3. INPUT
-
-
-    const body =
-      await req.json();
-
-
-
-    const text =
-      body.text
-      ?.trim();
-
-
-
-
-
-    if(!text){
-
-
+    if (text.length > 5000) {
       return NextResponse.json(
-
         {
-          error:
-          "Text required"
-
+          error: "Text too long",
         },
-
         {
-          status:400
+          status: 400,
         }
-
       );
-
     }
 
+    // =========================================
+    // AI REQUEST
+    // =========================================
 
+    const response = await fetch(
+      YANDEX_API_URL,
+      {
+        method: "POST",
 
-
-
-    if(text.length > 5000){
-
-
-      return NextResponse.json(
-
-        {
-          error:
-          "Text too long"
-
+        headers: {
+          Authorization: `Api-Key ${YANDEX_API_KEY}`,
+          "Content-Type": "application/json",
         },
 
-        {
-          status:400
-        }
+        body: JSON.stringify({
+          modelUri: `gpt://${YANDEX_FOLDER_ID}/yandexgpt-lite/latest`,
 
-      );
-
-    }
-
-
-
-
-
-
-
-    // 4. AI
-
-
-    const response =
-      await fetch(
-
-        YANDEX_API_URL,
-
-        {
-
-          method:"POST",
-
-
-          headers:{
-
-
-            Authorization:
-            `Api-Key ${YANDEX_API_KEY}`,
-
-
-            "Content-Type":
-            "application/json",
-
+          completionOptions: {
+            stream: false,
+            temperature: 0.7,
+            maxTokens: 1200,
           },
 
+          messages: [
+            {
+              role: "system",
 
-
-          body:JSON.stringify({
-
-
-            modelUri:
-            `gpt://${YANDEX_FOLDER_ID}/yandexgpt-lite/latest`,
-
-
-            completionOptions:{
-
-
-              stream:false,
-
-
-              temperature:0.7,
-
-
-              maxTokens:1200,
-
-            },
-
-
-            messages:[
-
-
-              {
-
-                role:"system",
-
-                text:`
-
-Return ONLY JSON.
+              text: `
+Return ONLY valid JSON.
 
 {
-"archetype":"",
-"emotion":"",
-"shadow":"",
-"reflection":"",
-"insight":""
+  "archetype": "",
+  "emotion": "",
+  "shadow": "",
+  "reflection": "",
+  "insight": ""
 }
+`,
+            },
 
-`
+            {
+              role: "user",
+              text,
+            },
+          ],
+        }),
+      }
+    );
 
-              },
+    if (!response.ok) {
+      const errorText = await response.text();
 
-
-              {
-
-                role:"user",
-
-                text
-
-              }
-
-
-            ]
-
-          })
-
-        }
-
+      console.error(
+        "YANDEX API ERROR:",
+        response.status,
+        errorText
       );
 
-
-
-
-
-
-
-    const data =
-      await response.json();
-
-
-
-
-    const content =
-      data?.result
-      ?.alternatives?.[0]
-      ?.message
-      ?.text;
-
-
-
-
-
-    if(!content){
-
-
-      throw new Error(
-        "Empty AI response"
-      );
-
+      throw new Error("Yandex AI request failed");
     }
 
+    const data = await response.json();
 
+    const content =
+      data?.result?.alternatives?.[0]?.message?.text;
 
+    if (!content) {
+      throw new Error("Empty AI response");
+    }
 
+    // =========================================
+    // CLEAN AI RESPONSE
+    // =========================================
 
-
-
-    const clean =
-      content
-      .replace(
-        /```json/g,
-        ""
-      )
-      .replace(
-        /```/g,
-        ""
-      )
+    const clean = content
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
       .trim();
 
+    const parsed = JSON.parse(clean);
 
-
-
-
-
-    const parsed =
-      JSON.parse(clean);
-
-
-
-
-
-
+    // =========================================
+    // RESULT
+    // =========================================
 
     const result = {
-
-
       archetype:
-      parsed.archetype ||
-      "Explorer",
-
-
+        parsed.archetype || "Explorer",
 
       emotion:
-      parsed.emotion ||
-      "Calm",
-
-
+        parsed.emotion || "Calm",
 
       shadow:
-      parsed.shadow ||
-      "",
-
-
+        parsed.shadow || "",
 
       reflection:
-      parsed.reflection ||
-      "",
-
-
+        parsed.reflection || "",
 
       insight:
-      parsed.insight ||
-      "",
-
-
+        parsed.insight || "",
     };
 
+    // =========================================
+    // SAVE FOR REGISTERED USER
+    // =========================================
 
+    if (actor.type === "user") {
+      await prisma.soulScan.create({
+        data: {
+          userId: actor.userId,
 
+          input: text,
 
+          archetype:
+            result.archetype,
 
+          emotion:
+            result.emotion,
 
+          insight:
+            result.insight,
+        },
+      });
+    }
 
-    // 5. SAVE
+    // =========================================
+    // INCREASE USAGE
+    // =========================================
 
+    if (actor.type === "user") {
+      await increaseUsage(
+        actor.userId,
+        "soulScan"
+      );
+    } else {
+      await increaseUsage(
+        actor.guestId,
+        "soulScan"
+      );
+    }
 
-    await prisma.soulScan.create({
+    // =========================================
+    // RESPONSE
+    // =========================================
 
-      data:{
+    return NextResponse.json({
+      ...result,
 
+      usage: {
+        remaining:
+          access.plan === "free"
+            ? Math.max(
+                access.remaining - 1,
+                0
+              )
+            : null,
 
-        userId:user.id,
+        plan: access.plan,
 
-
-        input:text,
-
-
-        archetype:
-        result.archetype,
-
-
-        emotion:
-        result.emotion,
-
-
-        insight:
-        result.insight,
-
-
-      }
-
+        guest: actor.type === "guest",
+      },
     });
-
-
-
-
-
-
-
-    await increaseUsage(
-
-      user.id,
-
-      "soulScan"
-
-    );
-
-
-
-
-
-
-
-    return NextResponse.json(
-      result
-    );
-
-
-
-
-  }
-
-  catch(error:any){
-
-
-
+  } catch (error) {
     console.error(
       "SOUL SCAN ERROR:",
       error
     );
 
-
-
     return NextResponse.json(
-
       {
-
-        error:
-        "Soul scan failed"
-
+        error: "Soul scan failed",
       },
-
       {
-
-        status:500
-
+        status: 500,
       }
-
     );
-
-
   }
-
-
 }
