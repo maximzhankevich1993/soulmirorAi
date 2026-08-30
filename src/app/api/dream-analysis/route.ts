@@ -1,3 +1,4 @@
+
 import { NextResponse } from "next/server";
 
 import { prisma } from "../../../lib/prisma";
@@ -13,33 +14,30 @@ import {
   increaseUsage,
 } from "../../../lib/usage";
 
-import { getUser } from "../../../lib/getUser";
+import { getActor } from "../../../lib/getActor";
 
 export async function POST(req: Request) {
   try {
-    // AUTH
+    // =========================================
+    // ACTOR
+    // Registered user OR guest
+    // =========================================
 
-    const user = await getUser();
+    const actor = await getActor();
 
-    if (!user) {
-      return NextResponse.json(
-        {
-          error: "Unauthorized",
-        },
-        {
-          status: 401,
-        }
-      );
-    }
-
+    // =========================================
     // ACCESS
+    // 2 free lifetime uses
+    // =========================================
 
     const access = await checkAccess("dream");
 
     if (!access.allowed) {
       return NextResponse.json(
         {
-          error: access.reason,
+          error: access.reason || "FREE_LIMIT_REACHED",
+          remaining: 0,
+          plan: access.plan,
         },
         {
           status: 403,
@@ -47,7 +45,9 @@ export async function POST(req: Request) {
       );
     }
 
+    // =========================================
     // INPUT
+    // =========================================
 
     const body = await req.json();
 
@@ -78,7 +78,9 @@ export async function POST(req: Request) {
       );
     }
 
+    // =========================================
     // AI REQUEST
+    // =========================================
 
     const response = await fetch(
       YANDEX_API_URL,
@@ -86,11 +88,8 @@ export async function POST(req: Request) {
         method: "POST",
 
         headers: {
-          Authorization:
-            `Api-Key ${YANDEX_API_KEY}`,
-
-          "Content-Type":
-            "application/json",
+          Authorization: `Api-Key ${YANDEX_API_KEY}`,
+          "Content-Type": "application/json",
         },
 
         body: JSON.stringify({
@@ -110,7 +109,7 @@ export async function POST(req: Request) {
               text: `
 You are Dream Interpreter AI.
 
-Return ONLY JSON.
+Return ONLY valid JSON.
 
 {
   "summary": "",
@@ -133,50 +132,44 @@ No markdown.
     );
 
     if (!response.ok) {
-      const errorText =
-        await response.text();
+      const errorText = await response.text();
 
       console.error(
         "YANDEX API ERROR:",
+        response.status,
         errorText
       );
 
-      throw new Error(
-        "Yandex AI request failed"
-      );
+      throw new Error("Yandex AI request failed");
     }
 
-    const data =
-      await response.json();
+    const data = await response.json();
 
     const content =
-      data?.result
-        ?.alternatives?.[0]
-        ?.message?.text;
+      data?.result?.alternatives?.[0]?.message?.text;
 
     if (!content) {
-      throw new Error(
-        "Empty AI response"
-      );
+      throw new Error("Empty AI response");
     }
 
+    // =========================================
     // CLEAN AI RESPONSE
+    // =========================================
 
-    const cleaned =
-      content
-        .replace(/```json/g, "")
-        .replace(/```/g, "")
-        .trim();
+    const cleaned = content
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
 
-    const parsed =
-      JSON.parse(cleaned);
+    const parsed = JSON.parse(cleaned);
 
+    // =========================================
     // NORMALIZE RESULT
+    // =========================================
 
     const result = {
       summary:
-        typeof parsed.summary ===
-        "string"
+        typeof parsed.summary === "string"
           ? parsed.summary
           : "Dream interpretation generated.",
 
@@ -186,49 +179,75 @@ No markdown.
           : [],
 
       emotion:
-        typeof parsed.emotion ===
-        "string"
+        typeof parsed.emotion === "string"
           ? parsed.emotion
           : "Reflection",
 
       interpretation:
-        typeof parsed.interpretation ===
-        "string"
+        typeof parsed.interpretation === "string"
           ? parsed.interpretation
           : "",
     };
 
-    // SAVE TO DATABASE
+    // =========================================
+    // SAVE
+    // Registered users only
+    // =========================================
 
-    await prisma.dreamAnalysis.create({
-      data: {
-        userId: user.id,
+    if (actor.type === "user") {
+      await prisma.dreamAnalysis.create({
+        data: {
+          userId: actor.userId,
 
-        dream,
+          dream,
 
-        summary:
-          result.summary,
+          summary: result.summary,
 
-        emotion:
-          result.emotion,
+          emotion: result.emotion,
 
-        interpretation:
-          result.interpretation,
+          interpretation: result.interpretation,
+        },
+      });
+    }
+
+    // =========================================
+    // INCREASE USAGE
+    // Lifetime counter
+    // =========================================
+
+    if (actor.type === "user") {
+      await increaseUsage(
+        actor.userId,
+        "dream"
+      );
+    } else {
+      await increaseUsage(
+        actor.guestId,
+        "dream"
+      );
+    }
+
+    // =========================================
+    // RESPONSE
+    // =========================================
+
+    return NextResponse.json({
+      ...result,
+
+      usage: {
+        remaining:
+          access.plan === "free"
+            ? Math.max(
+                access.remaining - 1,
+                0
+              )
+            : null,
+
+        plan: access.plan,
+
+        guest: actor.type === "guest",
       },
     });
-
-    // INCREASE USAGE
-
-    await increaseUsage(
-      user.id,
-      "dream"
-    );
-
-    // RESPONSE
-
-    return NextResponse.json(
-      result
-    );
   } catch (error) {
     console.error(
       "DREAM API ERROR:",
@@ -237,8 +256,7 @@ No markdown.
 
     return NextResponse.json(
       {
-        error:
-          "Dream analysis failed",
+        error: "Dream analysis failed",
       },
       {
         status: 500,
@@ -246,3 +264,4 @@ No markdown.
     );
   }
 }
+
