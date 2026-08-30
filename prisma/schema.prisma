@@ -17,14 +17,19 @@ model User {
   soulScans     SoulScan[]
   dreamAnalyses DreamAnalysis[]
   tarotReadings TarotReading[]
-  usage         UserUsage?
+
+  usage UserUsage?
 }
 
 model UserPlan {
-  id        String   @id @default(cuid())
-
+  id     String @id @default(cuid())
   userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
+
+  user User @relation(
+    fields: [userId],
+    references: [id],
+    onDelete: Cascade
+  )
 
   plan      String   @default("free")
   expiresAt DateTime?
@@ -46,7 +51,11 @@ model SoulScan {
 
   createdAt DateTime @default(now())
 
-  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user User? @relation(
+    fields: [userId],
+    references: [id],
+    onDelete: SetNull
+  )
 
   @@index([userId])
   @@index([guestId])
@@ -65,7 +74,11 @@ model DreamAnalysis {
 
   createdAt DateTime @default(now())
 
-  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user User? @relation(
+    fields: [userId],
+    references: [id],
+    onDelete: SetNull
+  )
 
   @@index([userId])
   @@index([guestId])
@@ -83,7 +96,11 @@ model TarotReading {
 
   createdAt DateTime @default(now())
 
-  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user User? @relation(
+    fields: [userId],
+    references: [id],
+    onDelete: SetNull
+  )
 
   @@index([userId])
   @@index([guestId])
@@ -93,7 +110,12 @@ model UserUsage {
   id String @id @default(cuid())
 
   userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
+
+  user User @relation(
+    fields: [userId],
+    references: [id],
+    onDelete: Cascade
+  )
 
   soulScan Int @default(0)
   dream    Int @default(0)
