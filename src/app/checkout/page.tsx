@@ -1,6 +1,6 @@
-
 "use client";
 
+import { Suspense } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -74,7 +74,7 @@ const plans: Plan[] = [
   },
 ];
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -326,3 +326,18 @@ export default function CheckoutPage() {
   );
 }
 
+export default function CheckoutPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="flex min-h-screen items-center justify-center bg-[#050505] text-[#F4F1EA]">
+          <p className="text-[10px] uppercase tracking-[0.5em] text-[#D6B25E]">
+            SoulMirror
+          </p>
+        </main>
+      }
+    >
+      <CheckoutContent />
+    </Suspense>
+  );
+}
