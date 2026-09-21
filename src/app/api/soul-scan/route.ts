@@ -11,6 +11,7 @@ import {
 import {
   checkAccess,
   increaseUsage,
+  increaseGuestUsage,
 } from "@/lib/usage";
 
 import { getActor } from "@/lib/getActor";
@@ -210,7 +211,7 @@ Return ONLY valid JSON.
         "soulScan"
       );
     } else {
-      await increaseUsage(
+      await increaseGuestUsage(
         actor.guestId,
         "soulScan"
       );
