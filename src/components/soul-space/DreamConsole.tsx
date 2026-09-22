@@ -2,8 +2,8 @@
 
 import {
   Moon,
-  Sparkles,
   Brain,
+  LockKeyhole,
 } from "lucide-react";
 
 import { useState } from "react";
@@ -43,6 +43,9 @@ export function DreamConsole() {
   const [result, setResult] =
     useState<DreamResult | null>(null);
 
+  const [limitReached, setLimitReached] =
+    useState(false);
+
   const setMemory =
     useSoulMemoryStore(
       (state) => state.setMemory
@@ -58,15 +61,18 @@ export function DreamConsole() {
 
     try {
       setLoading(true);
+      setLimitReached(false);
 
       const response = await fetch(
         "/api/dream-analysis",
         {
           method: "POST",
+
           headers: {
             "Content-Type":
               "application/json",
           },
+
           body: JSON.stringify({
             dream: text,
           }),
@@ -77,6 +83,16 @@ export function DreamConsole() {
         await response.json();
 
       if (!response.ok) {
+        if (
+          response.status === 403 &&
+          data.error ===
+            "FREE_LIMIT_REACHED"
+        ) {
+          setLimitReached(true);
+          setResult(null);
+          return;
+        }
+
         throw new Error(
           data.error ||
             "Dream analysis failed"
@@ -106,6 +122,18 @@ export function DreamConsole() {
       );
     } finally {
       setLoading(false);
+    }
+  }
+
+  function handleUpgrade() {
+    const pricingSection =
+      document.getElementById("pricing");
+
+    if (pricingSection) {
+      pricingSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     }
   }
 
@@ -144,7 +172,7 @@ export function DreamConsole() {
       color="purple"
 
       result={
-        result && (
+        limitReached ? (
           <motion.div
             initial={{
               opacity: 0,
@@ -155,38 +183,187 @@ export function DreamConsole() {
               y: 0,
             }}
             className="
-              space-y-6
               rounded-[32px]
               border
               border-purple-400/20
               bg-purple-500/5
-              p-7
+              p-8
+              text-center
             "
           >
             <div
               className="
+                mx-auto
                 flex
+                h-14
+                w-14
                 items-center
+                justify-center
+                rounded-full
+                border
+                border-purple-400/20
+                bg-purple-500/10
+              "
+            >
+              <LockKeyhole
+                size={22}
+                className="
+                  text-purple-300
+                "
+              />
+            </div>
+
+            <p
+              className="
+                mt-5
+                text-[10px]
+                uppercase
+                tracking-[0.35em]
+                text-purple-300
+              "
+            >
+              Free Limit Reached
+            </p>
+
+            <h3
+              className="
+                mt-3
+                text-2xl
+                font-light
+                text-[#F4F1EA]
+              "
+            >
+              Your free Dream Analyses
+              are complete.
+            </h3>
+
+            <p
+              className="
+                mx-auto
+                mt-4
+                max-w-md
+                text-sm
+                leading-7
+                text-white/50
+              "
+            >
+              You’ve used your 2 free
+              Dream Analyses. Unlock
+              unlimited Dream Intelligence
+              with Pro.
+            </p>
+
+            <button
+              type="button"
+              onClick={handleUpgrade}
+              className="
+                mx-auto
+                mt-7
+                flex
+                cursor-pointer
+                items-center
+                justify-center
                 gap-3
+                rounded-full
+                border
+                border-[#D6B25E]/30
+                bg-[#D6B25E]/10
+                px-6
+                py-3
+                text-xs
+                uppercase
+                tracking-[0.2em]
+                text-[#F4F1EA]
+                transition-all
+                duration-300
+                hover:-translate-y-0.5
+                hover:border-[#D6B25E]/60
+                hover:bg-[#D6B25E]/20
+                hover:text-white
+                active:translate-y-0
+                focus:outline-none
+                focus:ring-2
+                focus:ring-[#D6B25E]/30
+              "
+            >
+              Unlock with Pro
+
+              <span
+                className="
+                  text-base
+                "
+              >
+                →
+              </span>
+            </button>
+          </motion.div>
+        ) : (
+          result && (
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 20,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              className="
+                space-y-6
+                rounded-[32px]
+                border
+                border-purple-400/20
+                bg-purple-500/5
+                p-7
               "
             >
               <div
                 className="
                   flex
-                  h-10
-                  w-10
                   items-center
-                  justify-center
-                  rounded-2xl
-                  bg-purple-500/10
+                  gap-3
                 "
               >
-                <Brain
-                  size={20}
+                <div
                   className="
-                    text-purple-300
+                    flex
+                    h-10
+                    w-10
+                    items-center
+                    justify-center
+                    rounded-2xl
+                    bg-purple-500/10
                   "
-                />
+                >
+                  <Brain
+                    size={20}
+                    className="
+                      text-purple-300
+                    "
+                  />
+                </div>
+
+                <div>
+                  <p
+                    className="
+                      text-[10px]
+                      uppercase
+                      tracking-[0.35em]
+                      text-purple-300
+                    "
+                  >
+                    Dream Insight
+                  </p>
+
+                  <p
+                    className="
+                      text-xs
+                      text-white/40
+                    "
+                  >
+                    EON Subconscious Engine
+                  </p>
+                </div>
               </div>
 
               <div>
@@ -195,185 +372,161 @@ export function DreamConsole() {
                     text-[10px]
                     uppercase
                     tracking-[0.35em]
-                    text-purple-300
-                  "
-                >
-                  Dream Insight
-                </p>
-
-                <p
-                  className="
-                    text-xs
                     text-white/40
                   "
                 >
-                  EON Subconscious Engine
+                  Dream
                 </p>
+
+                <h3
+                  className="
+                    mt-3
+                    text-2xl
+                    font-light
+                    leading-relaxed
+                    text-[#F4F1EA]
+                  "
+                >
+                  {result.summary}
+                </h3>
               </div>
-            </div>
 
-            <div>
-              <p
-                className="
-                  text-[10px]
-                  uppercase
-                  tracking-[0.35em]
-                  text-white/40
-                "
-              >
-                Dream
-              </p>
-
-              <h3
-                className="
-                  mt-3
-                  text-2xl
-                  font-light
-                  leading-relaxed
-                  text-[#F4F1EA]
-                "
-              >
-                {result.summary}
-              </h3>
-            </div>
-
-            <div>
-              <p
-                className="
-                  text-[10px]
-                  uppercase
-                  tracking-[0.35em]
-                  text-white/40
-                "
-              >
-                Symbols
-              </p>
-
-              <div
-                className="
-                  mt-4
-                  flex
-                  flex-wrap
-                  gap-2
-                "
-              >
-                {result.symbols.map(
-                  (symbol, index) => (
-                    <span
-                      key={`${symbol}-${index}`}
-                      className="
-                        rounded-full
-                        border
-                        border-purple-400/20
-                        bg-purple-500/10
-                        px-4
-                        py-2
-                        text-xs
-                        text-purple-200
-                      "
-                    >
-                      {symbol}
-                    </span>
-                  )
-                )}
-              </div>
-            </div>
-
-            <div>
-              <p
-                className="
-                  text-[10px]
-                  uppercase
-                  tracking-[0.35em]
-                  text-white/40
-                "
-              >
-                Emotion
-              </p>
-
-              <p
-                className="
-                  mt-3
-                  text-lg
-                  font-light
-                  text-purple-200
-                "
-              >
-                {result.emotion}
-              </p>
-            </div>
-
-            <div>
-              <p
-                className="
-                  text-[10px]
-                  uppercase
-                  tracking-[0.35em]
-                  text-white/40
-                "
-              >
-                Interpretation
-              </p>
-
-              <p
-                className="
-                  mt-3
-                  leading-8
-                  text-white/70
-                "
-              >
-                {result.interpretation}
-              </p>
-            </div>
-
-            <div
-              className="
-                border-t
-                border-white/10
-                pt-5
-              "
-            >
-              <div
-                className="
-                  flex
-                  items-center
-                  justify-between
-                  gap-4
-                "
-              >
+              <div>
                 <p
                   className="
                     text-[10px]
                     uppercase
-                    tracking-[0.4em]
-                    text-white/30
+                    tracking-[0.35em]
+                    text-white/40
                   "
                 >
-                  Powered by EON Dream Intelligence
+                  Symbols
                 </p>
 
-                {result.usage && (
+                <div
+                  className="
+                    mt-4
+                    flex
+                    flex-wrap
+                    gap-2
+                  "
+                >
+                  {result.symbols.map(
+                    (symbol, index) => (
+                      <span
+                        key={`${symbol}-${index}`}
+                        className="
+                          rounded-full
+                          border
+                          border-purple-400/20
+                          bg-purple-500/10
+                          px-4
+                          py-2
+                          text-xs
+                          text-purple-200
+                        "
+                      >
+                        {symbol}
+                      </span>
+                    )
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <p
+                  className="
+                    text-[10px]
+                    uppercase
+                    tracking-[0.35em]
+                    text-white/40
+                  "
+                >
+                  Emotion
+                </p>
+
+                <p
+                  className="
+                    mt-3
+                    text-lg
+                    font-light
+                    text-purple-200
+                  "
+                >
+                  {result.emotion}
+                </p>
+              </div>
+
+              <div>
+                <p
+                  className="
+                    text-[10px]
+                    uppercase
+                    tracking-[0.35em]
+                    text-white/40
+                  "
+                >
+                  Interpretation
+                </p>
+
+                <p
+                  className="
+                    mt-3
+                    leading-8
+                    text-white/70
+                  "
+                >
+                  {result.interpretation}
+                </p>
+              </div>
+
+              <div
+                className="
+                  border-t
+                  border-white/10
+                  pt-5
+                "
+              >
+                <div
+                  className="
+                    flex
+                    items-center
+                    justify-between
+                    gap-4
+                  "
+                >
                   <p
                     className="
-                      whitespace-nowrap
                       text-[10px]
                       uppercase
-                      tracking-[0.2em]
+                      tracking-[0.4em]
                       text-white/30
                     "
                   >
-                    {result.usage.remaining} free
-                    {" "}
-                    {result.usage.remaining === 1
-                      ? "analysis"
-                      : "analyses"}
-                    {" "}
-                    left
+                    Powered by EON Dream Intelligence
                   </p>
-                )}
+
+                  {result.usage && (
+                    <p
+                      className="
+                        whitespace-nowrap
+                        text-[10px]
+                        uppercase
+                        tracking-[0.2em]
+                        text-white/30
+                      "
+                    >
+                      {result.usage.remaining} free{" "}
+                      {result.usage.remaining === 1
+                        ? "analysis"
+                        : "analyses"}{" "}
+                      left
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          )
         )
       }
     />
