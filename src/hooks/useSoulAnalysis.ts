@@ -80,8 +80,35 @@ export function useSoulAnalysis() {
         );
 
       if (!response.ok) {
+
+        let errorCode =
+          "SOUL_ANALYSIS_FAILED";
+
+        try {
+
+          const errorData =
+            await response.json();
+
+          errorCode =
+            errorData?.error ??
+            errorCode;
+
+        } catch {
+          // Ignore invalid error response
+        }
+
+        if (
+          response.status === 403 &&
+          errorCode ===
+            "FREE_LIMIT_REACHED"
+        ) {
+          throw new Error(
+            "FREE_LIMIT_REACHED"
+          );
+        }
+
         throw new Error(
-          "Soul analysis failed"
+          errorCode
         );
       }
 
@@ -116,10 +143,6 @@ export function useSoulAnalysis() {
         soulResult
       );
 
-      /*
-        Memory
-      */
-
       setMemory({
 
         archetype:
@@ -135,10 +158,6 @@ export function useSoulAnalysis() {
           soulResult.shadow,
 
       });
-
-      /*
-        Timeline
-      */
 
       useJourneyStore
         .getState()
@@ -174,10 +193,6 @@ export function useSoulAnalysis() {
 
         });
 
-      /*
-        Orb Data
-      */
-
       setOrbData({
 
         archetype:
@@ -190,10 +205,6 @@ export function useSoulAnalysis() {
           soulResult.insight,
 
       });
-
-      /*
-        Orb State
-      */
 
       const newState =
         getSoulState(
