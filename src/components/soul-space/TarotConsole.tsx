@@ -265,38 +265,40 @@ export function TarotConsole() {
               </p>
             </div>
 
-            <button
-              type="button"
-              onClick={() => {
-                document
-                  .getElementById("pricing")
-                  ?.scrollIntoView({
-                    behavior: "smooth",
-                  });
-              }}
-              className="
-                inline-flex
-                cursor-pointer
-                items-center
-                justify-center
-                rounded-xl
-                border
-                border-[#D6B25E]/30
-                bg-[#D6B25E]/10
-                px-5
-                py-2.5
-                text-sm
-                text-[#F4F1EA]
-                transition
-                hover:border-[#D6B25E]/50
-                hover:bg-[#D6B25E]/20
-                focus:outline-none
-                focus:ring-2
-                focus:ring-[#D6B25E]/30
-              "
-            >
-              Unlock with Pro
-            </button>
+            <div className="flex justify-center">
+              <button
+                type="button"
+                onClick={() => {
+                  document
+                    .getElementById("pricing")
+                    ?.scrollIntoView({
+                      behavior: "smooth",
+                    });
+                }}
+                className="
+                  inline-flex
+                  cursor-pointer
+                  items-center
+                  justify-center
+                  rounded-xl
+                  border
+                  border-[#D6B25E]/30
+                  bg-[#D6B25E]/10
+                  px-5
+                  py-2.5
+                  text-sm
+                  text-[#F4F1EA]
+                  transition
+                  hover:border-[#D6B25E]/50
+                  hover:bg-[#D6B25E]/20
+                  focus:outline-none
+                  focus:ring-2
+                  focus:ring-[#D6B25E]/30
+                "
+              >
+                Unlock with Pro
+              </button>
+            </div>
           </motion.div>
         ) : (
           result && (
