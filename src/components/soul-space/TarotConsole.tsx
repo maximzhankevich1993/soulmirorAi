@@ -2,7 +2,6 @@
 "use client";
 
 import {
-  Sparkles,
   Layers,
   Brain,
 } from "lucide-react";
@@ -276,19 +275,21 @@ export function TarotConsole() {
                   });
               }}
               className="
-                w-full
+                inline-flex
                 cursor-pointer
-                rounded-2xl
+                items-center
+                justify-center
+                rounded-xl
                 border
                 border-[#D6B25E]/30
                 bg-[#D6B25E]/10
                 px-5
-                py-3
+                py-2.5
                 text-sm
                 text-[#F4F1EA]
                 transition
-                hover:bg-[#D6B25E]/20
                 hover:border-[#D6B25E]/50
+                hover:bg-[#D6B25E]/20
                 focus:outline-none
                 focus:ring-2
                 focus:ring-[#D6B25E]/30
