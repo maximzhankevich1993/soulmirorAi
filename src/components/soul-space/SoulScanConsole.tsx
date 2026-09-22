@@ -67,8 +67,18 @@ export function SoulScanConsole() {
   }
 
   function handleUpgrade() {
-    window.location.href =
-      "/checkout?plan=pro";
+
+    const pricingSection =
+      document.getElementById("pricing");
+
+    if (pricingSection) {
+
+      pricingSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+
+    }
   }
 
   return (
@@ -222,18 +232,27 @@ export function SoulScanConsole() {
               gap-3
               rounded-full
               border
-              border-white/15
-              bg-white/[0.06]
+              border-[#D6B25E]/30
+              bg-[#D6B25E]/10
               px-6
               py-3
               text-xs
               uppercase
               tracking-[0.2em]
               text-[#F4F1EA]
-              transition
-              hover:bg-white/[0.1]
+              transition-all
+              duration-300
+              hover:-translate-y-0.5
+              hover:border-[#D6B25E]/60
+              hover:bg-[#D6B25E]/20
+              hover:text-white
+              active:translate-y-0
+              focus:outline-none
+              focus:ring-2
+              focus:ring-[#D6B25E]/30
               "
             >
+
               Upgrade to Pro
 
               <ArrowRight
