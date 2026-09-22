@@ -25,6 +25,8 @@ export async function POST(req: Request) {
 
     const actor = await getActor();
 
+    console.log("SOUL SCAN ACTOR:", actor);
+
     // =========================================
     // ACCESS CHECK
     // 2 free uses per tool
