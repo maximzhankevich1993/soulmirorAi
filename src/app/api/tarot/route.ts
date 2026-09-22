@@ -13,6 +13,7 @@ import { getActor } from "@/lib/getActor";
 import {
   checkAccess,
   increaseUsage,
+  increaseGuestUsage,
 } from "@/lib/usage";
 
 const tarotCards = [
@@ -41,7 +42,9 @@ const tarotCards = [
 
 function getRandomCard() {
   return tarotCards[
-    Math.floor(Math.random() * tarotCards.length)
+    Math.floor(
+      Math.random() * tarotCards.length
+    )
   ];
 }
 
@@ -54,19 +57,26 @@ export async function POST() {
 
     const actor = await getActor();
 
+    console.log(
+      "TAROT ACTOR:",
+      actor
+    );
+
     // =========================================
     // ACCESS
     // 2 lifetime free uses for Tarot
     // Works for guests and registered users
     // =========================================
 
-    const access = await checkAccess("tarot");
+    const access =
+      await checkAccess("tarot");
 
     if (!access.allowed) {
       return NextResponse.json(
         {
           error:
-            access.reason || "FREE_LIMIT_REACHED",
+            access.reason ||
+            "FREE_LIMIT_REACHED",
 
           remaining: 0,
 
@@ -96,9 +106,11 @@ export async function POST() {
         method: "POST",
 
         headers: {
-          Authorization: `Api-Key ${YANDEX_API_KEY}`,
+          Authorization:
+            `Api-Key ${YANDEX_API_KEY}`,
 
-          "Content-Type": "application/json",
+          "Content-Type":
+            "application/json",
         },
 
         body: JSON.stringify({
@@ -145,7 +157,8 @@ No explanations outside JSON.
     // =========================================
 
     if (!response.ok) {
-      const errorText = await response.text();
+      const errorText =
+        await response.text();
 
       console.error(
         "YANDEX TAROT ERROR:",
@@ -162,10 +175,12 @@ No explanations outside JSON.
     // PARSE AI RESPONSE
     // =========================================
 
-    const data = await response.json();
+    const data =
+      await response.json();
 
     const content =
-      data?.result?.alternatives?.[0]?.message?.text;
+      data?.result?.alternatives?.[0]
+        ?.message?.text;
 
     if (!content) {
       throw new Error(
@@ -173,12 +188,14 @@ No explanations outside JSON.
       );
     }
 
-    const cleaned = content
-      .replace(/```json/g, "")
-      .replace(/```/g, "")
-      .trim();
+    const cleaned =
+      content
+        .replace(/```json/g, "")
+        .replace(/```/g, "")
+        .trim();
 
-    const parsed = JSON.parse(cleaned);
+    const parsed =
+      JSON.parse(cleaned);
 
     // =========================================
     // RESULT
@@ -204,8 +221,6 @@ No explanations outside JSON.
     //
     // Guest:
     //   guestId
-    //
-    // Prisma schema already supports both.
     // =========================================
 
     if (actor.type === "user") {
@@ -215,9 +230,11 @@ No explanations outside JSON.
 
           card: result.card,
 
-          meaning: result.meaning,
+          meaning:
+            result.meaning,
 
-          guidance: result.guidance,
+          guidance:
+            result.guidance,
         },
       });
     } else {
@@ -227,9 +244,11 @@ No explanations outside JSON.
 
           card: result.card,
 
-          meaning: result.meaning,
+          meaning:
+            result.meaning,
 
-          guidance: result.guidance,
+          guidance:
+            result.guidance,
         },
       });
     }
@@ -250,7 +269,7 @@ No explanations outside JSON.
         "tarot"
       );
     } else {
-      await increaseUsage(
+      await increaseGuestUsage(
         actor.guestId,
         "tarot"
       );
