@@ -225,36 +225,47 @@ export async function increaseGuestUsage(
   guestId: string,
   type: UsageType
 ) {
-  await prisma.guestSession.upsert({
-    where: {
-      guestId,
-    },
-
-    update: {
-      [type]: {
-        increment: 1,
-      },
-    },
-
-    create: {
-      guestId,
-
-      soulScan:
-        type === "soulScan"
-          ? 1
-          : 0,
-
-      dream:
-        type === "dream"
-          ? 1
-          : 0,
-
-      tarot:
-        type === "tarot"
-          ? 1
-          : 0,
-
-      expiresAt: null,
-    },
+  console.log("INCREASE GUEST USAGE:", {
+    guestId,
+    type,
   });
+
+  const result =
+    await prisma.guestSession.upsert({
+      where: {
+        guestId,
+      },
+
+      update: {
+        [type]: {
+          increment: 1,
+        },
+      },
+
+      create: {
+        guestId,
+
+        soulScan:
+          type === "soulScan"
+            ? 1
+            : 0,
+
+        dream:
+          type === "dream"
+            ? 1
+            : 0,
+
+        tarot:
+          type === "tarot"
+            ? 1
+            : 0,
+
+        expiresAt: null,
+      },
+    });
+
+  console.log(
+    "GUEST USAGE AFTER UPSERT:",
+    result
+  );
 }
