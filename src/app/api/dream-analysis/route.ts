@@ -1,4 +1,3 @@
-
 import { NextResponse } from "next/server";
 
 import { prisma } from "../../../lib/prisma";
@@ -12,6 +11,7 @@ import {
 import {
   checkAccess,
   increaseUsage,
+  increaseGuestUsage,
 } from "../../../lib/usage";
 
 import { getActor } from "../../../lib/getActor";
@@ -25,18 +25,28 @@ export async function POST(req: Request) {
 
     const actor = await getActor();
 
+    console.log(
+      "DREAM ANALYSIS ACTOR:",
+      actor
+    );
+
     // =========================================
     // ACCESS
     // 2 free lifetime uses
     // =========================================
 
-    const access = await checkAccess("dream");
+    const access =
+      await checkAccess("dream");
 
     if (!access.allowed) {
       return NextResponse.json(
         {
-          error: access.reason || "FREE_LIMIT_REACHED",
+          error:
+            access.reason ||
+            "FREE_LIMIT_REACHED",
+
           remaining: 0,
+
           plan: access.plan,
         },
         {
@@ -88,8 +98,11 @@ export async function POST(req: Request) {
         method: "POST",
 
         headers: {
-          Authorization: `Api-Key ${YANDEX_API_KEY}`,
-          "Content-Type": "application/json",
+          Authorization:
+            `Api-Key ${YANDEX_API_KEY}`,
+
+          "Content-Type":
+            "application/json",
         },
 
         body: JSON.stringify({
@@ -132,7 +145,8 @@ No markdown.
     );
 
     if (!response.ok) {
-      const errorText = await response.text();
+      const errorText =
+        await response.text();
 
       console.error(
         "YANDEX API ERROR:",
@@ -140,28 +154,36 @@ No markdown.
         errorText
       );
 
-      throw new Error("Yandex AI request failed");
+      throw new Error(
+        "Yandex AI request failed"
+      );
     }
 
-    const data = await response.json();
+    const data =
+      await response.json();
 
     const content =
-      data?.result?.alternatives?.[0]?.message?.text;
+      data?.result?.alternatives?.[0]
+        ?.message?.text;
 
     if (!content) {
-      throw new Error("Empty AI response");
+      throw new Error(
+        "Empty AI response"
+      );
     }
 
     // =========================================
     // CLEAN AI RESPONSE
     // =========================================
 
-    const cleaned = content
-      .replace(/```json/g, "")
-      .replace(/```/g, "")
-      .trim();
+    const cleaned =
+      content
+        .replace(/```json/g, "")
+        .replace(/```/g, "")
+        .trim();
 
-    const parsed = JSON.parse(cleaned);
+    const parsed =
+      JSON.parse(cleaned);
 
     // =========================================
     // NORMALIZE RESULT
@@ -201,11 +223,14 @@ No markdown.
 
           dream,
 
-          summary: result.summary,
+          summary:
+            result.summary,
 
-          emotion: result.emotion,
+          emotion:
+            result.emotion,
 
-          interpretation: result.interpretation,
+          interpretation:
+            result.interpretation,
         },
       });
     }
@@ -221,7 +246,7 @@ No markdown.
         "dream"
       );
     } else {
-      await increaseUsage(
+      await increaseGuestUsage(
         actor.guestId,
         "dream"
       );
@@ -245,7 +270,8 @@ No markdown.
 
         plan: access.plan,
 
-        guest: actor.type === "guest",
+        guest:
+          actor.type === "guest",
       },
     });
   } catch (error) {
@@ -256,7 +282,8 @@ No markdown.
 
     return NextResponse.json(
       {
-        error: "Dream analysis failed",
+        error:
+          "Dream analysis failed",
       },
       {
         status: 500,
@@ -264,4 +291,3 @@ No markdown.
     );
   }
 }
-
