@@ -227,6 +227,7 @@ export function SoulScanConsole() {
               mx-auto
               mt-7
               flex
+              cursor-pointer
               items-center
               justify-center
               gap-3
