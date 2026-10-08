@@ -1,176 +1,77 @@
 "use client";
 
 import { motion } from "framer-motion";
-
+import { useRouter } from "next/navigation";
 import {
   Brain,
   Moon,
   Sparkles,
-  Eye,
   ArrowUpRight,
 } from "lucide-react";
 
-import type { LucideIcon } from "lucide-react";
-
-const modules: {
+interface IntelligenceModule {
+  id: string;
+  label: string;
   title: string;
   description: string;
+  icon: typeof Brain;
+  href: string;
   status: string;
-  number: string;
-  icon: LucideIcon;
-}[] = [
+}
+
+const modules: IntelligenceModule[] = [
   {
-    number: "01",
-    title: "Identity System",
+    id: "soul-scan",
+    label: "01",
+    title: "Soul Scan",
     description:
-      "Understand your personality patterns, archetypes and the deeper structures shaping who you are.",
-    status: "Active",
+      "A deeper reading of your inner patterns, emotional state, and emerging archetypal themes.",
     icon: Brain,
+    href: "/soul-scan",
+    status: "Available",
   },
   {
-    number: "02",
-    title: "Dream Intelligence",
+    id: "dream-analysis",
+    label: "02",
+    title: "Dream Analysis",
     description:
-      "Explore symbols, emotions and subconscious signals hidden inside your dreams.",
-    status: "3 Insights",
+      "Explore the symbols, emotions, and hidden patterns within your dreams.",
     icon: Moon,
+    href: "/dream-analysis",
+    status: "Available",
   },
   {
-    number: "03",
-    title: "Reflection Engine",
+    id: "tarot",
+    label: "03",
+    title: "Symbolic Intelligence",
     description:
-      "Discover recurring patterns through intelligent reflection and personal AI analysis.",
-    status: "Online",
+      "Use symbolic reflection to explore questions, patterns, and perspectives from another angle.",
     icon: Sparkles,
-  },
-  {
-    number: "04",
-    title: "Shadow Analysis",
-    description:
-      "Explore deeper emotional layers and the parts of yourself asking to be understood.",
-    status: "Unlocked",
-    icon: Eye,
+    href: "/tarot",
+    status: "Available",
   },
 ];
 
 export function IntelligenceModules() {
+  const router = useRouter();
+
   return (
-    <section className="relative">
+    <div className="w-full">
       {/* =========================================
-          INTRO
+          MODULE LIST
       ========================================== */}
 
-      <div className="max-w-3xl">
-        <motion.p
-          initial={{
-            opacity: 0,
-            y: 15,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          viewport={{
-            once: true,
-            margin: "-100px",
-          }}
-          transition={{
-            duration: 0.7,
-          }}
-          className="
-            text-[10px]
-            uppercase
-            tracking-[0.5em]
-            text-[#D6B25E]
-          "
-        >
-          Explore yourself
-        </motion.p>
-
-        <motion.h2
-          initial={{
-            opacity: 0,
-            y: 25,
-            filter: "blur(10px)",
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-            filter: "blur(0px)",
-          }}
-          viewport={{
-            once: true,
-            margin: "-100px",
-          }}
-          transition={{
-            delay: 0.08,
-            duration: 0.9,
-            ease: [0.16, 1, 0.3, 1],
-          }}
-          className="
-            mt-5
-            font-[family:var(--font-cormorant)]
-            text-5xl
-            font-light
-            leading-[1.05]
-            text-[#F4F1EA]
-            sm:text-6xl
-            md:text-7xl
-          "
-        >
-          Your intelligence
-          <br />
-          <span className="text-white/30">
-            tools.
-          </span>
-        </motion.h2>
-
-        <motion.p
-          initial={{
-            opacity: 0,
-            y: 15,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          viewport={{
-            once: true,
-            margin: "-100px",
-          }}
-          transition={{
-            delay: 0.2,
-            duration: 0.8,
-          }}
-          className="
-            mt-7
-            max-w-xl
-            text-sm
-            leading-7
-            text-white/40
-          "
-        >
-          A collection of intelligence systems designed
-          to help you understand yourself from different
-          perspectives.
-        </motion.p>
-      </div>
-
-      {/* =========================================
-          MODULES
-      ========================================== */}
-
-      <div className="mt-16">
+      <div className="mt-10 sm:mt-16">
         {modules.map((module, index) => {
           const Icon = module.icon;
           const isFirst = index === 0;
 
           return (
             <motion.div
-              key={module.title}
+              key={module.id}
               initial={{
                 opacity: 0,
-                y: 30,
+                y: 24,
               }}
               whileInView={{
                 opacity: 1,
@@ -178,7 +79,7 @@ export function IntelligenceModules() {
               }}
               viewport={{
                 once: true,
-                margin: "-80px",
+                amount: 0.2,
               }}
               transition={{
                 delay: index * 0.08,
@@ -189,160 +90,151 @@ export function IntelligenceModules() {
                 group
                 relative
                 border-t
-                border-white/[0.07]
-                ${index === modules.length - 1 ? "border-b" : ""}
+                border-white/[0.06]
+                ${
+                  isFirst
+                    ? "py-7 sm:py-10"
+                    : "py-6 sm:py-8"
+                }
               `}
             >
               <div
-                className={`
-                  relative
+                className="
                   flex
                   flex-col
-                  gap-7
-                  py-8
-                  transition-all
-                  duration-700
+                  gap-5
                   md:flex-row
                   md:items-center
                   md:gap-10
-                  ${isFirst ? "py-10 md:py-12" : ""}
-                `}
+                "
               >
-                {/* =================================
-                    NUMBER
-                ================================= */}
-
-                <div
-                  className="
-                    hidden
-                    w-12
-                    shrink-0
-                    md:block
-                  "
-                >
-                  <span
-                    className="
-                      text-[9px]
-                      uppercase
-                      tracking-[0.3em]
-                      text-white/20
-                      transition-colors
-                      duration-500
-                      group-hover:text-[#D6B25E]/60
-                    "
-                  >
-                    {module.number}
-                  </span>
-                </div>
-
-                {/* =================================
-                    ICON
-                ================================= */}
+                {/* =========================================
+                    NUMBER + ICON
+                ========================================== */}
 
                 <div
                   className="
                     flex
-                    h-11
-                    w-11
                     shrink-0
                     items-center
-                    justify-center
-                    rounded-full
-                    border
-                    border-white/[0.08]
-                    bg-white/[0.025]
-                    transition-all
-                    duration-700
-                    group-hover:border-[#D6B25E]/30
-                    group-hover:bg-[#D6B25E]/[0.06]
-                    group-hover:scale-105
+                    gap-4
+                    md:w-[210px]
                   "
                 >
-                  <Icon
-                    size={17}
-                    strokeWidth={1.4}
+                  <span
                     className="
+                      text-[8px]
+                      uppercase
+                      tracking-[0.35em]
+                      text-white/15
+                    "
+                  >
+                    {module.label}
+                  </span>
+
+                  <div
+                    className="
+                      flex
+                      h-11
+                      w-11
+                      shrink-0
+                      items-center
+                      justify-center
+                      border
+                      border-white/[0.08]
                       text-white/45
                       transition-colors
                       duration-500
+                      group-hover:border-[#D6B25E]/30
                       group-hover:text-[#D6B25E]
                     "
-                  />
+                  >
+                    <Icon
+                      size={17}
+                      strokeWidth={1.25}
+                    />
+                  </div>
                 </div>
 
-                {/* =================================
-                    TITLE
-                ================================= */}
+                {/* =========================================
+                    CONTENT
+                ========================================== */}
 
-                <div
-                  className={`
-                    shrink-0
-                    md:w-[250px]
-                    ${isFirst ? "md:w-[280px]" : ""}
-                  `}
-                >
-                  <h3
-                    className={`
-                      font-[family:var(--font-cormorant)]
-                      font-light
-                      leading-tight
-                      text-[#F4F1EA]
-                      transition-transform
-                      duration-700
-                      group-hover:translate-x-1
-                      ${
-                        isFirst
-                          ? "text-3xl sm:text-4xl"
-                          : "text-2xl sm:text-3xl"
-                      }
-                    `}
-                  >
-                    {module.title}
-                  </h3>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-3">
+                    <h4
+                      className={`
+                        font-[family:var(--font-cormorant)]
+                        font-light
+                        leading-none
+                        tracking-[-0.01em]
+                        text-[#F4F1EA]
+                        ${
+                          isFirst
+                            ? "text-[1.7rem] sm:text-4xl"
+                            : "text-[1.45rem] sm:text-3xl"
+                        }
+                      `}
+                    >
+                      {module.title}
+                    </h4>
+
+                    <span
+                      className="
+                        h-1
+                        w-1
+                        shrink-0
+                        rounded-full
+                        bg-[#D6B25E]/60
+                      "
+                    />
+                  </div>
 
                   <p
                     className="
-                      mt-2
-                      text-[8px]
+                      mt-2.5
+                      max-w-2xl
+                      text-[13px]
+                      leading-6
+                      text-white/35
+                      sm:mt-4
+                      sm:text-sm
+                      sm:leading-7
+                    "
+                  >
+                    {module.description}
+                  </p>
+
+                  <p
+                    className="
+                      mt-3
+                      text-[7px]
                       uppercase
-                      tracking-[0.3em]
-                      text-white/20
+                      tracking-[0.35em]
+                      text-white/15
+                      sm:mt-4
+                      sm:text-[8px]
                     "
                   >
                     {module.status}
                   </p>
                 </div>
 
-                {/* =================================
-                    DESCRIPTION
-                ================================= */}
-
-                <p
-                  className="
-                    max-w-xl
-                    flex-1
-                    text-sm
-                    leading-7
-                    text-white/35
-                    transition-colors
-                    duration-500
-                    group-hover:text-white/50
-                  "
-                >
-                  {module.description}
-                </p>
-
-                {/* =================================
+                {/* =========================================
                     ACTION
-                ================================= */}
+                ========================================== */}
 
                 <div
                   className="
                     flex
-                    shrink-0
+                    w-full
                     items-center
                     justify-between
+                    pt-1
+                    md:w-auto
+                    md:shrink-0
                     md:justify-end
+                    md:pt-0
                   "
                 >
                   <span
@@ -351,119 +243,59 @@ export function IntelligenceModules() {
                       uppercase
                       tracking-[0.35em]
                       text-white/20
-                      md:hidden
+                      transition-colors
+                      duration-500
+                      group-hover:text-[#D6B25E]/60
+                      sm:hidden
                     "
                   >
                     Explore
                   </span>
 
-                  <div
+                  <button
+                    type="button"
+                    aria-label={`Open ${module.title}`}
+                    onClick={() =>
+                      router.push(module.href)
+                    }
                     className="
                       flex
                       h-10
                       w-10
+                      shrink-0
                       items-center
                       justify-center
-                      rounded-full
                       border
-                      border-white/[0.07]
-                      opacity-60
+                      border-white/[0.08]
+                      text-white/35
+                      outline-none
                       transition-all
                       duration-500
-                      group-hover:border-[#D6B25E]/30
-                      group-hover:bg-[#D6B25E]/[0.05]
-                      group-hover:opacity-100
+                      active:border-[#D6B25E]/40
+                      active:text-[#D6B25E]
+                      sm:h-11
+                      sm:w-11
+                      md:group-hover:border-[#D6B25E]/30
+                      md:group-hover:text-[#D6B25E]
                     "
                   >
                     <ArrowUpRight
                       size={15}
-                      strokeWidth={1.3}
-                      className="
-                        text-white/40
-                        transition-all
-                        duration-500
-                        group-hover:text-[#D6B25E]
-                        group-hover:translate-x-0.5
-                        group-hover:-translate-y-0.5
-                      "
+                      strokeWidth={1.25}
                     />
-                  </div>
+                  </button>
                 </div>
-
-                {/* =================================
-                    HOVER LIGHT
-                ================================= */}
-
-                <div
-                  className="
-                    pointer-events-none
-                    absolute
-                    inset-y-0
-                    left-0
-                    w-1/2
-                    -translate-x-8
-                    bg-gradient-to-r
-                    from-[#D6B25E]/[0.025]
-                    to-transparent
-                    opacity-0
-                    transition-all
-                    duration-700
-                    group-hover:translate-x-0
-                    group-hover:opacity-100
-                  "
-                />
               </div>
             </motion.div>
           );
         })}
+
+        {/* =========================================
+            BOTTOM BORDER
+        ========================================== */}
+
+        <div className="border-t border-white/[0.06]" />
       </div>
-
-      {/* =========================================
-          BOTTOM NOTE
-      ========================================== */}
-
-      <motion.div
-        initial={{
-          opacity: 0,
-        }}
-        whileInView={{
-          opacity: 1,
-        }}
-        viewport={{
-          once: true,
-        }}
-        transition={{
-          delay: 0.4,
-          duration: 0.8,
-        }}
-        className="
-          mt-8
-          flex
-          items-center
-          gap-3
-        "
-      >
-        <span
-          className="
-            h-1
-            w-1
-            rounded-full
-            bg-[#D6B25E]
-            shadow-[0_0_10px_rgba(214,178,94,0.7)]
-          "
-        />
-
-        <span
-          className="
-            text-[8px]
-            uppercase
-            tracking-[0.35em]
-            text-white/20
-          "
-        >
-          Intelligence evolves with you
-        </span>
-      </motion.div>
-    </section>
+    </div>
   );
 }
