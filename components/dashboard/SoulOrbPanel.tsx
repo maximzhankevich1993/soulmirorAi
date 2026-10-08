@@ -17,22 +17,19 @@ function StateRow({
     <motion.div
       initial={{
         opacity: 0,
-        y: 16,
+        y: 10,
       }}
       whileInView={{
         opacity: 1,
         y: 0,
       }}
-      whileHover={{
-        x: 5,
-      }}
       viewport={{
         once: true,
-        amount: 0.5,
+        amount: 0.35,
       }}
       transition={{
         delay,
-        duration: 0.7,
+        duration: 0.45,
         ease: [0.16, 1, 0.3, 1],
       }}
       className="
@@ -107,18 +104,18 @@ export function SoulOrbPanel() {
         className="
           pointer-events-none
           absolute
-          right-[-120px]
-          top-[-100px]
-          h-[380px]
-          w-[380px]
+          right-[-100px]
+          top-[-80px]
+          h-[320px]
+          w-[320px]
           rounded-full
           bg-[#D6B25E]/[0.018]
-          blur-[140px]
-          sm:right-[-180px]
-          sm:top-[-120px]
-          sm:h-[500px]
-          sm:w-[500px]
-          sm:blur-[160px]
+          blur-[100px]
+          sm:right-[-160px]
+          sm:top-[-110px]
+          sm:h-[440px]
+          sm:w-[440px]
+          sm:blur-[120px]
         "
       />
 
@@ -146,7 +143,7 @@ export function SoulOrbPanel() {
           <motion.div
             initial={{
               opacity: 0,
-              y: 16,
+              y: 10,
             }}
             whileInView={{
               opacity: 1,
@@ -154,10 +151,10 @@ export function SoulOrbPanel() {
             }}
             viewport={{
               once: true,
-              amount: 0.5,
+              amount: 0.35,
             }}
             transition={{
-              duration: 0.8,
+              duration: 0.45,
               ease: [0.16, 1, 0.3, 1],
             }}
             className="
@@ -195,21 +192,19 @@ export function SoulOrbPanel() {
           <motion.h3
             initial={{
               opacity: 0,
-              y: 35,
-              filter: "blur(14px)",
+              y: 20,
             }}
             whileInView={{
               opacity: 1,
               y: 0,
-              filter: "blur(0px)",
             }}
             viewport={{
               once: true,
-              amount: 0.35,
+              amount: 0.25,
             }}
             transition={{
-              delay: 0.12,
-              duration: 1,
+              delay: 0.08,
+              duration: 0.55,
               ease: [0.16, 1, 0.3, 1],
             }}
             className="
@@ -234,7 +229,7 @@ export function SoulOrbPanel() {
           <motion.p
             initial={{
               opacity: 0,
-              y: 20,
+              y: 12,
             }}
             whileInView={{
               opacity: 1,
@@ -242,12 +237,11 @@ export function SoulOrbPanel() {
             }}
             viewport={{
               once: true,
-              amount: 0.35,
+              amount: 0.25,
             }}
             transition={{
-              delay: 0.3,
-              duration: 0.9,
-              ease: [0.16, 1, 0.3, 1],
+              delay: 0.15,
+              duration: 0.5,
             }}
             className="
               mt-6
@@ -276,11 +270,11 @@ export function SoulOrbPanel() {
             }}
             viewport={{
               once: true,
-              amount: 0.4,
+              amount: 0.25,
             }}
             transition={{
-              delay: 0.5,
-              duration: 0.8,
+              delay: 0.25,
+              duration: 0.45,
             }}
             className="
               mt-7
@@ -296,7 +290,7 @@ export function SoulOrbPanel() {
                 w-1.5
                 rounded-full
                 bg-[#D6B25E]
-                shadow-[0_0_14px_rgba(214,178,94,0.65)]
+                shadow-[0_0_10px_rgba(214,178,94,0.55)]
               "
             />
 
@@ -354,25 +348,25 @@ export function SoulOrbPanel() {
             <StateRow
               label="Emotional tone"
               value="Reflective"
-              delay={0.1}
+              delay={0.05}
             />
 
             <StateRow
               label="Dominant pattern"
               value="Seeking clarity"
-              delay={0.18}
+              delay={0.1}
             />
 
             <StateRow
               label="Inner direction"
               value="Moving inward"
-              delay={0.26}
+              delay={0.15}
             />
 
             <StateRow
               label="Current energy"
               value="Quiet transformation"
-              delay={0.34}
+              delay={0.2}
             />
           </div>
 
@@ -381,7 +375,7 @@ export function SoulOrbPanel() {
           <motion.div
             initial={{
               opacity: 0,
-              y: 12,
+              y: 10,
             }}
             whileInView={{
               opacity: 1,
@@ -389,11 +383,11 @@ export function SoulOrbPanel() {
             }}
             viewport={{
               once: true,
-              amount: 0.4,
+              amount: 0.3,
             }}
             transition={{
-              delay: 0.5,
-              duration: 0.8,
+              delay: 0.25,
+              duration: 0.5,
             }}
             className="
               mt-10
