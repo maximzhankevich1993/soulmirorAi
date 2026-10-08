@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { Menu, X } from "lucide-react";
 
 import { supabase } from "@/lib/supabase/client";
 
@@ -33,6 +34,7 @@ export function DashboardShell({
   const [userName, setUserName] = useState("there");
   const [userPlan, setUserPlan] = useState<UserPlan>("free");
   const [closingWelcome, setClosingWelcome] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   /*
    * =========================================
@@ -52,10 +54,6 @@ export function DashboardShell({
           return;
         }
 
-        /*
-         * USER NAME
-         */
-
         const metadataName =
           user.user_metadata?.name ||
           user.user_metadata?.full_name ||
@@ -67,10 +65,6 @@ export function DashboardShell({
           "there";
 
         setUserName(firstName);
-
-        /*
-         * USER PLAN
-         */
 
         try {
           const response = await fetch("/api/profile", {
@@ -128,6 +122,68 @@ export function DashboardShell({
 
   /*
    * =========================================
+   * CLOSE MOBILE MENU
+   * =========================================
+   */
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+
+    return () => {
+      window.removeEventListener(
+        "keydown",
+        handleEscape
+      );
+    };
+  }, [mobileMenuOpen]);
+
+  /*
+   * =========================================
+   * NAVIGATION HELPERS
+   * =========================================
+   */
+
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
+  };
+
+  const scrollToSection = (id: string) => {
+    closeMobileMenu();
+
+    window.setTimeout(() => {
+      document
+        .getElementById(id)
+        ?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+    }, 50);
+  };
+
+  const navigate = (path: string) => {
+    closeMobileMenu();
+    router.push(path);
+  };
+
+  const handleLogout = async () => {
+    closeMobileMenu();
+
+    await supabase.auth.signOut();
+
+    router.push("/");
+    router.refresh();
+  };
+
+  /*
+   * =========================================
    * PLAN LABEL
    * =========================================
    */
@@ -162,49 +218,54 @@ export function DashboardShell({
           overflow-hidden
         "
       >
-        {/* Main atmosphere */}
-
         <div
           className="
             absolute
             left-1/2
-            top-[-180px]
-            h-[700px]
-            w-[700px]
+            top-[-140px]
+            h-[500px]
+            w-[500px]
             -translate-x-1/2
             rounded-full
             bg-[#D6B25E]/[0.035]
-            blur-[180px]
+            blur-[150px]
+            sm:top-[-180px]
+            sm:h-[700px]
+            sm:w-[700px]
+            sm:blur-[180px]
           "
         />
-
-        {/* Right atmosphere */}
 
         <div
           className="
             absolute
-            right-[-300px]
+            right-[-260px]
             top-[35%]
+            hidden
             h-[650px]
             w-[650px]
             rounded-full
             bg-[#D6B25E]/[0.018]
             blur-[180px]
+            sm:block
           "
         />
-
-        {/* Bottom atmosphere */}
 
         <div
           className="
             absolute
-            bottom-[-300px]
-            left-[-250px]
-            h-[600px]
-            w-[600px]
+            bottom-[-250px]
+            left-[-220px]
+            h-[500px]
+            w-[500px]
             rounded-full
             bg-[#8B5CF6]/[0.012]
-            blur-[180px]
+            blur-[160px]
+            sm:bottom-[-300px]
+            sm:left-[-250px]
+            sm:h-[600px]
+            sm:w-[600px]
+            sm:blur-[180px]
           "
         />
       </div>
@@ -241,8 +302,6 @@ export function DashboardShell({
               bg-[#050505]
             "
           >
-            {/* Welcome light */}
-
             <motion.div
               initial={{
                 opacity: 0,
@@ -261,17 +320,18 @@ export function DashboardShell({
                 absolute
                 left-1/2
                 top-1/2
-                h-[650px]
-                w-[900px]
+                h-[500px]
+                w-[700px]
                 -translate-x-1/2
                 -translate-y-1/2
                 rounded-full
                 bg-[#D6B25E]/[0.035]
-                blur-[180px]
+                blur-[150px]
+                sm:h-[650px]
+                sm:w-[900px]
+                sm:blur-[180px]
               "
             />
-
-            {/* Secondary light */}
 
             <motion.div
               initial={{
@@ -292,17 +352,18 @@ export function DashboardShell({
                 absolute
                 left-1/2
                 top-[42%]
-                h-[350px]
-                w-[550px]
+                h-[280px]
+                w-[430px]
                 -translate-x-1/2
                 -translate-y-1/2
                 rounded-full
                 bg-white/[0.012]
-                blur-[120px]
+                blur-[100px]
+                sm:h-[350px]
+                sm:w-[550px]
+                sm:blur-[120px]
               "
             />
-
-            {/* Content */}
 
             <div
               className="
@@ -311,12 +372,11 @@ export function DashboardShell({
                 flex
                 flex-col
                 items-center
-                px-6
+                px-5
                 text-center
+                sm:px-6
               "
             >
-              {/* Brand */}
-
               <motion.p
                 initial={{
                   opacity: 0,
@@ -333,17 +393,16 @@ export function DashboardShell({
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 className="
-                  text-[10px]
+                  text-[9px]
                   uppercase
-                  tracking-[0.7em]
+                  tracking-[0.6em]
                   text-[#D6B25E]
                   sm:text-[11px]
+                  sm:tracking-[0.7em]
                 "
               >
                 SOULMIRROR
               </motion.p>
-
-              {/* Line */}
 
               <motion.div
                 initial={{
@@ -360,18 +419,18 @@ export function DashboardShell({
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 className="
-                  mt-7
+                  mt-6
                   h-px
-                  w-20
+                  w-16
                   origin-center
                   bg-gradient-to-r
                   from-transparent
                   via-[#D6B25E]/50
                   to-transparent
+                  sm:mt-7
+                  sm:w-20
                 "
               />
-
-              {/* Greeting */}
 
               <motion.h1
                 initial={{
@@ -390,13 +449,14 @@ export function DashboardShell({
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 className="
-                  mt-8
-                  max-w-[1000px]
+                  mt-6
+                  max-w-[900px]
                   font-[family:var(--font-cormorant)]
-                  text-5xl
+                  text-[2.65rem]
                   font-light
                   leading-[1.05]
                   text-[#F4F1EA]
+                  sm:mt-8
                   sm:text-6xl
                   md:text-7xl
                   lg:text-8xl
@@ -407,8 +467,6 @@ export function DashboardShell({
                   {userName}.
                 </span>
               </motion.h1>
-
-              {/* Subtitle */}
 
               <motion.p
                 initial={{
@@ -426,16 +484,16 @@ export function DashboardShell({
                   duration: 1,
                 }}
                 className="
-                  mt-6
-                  text-sm
+                  mt-5
+                  text-xs
                   tracking-wide
                   text-white/35
+                  sm:mt-6
+                  sm:text-sm
                 "
               >
                 Your personal intelligence space
               </motion.p>
-
-              {/* Online indicator */}
 
               <motion.div
                 initial={{
@@ -449,10 +507,11 @@ export function DashboardShell({
                   duration: 1,
                 }}
                 className="
-                  mt-12
+                  mt-8
                   flex
                   items-center
                   gap-3
+                  sm:mt-12
                 "
               >
                 <span
@@ -467,10 +526,12 @@ export function DashboardShell({
 
                 <span
                   className="
-                    text-[8px]
+                    text-[7px]
                     uppercase
-                    tracking-[0.45em]
+                    tracking-[0.4em]
                     text-white/20
+                    sm:text-[8px]
+                    sm:tracking-[0.45em]
                   "
                 >
                   Intelligence online
@@ -512,10 +573,12 @@ export function DashboardShell({
           mx-auto
           w-full
           max-w-[1400px]
-          px-5
-          pb-32
-          pt-8
+          px-4
+          pb-20
+          pt-5
           sm:px-8
+          sm:pb-32
+          sm:pt-8
           lg:px-12
         "
       >
@@ -525,24 +588,28 @@ export function DashboardShell({
 
         <header
           className="
+            relative
             flex
             items-center
             justify-between
             border-b
             border-white/[0.06]
-            pb-6
+            pb-4
+            sm:pb-6
           "
         >
-          {/* SOULMIRROR BRAND */}
+          {/* DESKTOP BRAND */}
 
           <button
             type="button"
             onClick={() => router.push("/")}
             className="
               group
+              hidden
               cursor-pointer
               text-left
               outline-none
+              sm:block
             "
           >
             <p
@@ -575,18 +642,55 @@ export function DashboardShell({
             </p>
           </button>
 
-          {/* USER AREA */}
+          {/* MOBILE BRAND */}
+
+          <button
+            type="button"
+            onClick={() => navigate("/dashboard")}
+            className="
+              flex
+              cursor-pointer
+              flex-col
+              text-left
+              outline-none
+              sm:hidden
+            "
+          >
+            <p
+              className="
+                text-[10px]
+                uppercase
+                tracking-[0.45em]
+                text-[#D6B25E]
+              "
+            >
+              SoulMirror
+            </p>
+
+            <p
+              className="
+                mt-1.5
+                text-[8px]
+                uppercase
+                tracking-[0.25em]
+                text-white/25
+              "
+            >
+              Dashboard
+            </p>
+          </button>
+
+          {/* DESKTOP USER AREA */}
 
           <div
             className="
-              flex
+              hidden
               items-center
               gap-4
+              sm:flex
               sm:gap-7
             "
           >
-            {/* USER */}
-
             <div className="text-right">
               <p
                 className="
@@ -612,30 +716,19 @@ export function DashboardShell({
               </p>
             </div>
 
-            {/* DIVIDER */}
-
             <div
               className="
                 hidden
                 h-8
                 w-px
                 bg-white/[0.08]
-                sm:block
+                md:block
               "
             />
 
-            {/* PLAN */}
-
             <button
               type="button"
-              onClick={() => {
-                document
-                  .getElementById("plans")
-                  ?.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start",
-                  });
-              }}
+              onClick={() => scrollToSection("plans")}
               className="
                 group
                 cursor-pointer
@@ -670,8 +763,6 @@ export function DashboardShell({
               </p>
             </button>
 
-            {/* SETTINGS */}
-
             <button
               type="button"
               onClick={() => router.push("/settings")}
@@ -681,6 +772,7 @@ export function DashboardShell({
                 uppercase
                 tracking-[0.3em]
                 text-white/30
+                outline-none
                 transition-colors
                 duration-500
                 hover:text-[#D6B25E]
@@ -689,6 +781,327 @@ export function DashboardShell({
               Settings
             </button>
           </div>
+
+          {/* MOBILE MENU BUTTON */}
+
+          <button
+            type="button"
+            onClick={() =>
+              setMobileMenuOpen((value) => !value)
+            }
+            aria-label={
+              mobileMenuOpen
+                ? "Close menu"
+                : "Open menu"
+            }
+            aria-expanded={mobileMenuOpen}
+            className="
+              flex
+              h-10
+              w-10
+              items-center
+              justify-center
+              border
+              border-white/[0.08]
+              text-white/60
+              outline-none
+              transition-colors
+              duration-300
+              active:text-[#D6B25E]
+              sm:hidden
+            "
+          >
+            {mobileMenuOpen ? (
+              <X size={17} strokeWidth={1.5} />
+            ) : (
+              <Menu size={17} strokeWidth={1.5} />
+            )}
+          </button>
+
+          {/* =========================================
+              MOBILE MENU
+          ========================================== */}
+
+          <AnimatePresence>
+            {mobileMenuOpen && (
+              <motion.div
+                initial={{
+                  opacity: 0,
+                  y: -8,
+                  filter: "blur(8px)",
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  filter: "blur(0px)",
+                }}
+                exit={{
+                  opacity: 0,
+                  y: -8,
+                  filter: "blur(8px)",
+                }}
+                transition={{
+                  duration: 0.3,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="
+                  absolute
+                  left-0
+                  right-0
+                  top-full
+                  z-50
+                  border-b
+                  border-white/[0.08]
+                  bg-[#050505]/[0.97]
+                  backdrop-blur-xl
+                  sm:hidden
+                "
+              >
+                <div className="px-1 py-5">
+                  {/* ACCOUNT */}
+
+                  <div className="px-4 pb-5">
+                    <p
+                      className="
+                        text-[8px]
+                        uppercase
+                        tracking-[0.35em]
+                        text-white/20
+                      "
+                    >
+                      Personal space
+                    </p>
+
+                    <p
+                      className="
+                        mt-2
+                        font-[family:var(--font-cormorant)]
+                        text-2xl
+                        font-light
+                        text-[#F4F1EA]
+                      "
+                    >
+                      {userName}
+                    </p>
+
+                    <p
+                      className="
+                        mt-1
+                        text-[8px]
+                        uppercase
+                        tracking-[0.3em]
+                        text-[#D6B25E]/70
+                      "
+                    >
+                      {planLabel}
+                    </p>
+                  </div>
+
+                  <div
+                    className="
+                      mx-4
+                      border-t
+                      border-white/[0.06]
+                    "
+                  />
+
+                  {/* NAVIGATION */}
+
+                  <nav className="py-3">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        navigate("/dashboard")
+                      }
+                      className="
+                        flex
+                        w-full
+                        items-center
+                        justify-between
+                        px-4
+                        py-3.5
+                        text-left
+                        text-[10px]
+                        uppercase
+                        tracking-[0.3em]
+                        text-[#F4F1EA]
+                        active:text-[#D6B25E]
+                      "
+                    >
+                      <span>Dashboard</span>
+                      <span className="text-white/20">
+                        →
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        scrollToSection("intelligence")
+                      }
+                      className="
+                        flex
+                        w-full
+                        items-center
+                        justify-between
+                        px-4
+                        py-3.5
+                        text-left
+                        text-[10px]
+                        uppercase
+                        tracking-[0.3em]
+                        text-white/60
+                        active:text-[#D6B25E]
+                      "
+                    >
+                      <span>Intelligence</span>
+                      <span className="text-white/20">
+                        →
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        scrollToSection("journey")
+                      }
+                      className="
+                        flex
+                        w-full
+                        items-center
+                        justify-between
+                        px-4
+                        py-3.5
+                        text-left
+                        text-[10px]
+                        uppercase
+                        tracking-[0.3em]
+                        text-white/60
+                        active:text-[#D6B25E]
+                      "
+                    >
+                      <span>Journey</span>
+                      <span className="text-white/20">
+                        →
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        scrollToSection("plans")
+                      }
+                      className="
+                        flex
+                        w-full
+                        items-center
+                        justify-between
+                        px-4
+                        py-3.5
+                        text-left
+                        text-[10px]
+                        uppercase
+                        tracking-[0.3em]
+                        text-white/60
+                        active:text-[#D6B25E]
+                      "
+                    >
+                      <span>Plans</span>
+                      <span className="text-white/20">
+                        →
+                      </span>
+                    </button>
+                  </nav>
+
+                  <div
+                    className="
+                      mx-4
+                      border-t
+                      border-white/[0.06]
+                    "
+                  />
+
+                  {/* ACCOUNT ACTIONS */}
+
+                  <div className="py-3">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        navigate("/settings")
+                      }
+                      className="
+                        flex
+                        w-full
+                        items-center
+                        justify-between
+                        px-4
+                        py-3.5
+                        text-left
+                        text-[10px]
+                        uppercase
+                        tracking-[0.3em]
+                        text-white/45
+                        active:text-[#D6B25E]
+                      "
+                    >
+                      <span>Settings</span>
+                      <span className="text-white/20">
+                        →
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => navigate("/")}
+                      className="
+                        flex
+                        w-full
+                        items-center
+                        justify-between
+                        px-4
+                        py-3.5
+                        text-left
+                        text-[10px]
+                        uppercase
+                        tracking-[0.3em]
+                        text-white/45
+                        active:text-[#D6B25E]
+                      "
+                    >
+                      <span>Home</span>
+                      <span className="text-white/20">
+                        →
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      className="
+                        flex
+                        w-full
+                        items-center
+                        justify-between
+                        px-4
+                        py-3.5
+                        text-left
+                        text-[10px]
+                        uppercase
+                        tracking-[0.3em]
+                        text-white/30
+                        active:text-[#D6B25E]
+                      "
+                    >
+                      <span>Log out</span>
+                      <span className="text-white/20">
+                        →
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </header>
 
         {/* =========================================
@@ -699,17 +1112,15 @@ export function DashboardShell({
           className="
             relative
             flex
-            min-h-[72vh]
+            min-h-[58vh]
             flex-col
             justify-center
             overflow-hidden
-            py-24
+            py-14
             sm:min-h-[78vh]
             sm:py-32
           "
         >
-          {/* INTRO ATMOSPHERE */}
-
           <motion.div
             initial={{
               opacity: 0,
@@ -732,21 +1143,20 @@ export function DashboardShell({
               absolute
               left-[42%]
               top-1/2
-              h-[500px]
-              w-[700px]
+              h-[360px]
+              w-[520px]
               -translate-x-1/2
               -translate-y-1/2
               rounded-full
               bg-[#D6B25E]/[0.025]
-              blur-[150px]
+              blur-[120px]
+              sm:h-[500px]
+              sm:w-[700px]
+              sm:blur-[150px]
             "
           />
 
-          {/* CONTENT */}
-
           <div className="relative z-10 max-w-6xl">
-            {/* EYEBROW */}
-
             <motion.div
               initial={{
                 opacity: 0,
@@ -769,13 +1179,14 @@ export function DashboardShell({
               className="
                 flex
                 items-center
-                gap-4
+                gap-3
+                sm:gap-4
               "
             >
               <span
                 className="
                   h-px
-                  w-10
+                  w-8
                   bg-gradient-to-r
                   from-transparent
                   to-[#D6B25E]/60
@@ -785,18 +1196,17 @@ export function DashboardShell({
 
               <span
                 className="
-                  text-[9px]
+                  text-[8px]
                   uppercase
-                  tracking-[0.55em]
+                  tracking-[0.5em]
                   text-[#D6B25E]
                   sm:text-[10px]
+                  sm:tracking-[0.55em]
                 "
               >
                 Your inner world
               </span>
             </motion.div>
-
-            {/* MAIN TITLE */}
 
             <motion.h2
               initial={{
@@ -819,14 +1229,15 @@ export function DashboardShell({
                 ease: [0.16, 1, 0.3, 1],
               }}
               className="
-                mt-8
+                mt-6
                 max-w-5xl
                 font-[family:var(--font-cormorant)]
-                text-[3.4rem]
+                text-[2.65rem]
                 font-light
-                leading-[0.95]
+                leading-[0.98]
                 tracking-[-0.025em]
                 text-[#F4F1EA]
+                sm:mt-8
                 sm:text-6xl
                 md:text-7xl
                 lg:text-[6.8rem]
@@ -839,8 +1250,6 @@ export function DashboardShell({
                 Evolve consciously.
               </span>
             </motion.h2>
-
-            {/* DESCRIPTION */}
 
             <motion.p
               initial={{
@@ -863,11 +1272,12 @@ export function DashboardShell({
                 ease: [0.16, 1, 0.3, 1],
               }}
               className="
-                mt-9
+                mt-6
                 max-w-xl
-                text-sm
-                leading-7
+                text-[13px]
+                leading-6
                 text-white/40
+                sm:mt-9
                 sm:text-[15px]
                 sm:leading-8
               "
@@ -876,8 +1286,6 @@ export function DashboardShell({
               helps you see patterns that are difficult
               to notice alone.
             </motion.p>
-
-            {/* META */}
 
             <motion.div
               initial={{
@@ -898,16 +1306,18 @@ export function DashboardShell({
                 ease: [0.16, 1, 0.3, 1],
               }}
               className="
-                mt-12
+                mt-8
                 flex
                 items-center
-                gap-5
+                gap-4
+                sm:mt-12
+                sm:gap-5
               "
             >
               <span
                 className="
                   h-px
-                  w-16
+                  w-12
                   bg-white/[0.08]
                   sm:w-24
                 "
@@ -915,18 +1325,18 @@ export function DashboardShell({
 
               <span
                 className="
-                  text-[8px]
+                  text-[7px]
                   uppercase
-                  tracking-[0.45em]
+                  tracking-[0.4em]
                   text-white/20
+                  sm:text-[8px]
+                  sm:tracking-[0.45em]
                 "
               >
                 A space for reflection
               </span>
             </motion.div>
           </div>
-
-          {/* SCROLL INDICATOR */}
 
           <motion.div
             initial={{
@@ -945,20 +1355,23 @@ export function DashboardShell({
             }}
             className="
               absolute
-              bottom-10
+              bottom-5
               left-0
               flex
               items-center
-              gap-4
+              gap-3
               sm:bottom-12
+              sm:gap-4
             "
           >
             <span
               className="
-                text-[8px]
+                text-[7px]
                 uppercase
-                tracking-[0.4em]
+                tracking-[0.35em]
                 text-white/20
+                sm:text-[8px]
+                sm:tracking-[0.4em]
               "
             >
               Explore
@@ -989,20 +1402,22 @@ export function DashboardShell({
         ========================================== */}
 
         <section
+          id="current-state"
           className="
             border-t
             border-white/[0.06]
-            py-24
+            py-14
             sm:py-32
           "
         >
-          <div className="mb-12">
+          <div className="mb-8 sm:mb-12">
             <p
               className="
-                text-[10px]
+                text-[9px]
                 uppercase
                 tracking-[0.5em]
                 text-[#D6B25E]
+                sm:text-[10px]
               "
             >
               Current state
@@ -1010,10 +1425,11 @@ export function DashboardShell({
 
             <h3
               className="
-                mt-4
+                mt-3
                 font-[family:var(--font-cormorant)]
-                text-4xl
+                text-[1.9rem]
                 font-light
+                sm:mt-4
                 sm:text-5xl
               "
             >
@@ -1029,20 +1445,23 @@ export function DashboardShell({
         ========================================== */}
 
         <section
+          id="intelligence"
           className="
+            scroll-mt-8
             border-t
             border-white/[0.06]
-            py-24
+            py-14
             sm:py-32
           "
         >
-          <div className="mb-14">
+          <div className="mb-9 sm:mb-14">
             <p
               className="
-                text-[10px]
+                text-[9px]
                 uppercase
                 tracking-[0.5em]
                 text-[#D6B25E]
+                sm:text-[10px]
               "
             >
               Explore yourself
@@ -1050,10 +1469,11 @@ export function DashboardShell({
 
             <h3
               className="
-                mt-4
+                mt-3
                 font-[family:var(--font-cormorant)]
-                text-4xl
+                text-[1.9rem]
                 font-light
+                sm:mt-4
                 sm:text-5xl
               "
             >
@@ -1069,20 +1489,23 @@ export function DashboardShell({
         ========================================== */}
 
         <section
+          id="journey"
           className="
+            scroll-mt-8
             border-t
             border-white/[0.06]
-            py-24
+            py-14
             sm:py-32
           "
         >
-          <div className="mb-14">
+          <div className="mb-9 sm:mb-14">
             <p
               className="
-                text-[10px]
+                text-[9px]
                 uppercase
                 tracking-[0.5em]
                 text-[#D6B25E]
+                sm:text-[10px]
               "
             >
               Your journey
@@ -1090,10 +1513,11 @@ export function DashboardShell({
 
             <h3
               className="
-                mt-4
+                mt-3
                 font-[family:var(--font-cormorant)]
-                text-4xl
+                text-[1.9rem]
                 font-light
+                sm:mt-4
                 sm:text-5xl
               "
             >
@@ -1112,7 +1536,7 @@ export function DashboardShell({
           className="
             border-t
             border-white/[0.06]
-            py-20
+            py-14
             sm:py-24
           "
         >
@@ -1126,10 +1550,10 @@ export function DashboardShell({
         <section
           id="plans"
           className="
-            scroll-mt-10
+            scroll-mt-8
             border-t
             border-white/[0.06]
-            py-24
+            py-14
             sm:py-32
           "
         >
@@ -1142,48 +1566,58 @@ export function DashboardShell({
 
         <footer
           className="
+            overflow-hidden
             border-t
             border-white/[0.06]
-            pt-8
+            pt-6
+            sm:pt-8
           "
         >
           <div
             className="
               flex
               flex-col
+              items-center
               gap-5
+              text-center
               sm:flex-row
               sm:items-center
               sm:justify-between
+              sm:text-left
             "
           >
-            {/* BRAND */}
-
             <button
               type="button"
               onClick={() => router.push("/")}
               className="
-                w-fit
+                w-full
                 cursor-pointer
-                text-[9px]
+                text-center
+                text-[8px]
                 uppercase
-                tracking-[0.4em]
+                tracking-[0.32em]
                 text-white/20
+                outline-none
                 transition-colors
                 duration-500
                 hover:text-[#D6B25E]
+                sm:w-fit
+                sm:text-left
+                sm:text-[9px]
+                sm:tracking-[0.4em]
               "
             >
               SOULMIRROR — PERSONAL INTELLIGENCE
             </button>
 
-            {/* LINKS */}
-
             <div
               className="
                 flex
+                w-full
                 items-center
+                justify-center
                 gap-6
+                sm:w-auto
               "
             >
               <button
@@ -1191,13 +1625,16 @@ export function DashboardShell({
                 onClick={() => router.push("/settings")}
                 className="
                   cursor-pointer
-                  text-[9px]
+                  text-[8px]
                   uppercase
-                  tracking-[0.3em]
+                  tracking-[0.28em]
                   text-white/25
+                  outline-none
                   transition-colors
                   duration-500
                   hover:text-[#D6B25E]
+                  sm:text-[9px]
+                  sm:tracking-[0.3em]
                 "
               >
                 Settings
@@ -1205,21 +1642,19 @@ export function DashboardShell({
 
               <button
                 type="button"
-                onClick={async () => {
-                  await supabase.auth.signOut();
-
-                  router.push("/");
-                  router.refresh();
-                }}
+                onClick={handleLogout}
                 className="
                   cursor-pointer
-                  text-[9px]
+                  text-[8px]
                   uppercase
-                  tracking-[0.3em]
+                  tracking-[0.28em]
                   text-white/25
+                  outline-none
                   transition-colors
                   duration-500
                   hover:text-[#D6B25E]
+                  sm:text-[9px]
+                  sm:tracking-[0.3em]
                 "
               >
                 Logout
