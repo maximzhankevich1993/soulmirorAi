@@ -8,160 +8,124 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 
-import type { LucideIcon } from "lucide-react";
-
 interface Usage {
   soulScan: number;
   dream: number;
   tarot: number;
 }
 
-interface UsagePanelProps {
-  usage: Usage;
-}
-
-interface ActivityItem {
+interface UsageItem {
   key: keyof Usage;
   label: string;
   description: string;
-  icon: LucideIcon;
+  icon: typeof Brain;
+  limit: number;
 }
 
-const activities: ActivityItem[] = [
+const usageItems: UsageItem[] = [
   {
     key: "soulScan",
     label: "Soul Scan",
     description:
-      "Identity and personality exploration",
-    icon: Sparkles,
+      "Personal psychological and archetypal reflection.",
+    icon: Brain,
+    limit: 2,
   },
   {
     key: "dream",
     label: "Dream Analysis",
     description:
-      "Symbols and subconscious patterns",
+      "Symbolic interpretation of your dreams.",
     icon: Moon,
+    limit: 2,
   },
   {
     key: "tarot",
     label: "Tarot",
     description:
-      "Reflective guidance and archetypes",
-    icon: Brain,
+      "Symbolic intelligence and reflection.",
+    icon: Sparkles,
+    limit: 2,
   },
 ];
+
+interface UsagePanelProps {
+  usage: Usage;
+}
 
 export function UsagePanel({
   usage,
 }: UsagePanelProps) {
   return (
-    <section className="relative">
-      {/* =====================================================
+    <div className="w-full">
+      {/* =========================================
           HEADER
-      ====================================================== */}
+      ========================================== */}
 
-      <div className="mb-14 max-w-2xl">
-        <motion.p
-          initial={{
-            opacity: 0,
-            y: 12,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          viewport={{
-            once: true,
-          }}
-          transition={{
-            duration: 0.7,
-          }}
+      <div className="mb-10 sm:mb-14">
+        <p
           className="
-            text-[10px]
+            text-[9px]
             uppercase
             tracking-[0.5em]
             text-[#D6B25E]
+            sm:text-[10px]
           "
         >
-          Your activity
-        </motion.p>
+          Your access
+        </p>
 
-        <motion.h2
-          initial={{
-            opacity: 0,
-            y: 20,
-            filter: "blur(8px)",
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-            filter: "blur(0px)",
-          }}
-          viewport={{
-            once: true,
-          }}
-          transition={{
-            delay: 0.08,
-            duration: 0.9,
-            ease: [0.16, 1, 0.3, 1],
-          }}
+        <h3
           className="
-            mt-4
+            mt-3
             font-[family:var(--font-cormorant)]
-            text-4xl
+            text-[1.9rem]
             font-light
-            leading-tight
+            leading-[1.05]
             text-[#F4F1EA]
+            sm:mt-4
             sm:text-5xl
           "
         >
-          A reflection of your journey.
-        </motion.h2>
+          Your remaining intelligence.
+        </h3>
 
-        <motion.p
-          initial={{
-            opacity: 0,
-            y: 12,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          viewport={{
-            once: true,
-          }}
-          transition={{
-            delay: 0.16,
-            duration: 0.7,
-          }}
+        <p
           className="
-            mt-5
+            mt-4
             max-w-xl
-            text-sm
-            leading-7
-            text-white/40
+            text-[13px]
+            leading-6
+            text-white/30
+            sm:mt-5
+            sm:text-sm
+            sm:leading-7
           "
         >
-          Every interaction with SoulMirror becomes
-          another layer of understanding.
-        </motion.p>
+          Your free access is independent for each
+          intelligence tool.
+        </p>
       </div>
 
-      {/* =====================================================
-          ACTIVITY LIST
-      ====================================================== */}
+      {/* =========================================
+          USAGE LIST
+      ========================================== */}
 
-      <div className="relative">
-        {activities.map((activity, index) => {
-          const Icon = activity.icon;
-          const value = usage[activity.key];
+      <div className="border-t border-white/[0.06]">
+        {usageItems.map((item, index) => {
+          const Icon = item.icon;
+          const used = usage[item.key];
+          const remaining = Math.max(
+            item.limit - used,
+            0
+          );
 
           return (
             <motion.div
-              key={activity.key}
+              key={item.key}
               initial={{
                 opacity: 0,
-                y: 18,
+                y: 15,
               }}
               whileInView={{
                 opacity: 1,
@@ -169,29 +133,26 @@ export function UsagePanel({
               }}
               viewport={{
                 once: true,
-                margin: "-60px",
+                amount: 0.3,
               }}
               transition={{
-                duration: 0.7,
                 delay: index * 0.08,
+                duration: 0.7,
                 ease: [0.16, 1, 0.3, 1],
               }}
               className="
                 group
-                relative
-                border-t
-                border-white/[0.07]
-                py-7
-                transition-colors
-                duration-500
-                last:border-b
+                border-b
+                border-white/[0.06]
+                py-5
+                sm:py-7
               "
             >
               <div
                 className="
                   flex
                   items-center
-                  gap-5
+                  gap-4
                   sm:gap-7
                 "
               >
@@ -205,74 +166,49 @@ export function UsagePanel({
                     shrink-0
                     items-center
                     justify-center
-                    rounded-full
                     border
                     border-white/[0.08]
-                    bg-white/[0.025]
-                    transition-all
+                    text-white/35
+                    transition-colors
                     duration-500
                     group-hover:border-[#D6B25E]/25
-                    group-hover:bg-[#D6B25E]/[0.05]
+                    group-hover:text-[#D6B25E]
                   "
                 >
                   <Icon
-                    size={17}
-                    strokeWidth={1.5}
-                    className="
-                      text-white/40
-                      transition-colors
-                      duration-500
-                      group-hover:text-[#D6B25E]
-                    "
+                    size={16}
+                    strokeWidth={1.25}
                   />
                 </div>
 
-                {/* NAME */}
+                {/* TEXT */}
 
                 <div className="min-w-0 flex-1">
-                  <div
+                  <p
                     className="
-                      flex
-                      flex-col
-                      gap-1
-                      sm:flex-row
-                      sm:items-center
-                      sm:gap-5
+                      text-sm
+                      font-light
+                      text-white/70
+                      sm:text-base
                     "
                   >
-                    <h3
-                      className="
-                        text-base
-                        font-light
-                        text-[#F4F1EA]
-                        transition-colors
-                        duration-500
-                        group-hover:text-white
-                      "
-                    >
-                      {activity.label}
-                    </h3>
+                    {item.label}
+                  </p>
 
-                    <span
-                      className="
-                        hidden
-                        h-px
-                        w-8
-                        bg-white/10
-                        sm:block
-                      "
-                    />
-
-                    <p
-                      className="
-                        truncate
-                        text-xs
-                        text-white/30
-                      "
-                    >
-                      {activity.description}
-                    </p>
-                  </div>
+                  <p
+                    className="
+                      mt-1
+                      max-w-[240px]
+                      truncate
+                      text-[10px]
+                      leading-5
+                      text-white/20
+                      sm:max-w-none
+                      sm:text-xs
+                    "
+                  >
+                    {item.description}
+                  </p>
                 </div>
 
                 {/* VALUE */}
@@ -283,44 +219,61 @@ export function UsagePanel({
                     shrink-0
                     items-center
                     gap-3
+                    sm:gap-5
                   "
                 >
-                  <span
-                    className="
-                      font-[family:var(--font-cormorant)]
-                      text-3xl
-                      font-light
-                      text-[#F4F1EA]
-                    "
-                  >
-                    {value}
-                  </span>
+                  <div className="text-right">
+                    <p
+                      className="
+                        font-[family:var(--font-cormorant)]
+                        text-[1.7rem]
+                        font-light
+                        leading-none
+                        text-[#F4F1EA]
+                        sm:text-3xl
+                      "
+                    >
+                      {remaining}
+                    </p>
 
-                  <span
+                    <p
+                      className="
+                        mt-1
+                        text-[7px]
+                        uppercase
+                        tracking-[0.3em]
+                        text-white/15
+                        sm:text-[8px]
+                      "
+                    >
+                      remaining
+                    </p>
+                  </div>
+
+                  <div
                     className="
-                      hidden
-                      text-[8px]
-                      uppercase
-                      tracking-[0.3em]
+                      flex
+                      h-9
+                      w-9
+                      shrink-0
+                      items-center
+                      justify-center
+                      border
+                      border-white/[0.06]
                       text-white/20
-                      sm:block
+                      transition-colors
+                      duration-300
+                      group-hover:border-[#D6B25E]/20
+                      group-hover:text-[#D6B25E]/60
+                      sm:h-10
+                      sm:w-10
                     "
                   >
-                    sessions
-                  </span>
-
-                  <ArrowUpRight
-                    size={14}
-                    strokeWidth={1.5}
-                    className="
-                      text-white/15
-                      transition-all
-                      duration-500
-                      group-hover:-translate-y-0.5
-                      group-hover:translate-x-0.5
-                      group-hover:text-[#D6B25E]
-                    "
-                  />
+                    <ArrowUpRight
+                      size={14}
+                      strokeWidth={1.25}
+                    />
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -328,52 +281,27 @@ export function UsagePanel({
         })}
       </div>
 
-      {/* =====================================================
+      {/* =========================================
           FOOTNOTE
-      ====================================================== */}
+      ========================================== */}
 
-      <motion.div
-        initial={{
-          opacity: 0,
-        }}
-        whileInView={{
-          opacity: 1,
-        }}
-        viewport={{
-          once: true,
-        }}
-        transition={{
-          delay: 0.35,
-          duration: 0.8,
-        }}
+      <p
         className="
-          mt-8
-          flex
-          items-center
-          gap-3
+          mt-6
+          max-w-xl
+          text-[7px]
+          uppercase
+          tracking-[0.3em]
+          leading-5
+          text-white/15
+          sm:mt-8
+          sm:text-[8px]
+          sm:tracking-[0.35em]
         "
       >
-        <span
-          className="
-            h-1
-            w-1
-            rounded-full
-            bg-[#D6B25E]
-            shadow-[0_0_8px_rgba(214,178,94,0.7)]
-          "
-        />
-
-        <p
-          className="
-            text-[8px]
-            uppercase
-            tracking-[0.35em]
-            text-white/20
-          "
-        >
-          Your intelligence history grows with you
-        </p>
-      </motion.div>
-    </section>
+        Upgrade whenever you are ready to continue
+        without limits.
+      </p>
+    </div>
   );
 }
