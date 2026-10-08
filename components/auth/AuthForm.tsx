@@ -1,3 +1,4 @@
+
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
@@ -29,6 +30,21 @@ export function AuthForm({
   );
 
   const isLogin = mode === "login";
+
+  async function syncUser() {
+    const response = await fetch(
+      "/api/user/sync",
+      {
+        method: "POST",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        "Unable to initialize your SoulMirror account."
+      );
+    }
+  }
 
   async function handleAuth() {
     if (loading) return;
@@ -72,6 +88,13 @@ export function AuthForm({
         }
 
         /*
+         * Sync Supabase user with Prisma
+         * before entering the Dashboard.
+         */
+
+        await syncUser();
+
+        /*
          * Successfully authenticated.
          * Enter the personal Dashboard.
          */
@@ -106,6 +129,13 @@ export function AuthForm({
        */
 
       if (data.session && data.user) {
+        /*
+         * Create the corresponding Prisma User
+         * and UserPlan before entering the Dashboard.
+         */
+
+        await syncUser();
+
         router.push("/dashboard");
         router.refresh();
 
@@ -598,3 +628,4 @@ export function AuthForm({
     </div>
   );
 }
+
