@@ -30,7 +30,18 @@ export function DashboardShell({
 }: DashboardShellProps) {
   const router = useRouter();
 
-  const [showWelcome, setShowWelcome] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(() => {
+    if (typeof window === "undefined") {
+      return true;
+    }
+
+    return (
+      sessionStorage.getItem(
+        "soulmirror_welcome_seen"
+      ) !== "true"
+    );
+  });
+
   const [userName, setUserName] = useState("there");
   const [userPlan] = useState<UserPlan>("free");
   const [closingWelcome, setClosingWelcome] = useState(false);
@@ -89,12 +100,22 @@ export function DashboardShell({
    * WELCOME SCREEN
    * =========================================
    *
-   * IMPORTANT:
+   * Welcome is shown only once per browser session.
+   *
    * No animated blur/filter here.
    * Blur animations are expensive on mobile GPUs.
    */
 
   useEffect(() => {
+    if (!showWelcome) {
+      return;
+    }
+
+    sessionStorage.setItem(
+      "soulmirror_welcome_seen",
+      "true"
+    );
+
     const closeTimer = window.setTimeout(() => {
       setClosingWelcome(true);
 
@@ -110,7 +131,7 @@ export function DashboardShell({
     return () => {
       window.clearTimeout(closeTimer);
     };
-  }, []);
+  }, [showWelcome]);
 
   /*
    * =========================================
