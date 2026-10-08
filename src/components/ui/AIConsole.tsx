@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowUpRight, Loader2 } from "lucide-react";
 
 import { GlassCard } from "./GlassCard";
@@ -54,7 +54,7 @@ export function AIConsole({
       <motion.div
         initial={{
           opacity: 0,
-          y: 40,
+          y: 20,
         }}
         whileInView={{
           opacity: 1,
@@ -62,10 +62,10 @@ export function AIConsole({
         }}
         viewport={{
           once: true,
-          margin: "-80px",
+          margin: "-40px",
         }}
         transition={{
-          duration: 0.9,
+          duration: 0.5,
           ease: [0.16, 1, 0.3, 1],
         }}
       >
@@ -80,24 +80,14 @@ export function AIConsole({
             border-white/[0.08]
             bg-[#080808]/80
             p-7
-            backdrop-blur-3xl
             md:p-10
           "
         >
           {/* =====================================================
-              ATMOSPHERIC GLOW
+              STATIC ATMOSPHERE
           ====================================================== */}
 
-          <motion.div
-            animate={{
-              opacity: [0.25, 0.4, 0.25],
-              scale: [1, 1.08, 1],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
+          <div
             className="
               pointer-events-none
               absolute
@@ -106,11 +96,11 @@ export function AIConsole({
               h-[420px]
               w-[420px]
               rounded-full
-              blur-[130px]
+              blur-[100px]
             "
             style={{
               background: accent,
-              opacity: 0.06,
+              opacity: 0.055,
             }}
           />
 
@@ -198,25 +188,15 @@ export function AIConsole({
                 type="button"
                 onClick={onSubmit}
                 disabled={loading}
-                whileHover={
-                  loading
-                    ? {}
-                    : {
-                        y: -2,
-                        scale: 1.015,
-                      }
-                }
                 whileTap={
                   loading
-                    ? {}
+                    ? undefined
                     : {
                         scale: 0.985,
                       }
                 }
                 transition={{
-                  type: "spring",
-                  stiffness: 300,
-                  damping: 22,
+                  duration: 0.15,
                 }}
                 className="
                   group/button
@@ -238,9 +218,8 @@ export function AIConsole({
                   font-medium
                   uppercase
                   tracking-[0.28em]
-                  backdrop-blur-xl
-                  transition-all
-                  duration-500
+                  transition-colors
+                  duration-200
                   disabled:cursor-not-allowed
                   disabled:opacity-50
                 "
@@ -258,7 +237,7 @@ export function AIConsole({
                     inset-0
                     opacity-0
                     transition-opacity
-                    duration-500
+                    duration-200
                     group-hover/button:opacity-100
                   "
                   style={{
@@ -267,25 +246,6 @@ export function AIConsole({
                       ${accent}22,
                       transparent 65%
                     )`,
-                  }}
-                />
-
-                {/* Border glow */}
-
-                <span
-                  className="
-                    pointer-events-none
-                    absolute
-                    inset-0
-                    rounded-full
-                    opacity-0
-                    blur-md
-                    transition-opacity
-                    duration-500
-                    group-hover/button:opacity-100
-                  "
-                  style={{
-                    boxShadow: `0 0 35px ${accent}20`,
                   }}
                 />
 
@@ -310,7 +270,7 @@ export function AIConsole({
                       size={16}
                       className="
                         transition-transform
-                        duration-500
+                        duration-200
                         group-hover/button:-translate-y-0.5
                         group-hover/button:translate-x-0.5
                       "
@@ -331,7 +291,7 @@ export function AIConsole({
                     -translate-x-1/2
                     opacity-0
                     transition-opacity
-                    duration-500
+                    duration-200
                     group-hover/button:opacity-100
                   "
                   style={{
@@ -350,34 +310,25 @@ export function AIConsole({
                 RESULT
             ================================================== */}
 
-            <AnimatePresence mode="wait">
-              {result && (
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    y: 30,
-                    filter: "blur(8px)",
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                    filter: "blur(0px)",
-                  }}
-                  exit={{
-                    opacity: 0,
-                    y: -15,
-                    filter: "blur(6px)",
-                  }}
-                  transition={{
-                    duration: 0.7,
-                    ease: [0.16, 1, 0.3, 1],
-                  }}
-                  className="mt-10"
-                >
-                  {result}
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {result && (
+              <motion.div
+                initial={{
+                  opacity: 0,
+                  y: 15,
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                transition={{
+                  duration: 0.4,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="mt-10"
+              >
+                {result}
+              </motion.div>
+            )}
           </div>
         </GlassCard>
       </motion.div>
