@@ -32,7 +32,7 @@ export function DashboardShell({
 
   const [showWelcome, setShowWelcome] = useState(true);
   const [userName, setUserName] = useState("there");
-  const [userPlan, setUserPlan] = useState<UserPlan>("free");
+  const [userPlan] = useState<UserPlan>("free");
   const [closingWelcome, setClosingWelcome] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -43,6 +43,8 @@ export function DashboardShell({
    */
 
   useEffect(() => {
+    let mounted = true;
+
     async function loadUser() {
       try {
         const {
@@ -53,6 +55,8 @@ export function DashboardShell({
           router.replace("/login");
           return;
         }
+
+        if (!mounted) return;
 
         const metadataName =
           user.user_metadata?.name ||
@@ -65,30 +69,6 @@ export function DashboardShell({
           "there";
 
         setUserName(firstName);
-
-        try {
-          const response = await fetch("/api/profile", {
-            method: "GET",
-            cache: "no-store",
-          });
-
-          if (response.ok) {
-            const data = await response.json();
-
-            if (
-              data.plan === "free" ||
-              data.plan === "day" ||
-              data.plan === "pro"
-            ) {
-              setUserPlan(data.plan);
-            }
-          }
-        } catch (error) {
-          console.error(
-            "Failed to load user plan:",
-            error
-          );
-        }
       } catch (error) {
         console.error(
           "Failed to load dashboard user:",
@@ -98,25 +78,37 @@ export function DashboardShell({
     }
 
     loadUser();
+
+    return () => {
+      mounted = false;
+    };
   }, [router]);
 
   /*
    * =========================================
    * WELCOME SCREEN
    * =========================================
+   *
+   * IMPORTANT:
+   * No animated blur/filter here.
+   * Blur animations are expensive on mobile GPUs.
    */
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
+    const closeTimer = window.setTimeout(() => {
       setClosingWelcome(true);
 
-      window.setTimeout(() => {
+      const removeTimer = window.setTimeout(() => {
         setShowWelcome(false);
-      }, 1000);
-    }, 3200);
+      }, 700);
+
+      return () => {
+        window.clearTimeout(removeTimer);
+      };
+    }, 3000);
 
     return () => {
-      window.clearTimeout(timer);
+      window.clearTimeout(closeTimer);
     };
   }, []);
 
@@ -228,11 +220,11 @@ export function DashboardShell({
             -translate-x-1/2
             rounded-full
             bg-[#D6B25E]/[0.035]
-            blur-[150px]
+            blur-[120px]
             sm:top-[-180px]
             sm:h-[700px]
             sm:w-[700px]
-            sm:blur-[180px]
+            sm:blur-[150px]
           "
         />
 
@@ -246,7 +238,7 @@ export function DashboardShell({
             w-[650px]
             rounded-full
             bg-[#D6B25E]/[0.018]
-            blur-[180px]
+            blur-[150px]
             sm:block
           "
         />
@@ -260,12 +252,12 @@ export function DashboardShell({
             w-[500px]
             rounded-full
             bg-[#8B5CF6]/[0.012]
-            blur-[160px]
+            blur-[140px]
             sm:bottom-[-300px]
             sm:left-[-250px]
             sm:h-[600px]
             sm:w-[600px]
-            sm:blur-[180px]
+            sm:blur-[150px]
           "
         />
       </div>
@@ -282,13 +274,9 @@ export function DashboardShell({
             }}
             animate={{
               opacity: closingWelcome ? 0 : 1,
-              scale: closingWelcome ? 1.025 : 1,
-              filter: closingWelcome
-                ? "blur(16px)"
-                : "blur(0px)",
             }}
             transition={{
-              duration: 1,
+              duration: 0.7,
               ease: [0.16, 1, 0.3, 1],
             }}
             className="
@@ -302,19 +290,9 @@ export function DashboardShell({
               bg-[#050505]
             "
           >
-            <motion.div
-              initial={{
-                opacity: 0,
-                scale: 0.5,
-              }}
-              animate={{
-                opacity: 1,
-                scale: 1,
-              }}
-              transition={{
-                duration: 2.2,
-                ease: [0.16, 1, 0.3, 1],
-              }}
+            {/* Static glow — no animated blur */}
+
+            <div
               className="
                 pointer-events-none
                 absolute
@@ -326,27 +304,14 @@ export function DashboardShell({
                 -translate-y-1/2
                 rounded-full
                 bg-[#D6B25E]/[0.035]
-                blur-[150px]
+                blur-[120px]
                 sm:h-[650px]
                 sm:w-[900px]
-                sm:blur-[180px]
+                sm:blur-[150px]
               "
             />
 
-            <motion.div
-              initial={{
-                opacity: 0,
-                scale: 0.6,
-              }}
-              animate={{
-                opacity: 1,
-                scale: 1,
-              }}
-              transition={{
-                delay: 0.35,
-                duration: 2.2,
-                ease: [0.16, 1, 0.3, 1],
-              }}
+            <div
               className="
                 pointer-events-none
                 absolute
@@ -358,10 +323,10 @@ export function DashboardShell({
                 -translate-y-1/2
                 rounded-full
                 bg-white/[0.012]
-                blur-[100px]
+                blur-[80px]
                 sm:h-[350px]
                 sm:w-[550px]
-                sm:blur-[120px]
+                sm:blur-[100px]
               "
             />
 
@@ -380,16 +345,14 @@ export function DashboardShell({
               <motion.p
                 initial={{
                   opacity: 0,
-                  y: 18,
-                  filter: "blur(12px)",
+                  y: 12,
                 }}
                 animate={{
                   opacity: 1,
                   y: 0,
-                  filter: "blur(0px)",
                 }}
                 transition={{
-                  duration: 1.1,
+                  duration: 0.8,
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 className="
@@ -414,8 +377,8 @@ export function DashboardShell({
                   scaleX: 1,
                 }}
                 transition={{
-                  delay: 0.4,
-                  duration: 1,
+                  delay: 0.25,
+                  duration: 0.7,
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 className="
@@ -435,17 +398,15 @@ export function DashboardShell({
               <motion.h1
                 initial={{
                   opacity: 0,
-                  y: 35,
-                  filter: "blur(18px)",
+                  y: 24,
                 }}
                 animate={{
                   opacity: 1,
                   y: 0,
-                  filter: "blur(0px)",
                 }}
                 transition={{
-                  delay: 0.65,
-                  duration: 1.2,
+                  delay: 0.4,
+                  duration: 0.9,
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 className="
@@ -471,17 +432,15 @@ export function DashboardShell({
               <motion.p
                 initial={{
                   opacity: 0,
-                  y: 18,
-                  filter: "blur(8px)",
+                  y: 12,
                 }}
                 animate={{
                   opacity: 1,
                   y: 0,
-                  filter: "blur(0px)",
                 }}
                 transition={{
-                  delay: 1,
-                  duration: 1,
+                  delay: 0.65,
+                  duration: 0.8,
                 }}
                 className="
                   mt-5
@@ -503,8 +462,8 @@ export function DashboardShell({
                   opacity: 1,
                 }}
                 transition={{
-                  delay: 1.5,
-                  duration: 1,
+                  delay: 0.9,
+                  duration: 0.8,
                 }}
                 className="
                   mt-8
@@ -556,17 +515,7 @@ export function DashboardShell({
           MAIN SPACE
       ========================================== */}
 
-      <motion.div
-        initial={{
-          opacity: 0,
-        }}
-        animate={{
-          opacity: showWelcome ? 0 : 1,
-        }}
-        transition={{
-          duration: 1.1,
-          ease: [0.16, 1, 0.3, 1],
-        }}
+      <div
         className="
           relative
           z-10
@@ -827,21 +776,18 @@ export function DashboardShell({
               <motion.div
                 initial={{
                   opacity: 0,
-                  y: -8,
-                  filter: "blur(8px)",
+                  y: -6,
                 }}
                 animate={{
                   opacity: 1,
                   y: 0,
-                  filter: "blur(0px)",
                 }}
                 exit={{
                   opacity: 0,
-                  y: -8,
-                  filter: "blur(8px)",
+                  y: -6,
                 }}
                 transition={{
-                  duration: 0.3,
+                  duration: 0.25,
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 className="
@@ -858,8 +804,6 @@ export function DashboardShell({
                 "
               >
                 <div className="px-1 py-5">
-                  {/* ACCOUNT */}
-
                   <div className="px-4 pb-5">
                     <p
                       className="
@@ -904,8 +848,6 @@ export function DashboardShell({
                       border-white/[0.06]
                     "
                   />
-
-                  {/* NAVIGATION */}
 
                   <nav className="py-3">
                     <button
@@ -1021,8 +963,6 @@ export function DashboardShell({
                     "
                   />
 
-                  {/* ACCOUNT ACTIONS */}
-
                   <div className="py-3">
                     <button
                       type="button"
@@ -1121,23 +1061,7 @@ export function DashboardShell({
             sm:py-32
           "
         >
-          <motion.div
-            initial={{
-              opacity: 0,
-              scale: 0.7,
-            }}
-            whileInView={{
-              opacity: 1,
-              scale: 1,
-            }}
-            viewport={{
-              once: true,
-              amount: 0.35,
-            }}
-            transition={{
-              duration: 1.8,
-              ease: [0.16, 1, 0.3, 1],
-            }}
+          <div
             className="
               pointer-events-none
               absolute
@@ -1149,10 +1073,10 @@ export function DashboardShell({
               -translate-y-1/2
               rounded-full
               bg-[#D6B25E]/[0.025]
-              blur-[120px]
+              blur-[100px]
               sm:h-[500px]
               sm:w-[700px]
-              sm:blur-[150px]
+              sm:blur-[130px]
             "
           />
 
@@ -1160,20 +1084,18 @@ export function DashboardShell({
             <motion.div
               initial={{
                 opacity: 0,
-                y: 20,
-                filter: "blur(10px)",
+                y: 12,
               }}
               whileInView={{
                 opacity: 1,
                 y: 0,
-                filter: "blur(0px)",
               }}
               viewport={{
                 once: true,
                 amount: 0.5,
               }}
               transition={{
-                duration: 0.9,
+                duration: 0.7,
                 ease: [0.16, 1, 0.3, 1],
               }}
               className="
@@ -1211,21 +1133,19 @@ export function DashboardShell({
             <motion.h2
               initial={{
                 opacity: 0,
-                y: 45,
-                filter: "blur(18px)",
+                y: 24,
               }}
               whileInView={{
                 opacity: 1,
                 y: 0,
-                filter: "blur(0px)",
               }}
               viewport={{
                 once: true,
                 amount: 0.35,
               }}
               transition={{
-                delay: 0.12,
-                duration: 1.2,
+                delay: 0.08,
+                duration: 0.8,
                 ease: [0.16, 1, 0.3, 1],
               }}
               className="
@@ -1254,22 +1174,19 @@ export function DashboardShell({
             <motion.p
               initial={{
                 opacity: 0,
-                y: 25,
-                filter: "blur(8px)",
+                y: 16,
               }}
               whileInView={{
                 opacity: 1,
                 y: 0,
-                filter: "blur(0px)",
               }}
               viewport={{
                 once: true,
                 amount: 0.35,
               }}
               transition={{
-                delay: 0.35,
-                duration: 1,
-                ease: [0.16, 1, 0.3, 1],
+                delay: 0.2,
+                duration: 0.75,
               }}
               className="
                 mt-6
@@ -1290,7 +1207,7 @@ export function DashboardShell({
             <motion.div
               initial={{
                 opacity: 0,
-                y: 20,
+                y: 12,
               }}
               whileInView={{
                 opacity: 1,
@@ -1301,9 +1218,8 @@ export function DashboardShell({
                 amount: 0.35,
               }}
               transition={{
-                delay: 0.55,
-                duration: 0.9,
-                ease: [0.16, 1, 0.3, 1],
+                delay: 0.3,
+                duration: 0.7,
               }}
               className="
                 mt-8
@@ -1338,21 +1254,7 @@ export function DashboardShell({
             </motion.div>
           </div>
 
-          <motion.div
-            initial={{
-              opacity: 0,
-            }}
-            whileInView={{
-              opacity: 1,
-            }}
-            viewport={{
-              once: true,
-              amount: 0.4,
-            }}
-            transition={{
-              delay: 0.8,
-              duration: 1,
-            }}
+          <div
             className="
               absolute
               bottom-5
@@ -1379,11 +1281,11 @@ export function DashboardShell({
 
             <motion.span
               animate={{
-                y: [0, 5, 0],
-                opacity: [0.3, 0.8, 0.3],
+                y: [0, 4, 0],
+                opacity: [0.3, 0.7, 0.3],
               }}
               transition={{
-                duration: 2,
+                duration: 2.5,
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
@@ -1394,7 +1296,7 @@ export function DashboardShell({
             >
               ↓
             </motion.span>
-          </motion.div>
+          </div>
         </section>
 
         {/* =========================================
@@ -1662,7 +1564,7 @@ export function DashboardShell({
             </div>
           </div>
         </footer>
-      </motion.div>
+      </div>
     </main>
   );
 }
