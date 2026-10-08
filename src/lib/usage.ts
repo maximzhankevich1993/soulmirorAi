@@ -19,38 +19,17 @@ export type AccessResult = {
   remaining: number;
 };
 
-/*
- * =========================================================
- * FREE LIMIT
- * =========================================================
- *
- * Each tool has 2 lifetime free uses.
- *
- * Soul Scan       → 2 free uses
- * Dream Analysis  → 2 free uses
- * Tarot           → 2 free uses
- *
- * NOT daily.
- * NOT monthly.
- *
- * After the limit is reached,
- * a paid plan is required.
- *
- * =========================================================
- */
-
 const FREE_LIMIT = 2;
-
-/*
- * =========================================================
- * CHECK ACCESS
- * =========================================================
- */
 
 export async function checkAccess(
   type: UsageType
 ): Promise<AccessResult> {
   const actor = await getActor();
+
+  console.log("CHECK ACCESS ACTOR:", {
+    actor,
+    type,
+  });
 
   /*
    * =======================================================
@@ -68,6 +47,13 @@ export async function checkAccess(
 
     const used =
       session?.[type] ?? 0;
+
+    console.log("GUEST ACCESS DEBUG:", {
+      guestId: actor.guestId,
+      type,
+      used,
+      limit: FREE_LIMIT,
+    });
 
     if (used >= FREE_LIMIT) {
       return {
@@ -104,6 +90,17 @@ export async function checkAccess(
       },
     });
 
+  console.log(
+    "REGISTERED USER ACCESS DEBUG:",
+    {
+      userId: actor.userId,
+      dbUser,
+      plan: dbUser?.plan,
+      usage: dbUser?.usage,
+      type,
+    }
+  );
+
   /*
    * =======================================================
    * PLAN
@@ -115,6 +112,11 @@ export async function checkAccess(
       | "free"
       | "day"
       | "pro") ?? "free";
+
+  console.log("REGISTERED USER PLAN:", {
+    userId: actor.userId,
+    plan,
+  });
 
   /*
    * =======================================================
@@ -141,6 +143,14 @@ export async function checkAccess(
   const used =
     dbUser?.usage?.[type] ?? 0;
 
+  console.log("REGISTERED USER USAGE CHECK:", {
+    userId: actor.userId,
+    type,
+    used,
+    limit: FREE_LIMIT,
+    allowed: used < FREE_LIMIT,
+  });
+
   if (used >= FREE_LIMIT) {
     return {
       allowed: false,
@@ -161,65 +171,52 @@ export async function checkAccess(
   };
 }
 
-/*
- * =========================================================
- * INCREASE USER USAGE
- * =========================================================
- *
- * Lifetime usage.
- *
- * No dates.
- * No daily reset.
- *
- * =========================================================
- */
-
 export async function increaseUsage(
   userId: string,
   type: UsageType
 ) {
-  await prisma.userUsage.upsert({
-    where: {
-      userId,
-    },
-
-    update: {
-      [type]: {
-        increment: 1,
-      },
-    },
-
-    create: {
-      userId,
-
-      soulScan:
-        type === "soulScan"
-          ? 1
-          : 0,
-
-      dream:
-        type === "dream"
-          ? 1
-          : 0,
-
-      tarot:
-        type === "tarot"
-          ? 1
-          : 0,
-    },
+  console.log("INCREASE USER USAGE:", {
+    userId,
+    type,
   });
-}
 
-/*
- * =========================================================
- * INCREASE GUEST USAGE
- * =========================================================
- *
- * Guests also have 2 lifetime free uses
- * for each individual tool.
- *
- * =========================================================
- */
+  const result =
+    await prisma.userUsage.upsert({
+      where: {
+        userId,
+      },
+
+      update: {
+        [type]: {
+          increment: 1,
+        },
+      },
+
+      create: {
+        userId,
+
+        soulScan:
+          type === "soulScan"
+            ? 1
+            : 0,
+
+        dream:
+          type === "dream"
+            ? 1
+            : 0,
+
+        tarot:
+          type === "tarot"
+            ? 1
+            : 0,
+      },
+    });
+
+  console.log(
+    "USER USAGE AFTER UPSERT:",
+    result
+  );
+}
 
 export async function increaseGuestUsage(
   guestId: string,
