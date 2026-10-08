@@ -10,14 +10,14 @@ interface Props {
 export function SmoothScroll({ children }: Props) {
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 1.4,
+      duration: 0.8,
       smoothWheel: true,
-      syncTouch: true,
-      touchMultiplier: 1.1,
-      wheelMultiplier: 0.9,
+      syncTouch: false,
+      touchMultiplier: 1,
+      wheelMultiplier: 1,
     });
 
-    let animationFrame: number;
+    let animationFrame = 0;
 
     function raf(time: number) {
       lenis.raf(time);
