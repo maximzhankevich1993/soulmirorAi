@@ -1,10 +1,9 @@
 
 
 generator client {
-  provider   = "prisma-client"
-  output     = "../src/generated/prisma"
-  runtime    = "workerd"
-  engineType = "client"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+  engineType      = "client"
 }
 
 
