@@ -18,7 +18,7 @@ begin
     raise exception 'Unsupported usage type: %', p_type;
   end if;
 
-  insert into public."UserUsage" (
+  insert into public."UserUsage" as current_usage (
     "id", "userId", "soulScan", "dream", "tarot", "createdAt", "updatedAt"
   )
   values (
@@ -32,9 +32,9 @@ begin
   )
   on conflict ("userId") do update
   set
-    "soulScan" = public."UserUsage"."soulScan" + case when p_type = 'soulScan' then 1 else 0 end,
-    "dream" = public."UserUsage"."dream" + case when p_type = 'dream' then 1 else 0 end,
-    "tarot" = public."UserUsage"."tarot" + case when p_type = 'tarot' then 1 else 0 end,
+    "soulScan" = current_usage."soulScan" + case when p_type = 'soulScan' then 1 else 0 end,
+    "dream" = current_usage."dream" + case when p_type = 'dream' then 1 else 0 end,
+    "tarot" = current_usage."tarot" + case when p_type = 'tarot' then 1 else 0 end,
     "updatedAt" = now();
 end;
 $$;
@@ -53,7 +53,7 @@ begin
     raise exception 'Unsupported usage type: %', p_type;
   end if;
 
-  insert into public."GuestSession" (
+  insert into public."GuestSession" as current_guest (
     "id", "guestId", "soulScan", "dream", "tarot",
     "createdAt", "updatedAt", "expiresAt"
   )
@@ -69,9 +69,9 @@ begin
   )
   on conflict ("guestId") do update
   set
-    "soulScan" = public."GuestSession"."soulScan" + case when p_type = 'soulScan' then 1 else 0 end,
-    "dream" = public."GuestSession"."dream" + case when p_type = 'dream' then 1 else 0 end,
-    "tarot" = public."GuestSession"."tarot" + case when p_type = 'tarot' then 1 else 0 end,
+    "soulScan" = current_guest."soulScan" + case when p_type = 'soulScan' then 1 else 0 end,
+    "dream" = current_guest."dream" + case when p_type = 'dream' then 1 else 0 end,
+    "tarot" = current_guest."tarot" + case when p_type = 'tarot' then 1 else 0 end,
     "updatedAt" = now();
 end;
 $$;
