@@ -56,3 +56,31 @@
 5. Review guest behavior and authorization.
 6. Remove Prisma dependencies/configuration only after a repository-wide reference audit confirms no remaining runtime imports.
 7. Run lint/typecheck/build and Cloudflare preview; keep changes isolated to this branch.
+
+## New deployment requirements
+
+The new server-side data client in `src/lib/supabase/admin.ts` requires
+`SUPABASE_SERVICE_ROLE_KEY`. This key is privileged and must only be stored
+as a server-side secret; never prefix it with `NEXT_PUBLIC_`, commit it, or
+import the admin client into browser components.
+
+Before testing/deploying this branch:
+
+1. In the existing Supabase project, open SQL Editor and run
+   `supabase/migrations/202610220001_atomic_usage_functions.sql`. This is an
+   additive migration: it creates two RPC functions and does not drop, truncate,
+   or rewrite any existing table or row.
+2. For local OpenNext/Wrangler preview, put the key in the ignored local
+   `.dev.vars` file as `SUPABASE_SERVICE_ROLE_KEY=...`.
+3. For Cloudflare, set the secret with
+   `npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY` and paste the key when
+   prompted. Do not put the key in `wrangler.jsonc` or source control.
+4. Confirm the existing Supabase schema exposes the Prisma-created, case-sensitive
+   tables `User`, `UserPlan`, `UserUsage`, `GuestSession`, `SoulScan`,
+   `DreamAnalysis`, and `TarotReading` through the public schema/PostgREST.
+5. Then run install, typecheck/build, and Cloudflare preview checks. These checks
+   have not been run from this GitHub-only editing session.
+
+The migration intentionally does not change the existing free-use count: the
+server helper continues to enforce two uses per tool. The browser helper's
+separate local guest counter remains separate from server-side enforcement.
