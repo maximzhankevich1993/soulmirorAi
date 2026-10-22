@@ -1,97 +1,51 @@
 import { NextResponse } from "next/server";
-
-import { prisma } from "@/lib/prisma";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { getUser } from "@/lib/getUser";
 
 export async function GET() {
   try {
-    const supabase = await createClient();
+    const user = await getUser();
+    if (!user) return NextResponse.json([]);
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    /*
-     * Guest users are allowed to enter SoulMirror.
-     *
-     * They simply don't have a persistent journey yet.
-     * Returning an empty array keeps the UI clean and
-     * avoids treating a normal guest state as an error.
-     */
-    if (!user) {
-      return NextResponse.json([]);
-    }
-
+    const supabase = createAdminClient();
     const userId = user.id;
 
-    const [soul, dreams, tarot] = await Promise.all([
-      prisma.soulScan.findMany({
-        where: {
-          userId,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-        take: 20,
-      }),
-
-      prisma.dreamAnalysis.findMany({
-        where: {
-          userId,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-        take: 20,
-      }),
-
-      prisma.tarotReading.findMany({
-        where: {
-          userId,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-        take: 20,
-      }),
+    const [soulResult, dreamResult, tarotResult] = await Promise.all([
+      supabase.from("SoulScan").select("id,archetype,insight,createdAt").eq("userId", userId).order("createdAt", { ascending: false }).limit(20),
+      supabase.from("DreamAnalysis").select("id,summary,interpretation,createdAt").eq("userId", userId).order("createdAt", { ascending: false }).limit(20),
+      supabase.from("TarotReading").select("id,card,meaning,guidance,createdAt").eq("userId", userId).order("createdAt", { ascending: false }).limit(20),
     ]);
 
+    for (const result of [soulResult, dreamResult, tarotResult]) {
+      if (result.error) {
+        console.error("JOURNEY DB ERROR:", result.error.message);
+        throw new Error("Failed to load journey");
+      }
+    }
+
     const journey = [
-      ...soul.map((item) => ({
+      ...(soulResult.data ?? []).map((item) => ({
         id: item.id,
         type: "soul" as const,
         title: item.archetype || "Soul Scan",
-        description:
-          item.insight || "Soul analysis completed.",
+        description: item.insight || "Soul analysis completed.",
         createdAt: item.createdAt,
       })),
-
-      ...dreams.map((item) => ({
+      ...(dreamResult.data ?? []).map((item) => ({
         id: item.id,
         type: "dream" as const,
         title: "Dream Analysis",
-        description:
-          item.interpretation ||
-          item.summary ||
-          "Dream interpreted.",
+        description: item.interpretation || item.summary || "Dream interpreted.",
         createdAt: item.createdAt,
       })),
-
-      ...tarot.map((item) => ({
+      ...(tarotResult.data ?? []).map((item) => ({
         id: item.id,
         type: "tarot" as const,
         title: item.card || "Tarot Reading",
-        description:
-          item.guidance ||
-          item.meaning ||
-          "Symbolic guidance generated.",
+        description: item.guidance || item.meaning || "Symbolic guidance generated.",
         createdAt: item.createdAt,
       })),
-    ].sort(
-      (a, b) =>
-        b.createdAt.getTime() -
-        a.createdAt.getTime()
-    );
+    ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     return NextResponse.json(
       journey.map((item) => ({
@@ -103,19 +57,11 @@ export async function GET() {
           month: "short",
           day: "numeric",
           year: "numeric",
-        }).format(item.createdAt),
+        }).format(new Date(item.createdAt)),
       }))
     );
   } catch (error) {
     console.error("JOURNEY API ERROR:", error);
-
-    return NextResponse.json(
-      {
-        error: "Server error",
-      },
-      {
-        status: 500,
-      }
-    );
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

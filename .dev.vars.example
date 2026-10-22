@@ -1,0 +1,4 @@
+# Copy the required values into your ignored local .dev.vars file.
+# Never commit real credentials.
+NEXTJS_ENV=development
+SUPABASE_SERVICE_ROLE_KEY=replace-with-your-supabase-service-role-key

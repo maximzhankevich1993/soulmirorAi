@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/prisma";
 import { getUser } from "@/lib/getUser";
+import { createAdminClient } from "@/lib/supabase/admin";
 import type { PlanType } from "@/lib/plans";
 
 export async function getUserPlan(): Promise<PlanType> {
@@ -9,22 +9,26 @@ export async function getUserPlan(): Promise<PlanType> {
     return "free";
   }
 
-  const userPlan = await prisma.userPlan.findUnique({
-    where: {
-      userId: user.id,
-    },
-  });
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from("UserPlan")
+    .select("plan,expiresAt")
+    .eq("userId", user.id)
+    .maybeSingle();
 
-  if (!userPlan) {
+  if (error) {
+    console.error("Failed to load user plan:", error.message);
+    throw new Error("Failed to load user plan");
+  }
+
+  if (!data) return "free";
+
+  if (data.expiresAt && new Date(data.expiresAt).getTime() <= Date.now()) {
     return "free";
   }
 
-  if (
-    userPlan.expiresAt &&
-    userPlan.expiresAt < new Date()
-  ) {
-    return "free";
-  }
-
-  return userPlan.plan as PlanType;
+  const allowedPlans: PlanType[] = ["free", "day", "monthly", "yearly"];
+  return allowedPlans.includes(data.plan as PlanType)
+    ? (data.plan as PlanType)
+    : "free";
 }

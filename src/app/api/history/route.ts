@@ -1,110 +1,57 @@
 import { NextResponse } from "next/server";
-
-import { prisma } from "../../../lib/prisma";
-import { createClient } from "../../../lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { getUser } from "@/lib/getUser";
 
 export async function GET() {
   try {
-    const supabase = await createClient();
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
+    const user = await getUser();
     if (!user) {
-      return NextResponse.json(
-        {
-          error: "Unauthorized",
-        },
-        {
-          status: 401,
-        }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const supabase = createAdminClient();
     const userId = user.id;
 
-    const [soulScans, dreamAnalyses, tarotReadings] =
-      await Promise.all([
-        prisma.soulScan.findMany({
-          where: {
-            userId,
-          },
-          orderBy: {
-            createdAt: "desc",
-          },
-          take: 20,
-        }),
+    const [soulResult, dreamResult, tarotResult] = await Promise.all([
+      supabase.from("SoulScan").select("id,archetype,insight,createdAt").eq("userId", userId).order("createdAt", { ascending: false }).limit(20),
+      supabase.from("DreamAnalysis").select("id,summary,interpretation,createdAt").eq("userId", userId).order("createdAt", { ascending: false }).limit(20),
+      supabase.from("TarotReading").select("id,card,meaning,guidance,createdAt").eq("userId", userId).order("createdAt", { ascending: false }).limit(20),
+    ]);
 
-        prisma.dreamAnalysis.findMany({
-          where: {
-            userId,
-          },
-          orderBy: {
-            createdAt: "desc",
-          },
-          take: 20,
-        }),
-
-        prisma.tarotReading.findMany({
-          where: {
-            userId,
-          },
-          orderBy: {
-            createdAt: "desc",
-          },
-          take: 20,
-        }),
-      ]);
+    for (const result of [soulResult, dreamResult, tarotResult]) {
+      if (result.error) {
+        console.error("HISTORY DB ERROR:", result.error.message);
+        throw new Error("Failed to load history");
+      }
+    }
 
     const history = [
-      ...soulScans.map((item) => ({
+      ...(soulResult.data ?? []).map((item) => ({
         id: item.id,
         type: "soul-scan" as const,
         title: item.archetype || "Soul Scan",
-        description:
-          item.insight || "Soul analysis completed.",
+        description: item.insight || "Soul analysis completed.",
         date: item.createdAt,
       })),
-
-      ...dreamAnalyses.map((item) => ({
+      ...(dreamResult.data ?? []).map((item) => ({
         id: item.id,
         type: "dream-analysis" as const,
         title: "Dream Analysis",
-        description:
-          item.interpretation ||
-          item.summary ||
-          "Dream analysis completed.",
+        description: item.interpretation || item.summary || "Dream analysis completed.",
         date: item.createdAt,
       })),
-
-      ...tarotReadings.map((item) => ({
+      ...(tarotResult.data ?? []).map((item) => ({
         id: item.id,
         type: "tarot" as const,
         title: item.card || "Tarot Reading",
-        description:
-          item.guidance ||
-          item.meaning ||
-          "Tarot reading completed.",
+        description: item.guidance || item.meaning || "Tarot reading completed.",
         date: item.createdAt,
       })),
-    ].sort(
-      (a, b) =>
-        new Date(b.date).getTime() -
-        new Date(a.date).getTime()
-    );
+    ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
     return NextResponse.json(history);
   } catch (error) {
     console.error("HISTORY API ERROR:", error);
-
-    return NextResponse.json(
-      {
-        error: "Server error",
-      },
-      {
-        status: 500,
-      }
-    );
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
