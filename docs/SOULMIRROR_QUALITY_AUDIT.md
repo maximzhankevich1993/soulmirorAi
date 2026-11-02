@@ -107,8 +107,20 @@
 7. Run end-to-end checks for registration, email confirmation, login, logout, password recovery, dashboard welcome, Soul Scan, Dream Analysis, Tarot, history, limits, and mobile layouts.
 8. Only after all gates pass, review a PR and consider merging into `main`.
 
+## Fixes already committed to the migration branch
+
+- Added this quality audit as a durable checklist.
+- Standardized `src/lib/supabase/server.ts` on the SSR `getAll/setAll` cookie adapter.
+- Changed `src/lib/getUser.ts` to reuse the shared server client instead of creating a second cookie/auth implementation.
+- Corrected the dashboard's invalid `/login` redirect to the existing `/auth` route.
+- Gated the cinematic welcome overlay until the authenticated profile lookup completes, avoiding the initial fallback-name flash.
+- Removed stale Prisma references from the auth form's user-sync comments.
+- Verified the migration branch lockfile has no Prisma package references.
+
 ## Current disposition
 
-- `main` has not been modified by this audit.
-- The migration branch is the only permitted working branch for the Prisma removal and related fixes.
+- `main` has not been modified by this audit or these fixes.
+- All changes above are isolated to `migration/remove-prisma-supabase-js`.
+- The fixes are committed but not runtime-tested in this GitHub-only session.
+- Remaining blockers include canonical plan/price mapping, consistent limits, atomic usage reservation, the unmetered save endpoint, password recovery/email-confirmation verification, dynamic dashboard plan state, Cloudflare secret/SQL setup, and full build/E2E verification.
 - No claim of production readiness is made until local/Cloudflare runtime checks and database verification have passed.
