@@ -30,19 +30,10 @@ export function DashboardShell({
 }: DashboardShellProps) {
   const router = useRouter();
 
-  const [showWelcome, setShowWelcome] = useState(() => {
-    if (typeof window === "undefined") {
-      return true;
-    }
-
-    return (
-      sessionStorage.getItem(
-        "soulmirror_welcome_seen"
-      ) !== "true"
-    );
-  });
+  const [showWelcome, setShowWelcome] = useState(false);
 
   const [userName, setUserName] = useState("there");
+  const [userId, setUserId] = useState<string | null>(null);
   const [userLoaded, setUserLoaded] = useState(false);
   const [userPlan] = useState<UserPlan>("free");
   const [closingWelcome, setClosingWelcome] = useState(false);
@@ -81,6 +72,10 @@ export function DashboardShell({
           "there";
 
         setUserName(firstName);
+        setUserId(user.id);
+        setShowWelcome(
+          sessionStorage.getItem(`soulmirror_welcome_seen:${user.id}`) !== "true"
+        );
         setUserLoaded(true);
       } catch (error) {
         console.error(
@@ -110,12 +105,12 @@ export function DashboardShell({
    */
 
   useEffect(() => {
-    if (!showWelcome || !userLoaded) {
+    if (!showWelcome || !userLoaded || !userId) {
       return;
     }
 
     sessionStorage.setItem(
-      "soulmirror_welcome_seen",
+      `soulmirror_welcome_seen:${userId}`,
       "true"
     );
 
@@ -134,7 +129,7 @@ export function DashboardShell({
     return () => {
       window.clearTimeout(closeTimer);
     };
-  }, [showWelcome, userLoaded]);
+  }, [showWelcome, userLoaded, userId]);
 
   /*
    * =========================================
