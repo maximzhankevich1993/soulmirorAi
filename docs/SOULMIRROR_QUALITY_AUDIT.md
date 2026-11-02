@@ -59,12 +59,9 @@
 
 ### P1 — Dashboard and authentication flow
 
-- `components/dashboard/DashboardShell.tsx` redirects a missing session to `/login`, but the inspected App Router tree exposes `/auth`, not `/login`.
 - Dashboard plan state is hardcoded to `free`; it does not reflect the persisted plan.
-- The welcome overlay can render before the asynchronous profile-name lookup finishes, so it can briefly show the fallback name.
-- Welcome visibility is stored as one browser-session flag, not keyed to the authenticated user; switching accounts in the same browser session can suppress the next user's welcome.
-- The login/register form's comments still refer to Prisma on the migration branch. Verify and correct stale copy.
-- A complete forgot-password/reset-password flow was not found in the inspected auth component/search results; inspect Supabase redirect configuration and add an end-to-end recovery flow if absent.
+- The password recovery/reset flow was not found in the inspected auth component/search results; inspect Supabase redirect configuration and add an end-to-end recovery flow if absent.
+- Verify email confirmation callback behavior and that unconfirmed users cannot enter protected features.
 - Verify email confirmation callback behavior and that unconfirmed users cannot enter protected features.
 
 ### P1 — Supabase server client consistency
@@ -114,6 +111,7 @@
 - Changed `src/lib/getUser.ts` to reuse the shared server client instead of creating a second cookie/auth implementation.
 - Corrected the dashboard's invalid `/login` redirect to the existing `/auth` route.
 - Gated the cinematic welcome overlay until the authenticated profile lookup completes, avoiding the initial fallback-name flash.
+- Scoped the welcome-seen session flag to the authenticated user, so switching accounts does not suppress another user's welcome.
 - Removed stale Prisma references from the auth form's user-sync comments.
 - Verified the migration branch lockfile has no Prisma package references.
 
