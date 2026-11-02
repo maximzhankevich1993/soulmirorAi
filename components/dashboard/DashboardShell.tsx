@@ -43,6 +43,7 @@ export function DashboardShell({
   });
 
   const [userName, setUserName] = useState("there");
+  const [userLoaded, setUserLoaded] = useState(false);
   const [userPlan] = useState<UserPlan>("free");
   const [closingWelcome, setClosingWelcome] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -63,7 +64,7 @@ export function DashboardShell({
         } = await supabase.auth.getUser();
 
         if (!user) {
-          router.replace("/login");
+          router.replace("/auth");
           return;
         }
 
@@ -80,11 +81,13 @@ export function DashboardShell({
           "there";
 
         setUserName(firstName);
+        setUserLoaded(true);
       } catch (error) {
         console.error(
           "Failed to load dashboard user:",
           error
         );
+        router.replace("/auth");
       }
     }
 
@@ -107,7 +110,7 @@ export function DashboardShell({
    */
 
   useEffect(() => {
-    if (!showWelcome) {
+    if (!showWelcome || !userLoaded) {
       return;
     }
 
@@ -131,7 +134,7 @@ export function DashboardShell({
     return () => {
       window.clearTimeout(closeTimer);
     };
-  }, [showWelcome]);
+  }, [showWelcome, userLoaded]);
 
   /*
    * =========================================
@@ -288,7 +291,7 @@ export function DashboardShell({
       ========================================== */}
 
       <AnimatePresence>
-        {showWelcome && (
+        {showWelcome && userLoaded && (
           <motion.div
             initial={{
               opacity: 1,
