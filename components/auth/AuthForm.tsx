@@ -88,7 +88,7 @@ export function AuthForm({
         }
 
         /*
-         * Sync Supabase user with Prisma
+         * Sync the authenticated Supabase user with the application profile tables
          * before entering the Dashboard.
          */
 
@@ -130,8 +130,7 @@ export function AuthForm({
 
       if (data.session && data.user) {
         /*
-         * Create the corresponding Prisma User
-         * and UserPlan before entering the Dashboard.
+         * Ensure the Supabase profile and default plan exist before entering the Dashboard.
          */
 
         await syncUser();
