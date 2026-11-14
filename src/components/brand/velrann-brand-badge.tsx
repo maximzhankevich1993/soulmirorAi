@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 
-export function EonBrandBadge() {
+export function VelrannBrandBadge() {
   return (
     <motion.div
       initial={{
@@ -48,7 +48,7 @@ export function EonBrandBadge() {
           text-[#D6B25E]
         "
       >
-        A product by EON AI
+        A product by Velrann Technology
       </span>
 
     </motion.div>

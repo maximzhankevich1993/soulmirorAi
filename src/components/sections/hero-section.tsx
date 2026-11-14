@@ -5,7 +5,7 @@ import { ArrowRight, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { SoulOrb3D } from "@/components/soul-space/SoulOrb3D";
-import { EonBrandBadge } from "@/components/brand/eon-brand-badge";
+import { VelrannBrandBadge } from "@/components/brand/velrann-brand-badge";
 
 export function HeroSection() {
   return (
@@ -79,7 +79,7 @@ export function HeroSection() {
                 text-[#D6B25E]/80
               "
             >
-              EON AI presents
+              VELRANN TECHNOLOGY presents
             </span>
           </div>
 
@@ -150,7 +150,7 @@ export function HeroSection() {
               variant="secondary"
               className="h-14 rounded-2xl px-8"
             >
-              Explore EON AI
+              Explore the Ecosystem
             </Button>
           </div>
 
@@ -165,7 +165,7 @@ export function HeroSection() {
                 text-white/40
               "
             >
-              Powered by EON AI
+              Powered by VELRANN TECHNOLOGY
             </p>
           </div>
         </motion.div>

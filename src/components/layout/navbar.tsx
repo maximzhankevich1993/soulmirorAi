@@ -78,11 +78,11 @@ export function Navbar() {
 
             <div className="hidden border-l border-white/10 pl-4 sm:block">
               <p className="text-[9px] uppercase tracking-[0.4em] text-[#D6B25E]">
-                EON AI
+                VELRANN TECHNOLOGY
               </p>
 
               <p className="text-[10px] text-white/40">
-                Intelligence Ecosystem
+                AI Ecosystem
               </p>
             </div>
           </Link>

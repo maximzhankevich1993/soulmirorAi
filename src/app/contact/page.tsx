@@ -276,7 +276,7 @@ export default function ContactPage() {
                 </h2>
 
                 <p className="mt-4 max-w-xl leading-7 text-white/45">
-                  Follow SoulMirror and EON AI as we explore the future
+                  Follow SoulMirror and Velrann Technology as we explore the future
                   of personal intelligence.
                 </p>
               </div>

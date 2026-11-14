@@ -805,7 +805,7 @@ export default function AboutPage() {
 
 
       {/* ========================================================= */}
-      {/* EON */}
+      {/* VELRANN TECHNOLOGY */}
       {/* ========================================================= */}
 
       <section className="relative py-28">
@@ -842,7 +842,7 @@ export default function AboutPage() {
                 text-[#D6B25E]
               "
             >
-              Built by EON AI
+              Built by Velrann Technology
             </p>
 
             <h2
@@ -868,7 +868,7 @@ export default function AboutPage() {
                 text-white/50
               "
             >
-              SoulMirror is part of EON AI's vision to create
+              SoulMirror is part of Velrann Technology's vision to create
               personal intelligence systems that grow around
               memory, identity and human potential.
             </p>

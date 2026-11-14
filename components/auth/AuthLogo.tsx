@@ -24,7 +24,7 @@ export function AuthLogo() {
         text-center
       "
     >
-      {/* EON AI */}
+      {/* VELRANN TECHNOLOGY */}
 
       <motion.p
         initial={{
@@ -48,7 +48,7 @@ export function AuthLogo() {
           text-[#D6B25E]/80
         "
       >
-        EON AI
+        VELRANN TECHNOLOGY
       </motion.p>
 
       {/* SoulMirror */}
