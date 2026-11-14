@@ -121,7 +121,7 @@ export function Footer() {
                 text-[#D6B25E]/70
               "
             >
-              A product by EON AI
+              A product by Velrann Technology
             </div>
           </div>
 
@@ -207,7 +207,7 @@ export function Footer() {
                 text-[#F4F1EA]/40
               "
             >
-              © {new Date().getFullYear()} EON AI.
+              © {new Date().getFullYear()} Velrann Technology.
               All rights reserved.
             </p>
 
@@ -218,7 +218,7 @@ export function Footer() {
                 text-[#F4F1EA]/25
               "
             >
-              SoulMirror AI is a product by EON AI.
+              SoulMirror AI is a product by Velrann Technology.
             </p>
           </div>
 
