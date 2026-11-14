@@ -5,7 +5,7 @@ import { ArrowRight, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { SoulOrb3D } from "@/components/soul-space/SoulOrb3D";
-import { EonBrandBadge } from "@/components/brand/eon-brand-badge";
+import { VelrannBrandBadge } from "@/components/brand/velrann-brand-badge";
 
 export function HeroSection() {
   return (
