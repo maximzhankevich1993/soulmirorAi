@@ -141,7 +141,7 @@ ATMOSPHERE
         text-[#D6B25E]
       "
     >
-      EON AI Ecosystem
+      Velrann Technology Ecosystem
     </p>
 
     <h2
@@ -169,7 +169,7 @@ ATMOSPHERE
         text-white/50
       "
     >
-      SoulMirror is the first product created by EON AI.
+      SoulMirror is the first product created by Velrann Technology.
       <br />
       A growing ecosystem of AI systems designed to understand identity,
       memory and human evolution.
@@ -676,7 +676,7 @@ ATMOSPHERE
                   text-white/25
                 "
               >
-                A new EON intelligence system
+                A new Velrann intelligence system
               </motion.p>
             </motion.div>
 
