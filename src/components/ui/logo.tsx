@@ -12,7 +12,7 @@ export function Logo() {
 
       href="/"
 
-      aria-label="EON AI home"
+      aria-label="Velrann Technology home"
 
       className="
       group
@@ -24,7 +24,7 @@ export function Logo() {
     >
 
 
-      {/* EON Core Symbol */}
+      {/* Velrann Core Symbol */}
 
       <div
 
@@ -97,7 +97,7 @@ export function Logo() {
         >
 
 
-          {/* EON Orbit */}
+          {/* Velrann Orbit */}
 
           <motion.div
 
@@ -176,7 +176,7 @@ export function Logo() {
 
         >
 
-          EON AI
+          VELRANN
 
         </span>
 
@@ -195,7 +195,7 @@ export function Logo() {
 
         >
 
-          SoulMirror
+          TECHNOLOGY
 
         </span>
 
